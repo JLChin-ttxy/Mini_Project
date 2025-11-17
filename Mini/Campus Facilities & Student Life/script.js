@@ -16,4 +16,12 @@ document.querySelectorAll('details').forEach(detail => {
             icon.textContent = detail.open ? '-' : '+';
         }
     })
+
 })
+
+chatbotIcon.addEventListener('click', () => {
+  chatbotBox.style.display =
+    chatbotBox.style.display === 'none' || chatbotBox.style.display === ''
+      ? 'block'
+      : 'none';
+});
