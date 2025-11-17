@@ -390,4 +390,29 @@ footer {
   .hamburger { display: flex; }
   .hero h2 { font-size: 2rem; }
   .virtual-tour iframe { height: 240px; }
+
+}
+
+#chatbot-icon {
+  position: fixed;
+  bottom: 25px;
+  right: 25px;
+  background-color: #1e3a8a; /* SKL blue */
+  color: white;
+  padding: 15px;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  font-size: 22px;
+}
+
+#chatbot-box {
+  position: fixed;
+  bottom: 90px;
+  right: 25px;
+  display: none;
+  z-index: 9999;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
 }
