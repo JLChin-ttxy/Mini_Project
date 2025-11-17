@@ -19,9 +19,17 @@ document.querySelectorAll('details').forEach(detail => {
 
 })
 
-chatbotIcon.addEventListener('click', () => {
-  chatbotBox.style.display =
-    chatbotBox.style.display === 'none' || chatbotBox.style.display === ''
-      ? 'block'
-      : 'none';
-});
+// Chatbot button & box: select elements and add a safe toggle handler
+const chatbotIcon = document.getElementById('chatbot');
+const chatbotBox = document.getElementById('chatbot-box');
+
+// Ensure chatbot box is hidden by default (unless CSS already hides it)
+if (chatbotBox && (chatbotBox.style.display === '' || chatbotBox.style.display === undefined)) {
+    chatbotBox.style.display = 'none';
+}
+
+if (chatbotIcon && chatbotBox) {
+    chatbotIcon.addEventListener('click', () => {
+        chatbotBox.style.display = chatbotBox.style.display === 'none' ? 'block' : 'none';
+    });
+}
