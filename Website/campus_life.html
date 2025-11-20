@@ -4,11 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Explore SKL Universiti campus facilities, student life, clubs, and virtual tour." />
-  <title>Campus Facilities & Student Life</title>
+  <title>Campus Facilities & Student Life - SKL Universiti</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
 
   <!-- Header -->
   <header class="header">
@@ -20,11 +19,11 @@
 
       <!-- Desktop Nav -->
       <nav class="nav-desktop">
-        <a href="#">Home</a>
-        <a href="#">Programs</a>
-        <a href="#">Admissions</a>
-        <a href="#">Campus Life</a>
-        <a href="#">Contact</a>
+        <a href="main.html">Home</a>
+        <a>Programs</a>
+        <a>Admissions</a>
+        <a href="campus_life.html">Campus Life</a>
+        <a href="main.html#contact">Contact</a>
       </nav>
 
       <!-- Mobile Hamburger -->
@@ -37,11 +36,11 @@
 
     <!-- Mobile Menu -->
     <nav id="mobile-menu" class="nav-mobile">
-      <a href="#">Home</a>
-      <a href="#">Programs</a>
-      <a href="#">Admissions</a>
-      <a href="#">Campus Life</a>
-      <a href="#">Contact</a>
+      <a href="main.html">Home</a>
+      <a href="main.html#programs">Programs</a>
+      <a href="main.html#admissions">Admissions</a>
+      <a href="campus_life.html">Campus Life</a>
+      <a href="main.html#contact">Contact</a>
     </nav>
   </header>
 
@@ -65,7 +64,7 @@
           <img src="https://images.unsplash.com/photo-1571260899304-425eee4c7efc?auto=format&fit=crop&w=800&q=60" alt="Library">
           <h4>University Library</h4>
           <p>Our fully equipped library offers digital and printed resources with study areas open 24/7.</p>
-          <a href="#">Read More →</a>
+          <a href="#" onclick="askChatbot('Tell me about the library'); return false;">Read More →</a>
         </div>
 
         <!-- Hostel -->
@@ -73,15 +72,15 @@
           <img src="https://wys.cuhk.edu.hk/cms/wp-content/uploads/2016/07/WYS_7708.jpg" alt="Hostel">
           <h4>Student Hostels</h4>
           <p>Comfortable, safe, and Wi-Fi-enabled hostel accommodation for both local and international students.</p>
-          <a href="#">Read More →</a>
+          <a href="#" onclick="askChatbot('What accommodation options are available?'); return false;">Read More →</a>
         </div>
 
         <!-- Sports Complex -->
         <div class="card">
           <img src="https://images.unsplash.com/photo-1596495577886-d920f1fb7238?auto=format&fit=crop&w=800&q=60" alt="Sports Complex">
           <h4>Sports Complex</h4>
-          <p>Facilities for football, basketball, gym, and indoor games — promoting fitness and teamwork.</p>
-          <a href="#">Read More →</a>
+          <p>Facilities for football, basketball, gym, and indoor games – promoting fitness and teamwork.</p>
+          <a href="#" onclick="askChatbot('What sports facilities do you have?'); return false;">Read More →</a>
         </div>
       </div>
     </div>
@@ -93,11 +92,11 @@
       <h3>Student Life & Activities</h3>
       <p>Join over 40 active student clubs and societies. Participate in cultural events, competitions, and leadership programs that shape your university journey.</p>
       <div class="club-tags">
-        <span>🎭 Drama Club</span>
-        <span>💻 Tech Society</span>
-        <span>⚽ Sports Club</span>
-        <span>🎵 Music Band</span>
-        <span>🌏 International Student Club</span>
+        <span onclick="askChatbot('Tell me about Drama Club')">🎭 Drama Club</span>
+        <span onclick="askChatbot('Tell me about Tech Society')">💻 Tech Society</span>
+        <span onclick="askChatbot('Tell me about Sports Club')">⚽ Sports Club</span>
+        <span onclick="askChatbot('Tell me about Music Band')">🎵 Music Band</span>
+        <span onclick="askChatbot('Tell me about International Student Club')">🌍 International Student Club</span>
       </div>
     </div>
   </section>
@@ -136,20 +135,65 @@
   <!-- Footer -->
   <footer>
     <p>&copy; 2025 SKL Universiti. All rights reserved.</p>
+    <p>AI Chatbot powered by Dialogflow | UCCA2513 Mini Project</p>
   </footer>
 
-  <!-- Chatbot Button -->
-  <button id="chatbot">💬</button>
+  <!-- Dialogflow Messenger Integration -->
+  <script src="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/df-messenger.js"></script>
+  <df-messenger
+    project-id="YOUR_PROJECT_ID_HERE"
+    agent-id="YOUR_AGENT_ID_HERE"
+    language-code="en"
+    max-query-length="-1">
+    <df-messenger-chat-bubble
+      chat-title="SKL AI Assistant">
+    </df-messenger-chat-bubble>
+  </df-messenger>
 
-  <!-- Chatbot Box (Hidden by Default)-->
-  <div id="chatbot-box">
-    <!-- Dialogflow embed removed to disable external chatbot source -->
-    <div class="chatbot-placeholder" style="height:430px;width:350px;display:flex;align-items:center;justify-content:center;padding:1rem;">
-      Chatbot goes here
-    </div>
-  </div>
-
+  <!-- Custom Scripts -->
   <script src="script.js"></script>
+  
+  <script>
+    // Function to programmatically send messages to chatbot
+    function askChatbot(message) {
+      const dfMessenger = document.querySelector('df-messenger');
+      if (dfMessenger) {
+        dfMessenger.renderCustomText(message);
+        // Open the chat if it's closed
+        const chatBubble = dfMessenger.shadowRoot.querySelector('df-messenger-chat-bubble');
+        if (chatBubble) {
+          chatBubble.openChat();
+        }
+      }
+    }
+
+    // Customize Dialogflow Messenger appearance
+    window.addEventListener('df-messenger-loaded', function() {
+      const dfMessenger = document.querySelector('df-messenger');
+      if (dfMessenger) {
+        console.log('✅ Dialogflow Messenger loaded successfully');
+      }
+    });
+  </script>
+
+  <style>
+    /* Dialogflow Messenger Custom Styling */
+    df-messenger {
+      z-index: 999;
+      position: fixed;
+      bottom: 16px;
+      right: 16px;
+      --df-messenger-font-color: #1f2937;
+      --df-messenger-font-family: 'Poppins', sans-serif;
+      --df-messenger-chat-background: #f8fafc;
+      --df-messenger-message-user-background: #1e3a8a;
+      --df-messenger-message-bot-background: #ffffff;
+      --df-messenger-button-titlebar-color: #1e3a8a;
+      --df-messenger-button-titlebar-font-color: #ffffff;
+      --df-messenger-chat-bubble-background: #1e3a8a;
+      --df-messenger-chat-bubble-icon-color: #ffffff;
+    }
+  </style>
 
 </body>
 </html>
