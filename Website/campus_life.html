@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Explore SKL Universiti campus facilities, student life, clubs, and virtual tour." />
+  <title>Campus Facilities & Student Life - SKL Universiti</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header-container">
+      <div class="logo-container">
+        <img src="SKL logo.png" alt="SKL Logo" class="logo">
+        <h1>SKL Universiti</h1>
+      </div>
+
+      <!-- Desktop Nav -->
+      <nav class="nav-desktop">
+        <a href="main.html">Home</a>
+        <a>Programs</a>
+        <a>Admissions</a>
+        <a href="campus_life.html">Campus Life</a>
+        <a href="main.html#contact">Contact</a>
+      </nav>
+
+      <!-- Mobile Hamburger -->
+      <button id="menu-toggle" class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <!-- Mobile Menu -->
+    <nav id="mobile-menu" class="nav-mobile">
+      <a href="main.html">Home</a>
+      <a href="main.html#programs">Programs</a>
+      <a href="main.html#admissions">Admissions</a>
+      <a href="campus_life.html">Campus Life</a>
+      <a href="main.html#contact">Contact</a>
+    </nav>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container">
+      <h2>Explore Our Campus Life</h2>
+      <p>Discover the facilities, clubs, and vibrant student experiences that make our university unique.</p>
+      <img src="https://images.unsplash.com/photo-1588072432836-e10032774350?auto=format&fit=crop&w=1000&q=60" alt="Campus View">
+      <a href="#facilities" class="btn-cta">Explore Facilities</a>
+    </div>
+  </section>
+
+  <!-- Facilities Section -->
+  <section id="facilities" class="facilities">
+    <div class="container">
+      <h3>Campus Facilities</h3>
+      <div class="grid">
+        <!-- Library -->
+        <div class="card">
+          <img src="https://images.unsplash.com/photo-1571260899304-425eee4c7efc?auto=format&fit=crop&w=800&q=60" alt="Library">
+          <h4>University Library</h4>
+          <p>Our fully equipped library offers digital and printed resources with study areas open 24/7.</p>
+          <a href="#" onclick="askChatbot('Tell me about the library'); return false;">Read More →</a>
+        </div>
+
+        <!-- Hostel -->
+        <div class="card">
+          <img src="https://wys.cuhk.edu.hk/cms/wp-content/uploads/2016/07/WYS_7708.jpg" alt="Hostel">
+          <h4>Student Hostels</h4>
+          <p>Comfortable, safe, and Wi-Fi-enabled hostel accommodation for both local and international students.</p>
+          <a href="#" onclick="askChatbot('What accommodation options are available?'); return false;">Read More →</a>
+        </div>
+
+        <!-- Sports Complex -->
+        <div class="card">
+          <img src="https://images.unsplash.com/photo-1596495577886-d920f1fb7238?auto=format&fit=crop&w=800&q=60" alt="Sports Complex">
+          <h4>Sports Complex</h4>
+          <p>Facilities for football, basketball, gym, and indoor games – promoting fitness and teamwork.</p>
+          <a href="#" onclick="askChatbot('What sports facilities do you have?'); return false;">Read More →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Student Life Section -->
+  <section class="student-life">
+    <div class="container text-center">
+      <h3>Student Life & Activities</h3>
+      <p>Join over 40 active student clubs and societies. Participate in cultural events, competitions, and leadership programs that shape your university journey.</p>
+      <div class="club-tags">
+        <span onclick="askChatbot('Tell me about Drama Club')">🎭 Drama Club</span>
+        <span onclick="askChatbot('Tell me about Tech Society')">💻 Tech Society</span>
+        <span onclick="askChatbot('Tell me about Sports Club')">⚽ Sports Club</span>
+        <span onclick="askChatbot('Tell me about Music Band')">🎵 Music Band</span>
+        <span onclick="askChatbot('Tell me about International Student Club')">🌍 International Student Club</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="faq">
+    <div class="container">
+      <h3>Frequently Asked Questions</h3>
+
+      <details>
+        <summary>Is Wi-Fi available in hostels? <span>+</span></summary>
+        <p>Yes, all student hostels are equipped with high-speed Wi-Fi access.</p>
+      </details>
+
+      <details>
+        <summary>Are there facilities for international students? <span>+</span></summary>
+        <p>Yes, international students receive orientation, visa support, and housing assistance.</p>
+      </details>
+
+      <details>
+        <summary>Is campus housing safe? <span>+</span></summary>
+        <p>Yes, campus hostels have 24-hour security and CCTV monitoring.</p>
+      </details>
+    </div>
+  </section>
+
+  <!-- Virtual Tour Section -->
+  <section class="virtual-tour">
+    <h3>Take a Virtual Campus Tour</h3>
+    <p>Experience our beautiful campus from anywhere.</p>
+    <div class="video-wrapper">
+      <iframe src="https://www.youtube.com/embed/k6tC0n1AOV8" title="Virtual Campus Tour" allowfullscreen></iframe>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2025 SKL Universiti. All rights reserved.</p>
+    <p>AI Chatbot powered by Dialogflow | UCCA2513 Mini Project</p>
+  </footer>
+
+  <!-- Dialogflow Messenger Integration -->
+  <script src="https://www.gstatic.com/dialogflow-console/fast/df-messenger/prod/v1/df-messenger.js"></script>
+  <df-messenger
+    project-id="YOUR_PROJECT_ID_HERE"
+    agent-id="YOUR_AGENT_ID_HERE"
+    language-code="en"
+    max-query-length="-1">
+    <df-messenger-chat-bubble
+      chat-title="SKL AI Assistant">
+    </df-messenger-chat-bubble>
+  </df-messenger>
+
+  <!-- Custom Scripts -->
+  <script src="script.js"></script>
+  
+  <script>
+    // Function to programmatically send messages to chatbot
+    function askChatbot(message) {
+      const dfMessenger = document.querySelector('df-messenger');
+      if (dfMessenger) {
+        dfMessenger.renderCustomText(message);
+        // Open the chat if it's closed
+        const chatBubble = dfMessenger.shadowRoot.querySelector('df-messenger-chat-bubble');
+        if (chatBubble) {
+          chatBubble.openChat();
+        }
+      }
+    }
+
+    // Customize Dialogflow Messenger appearance
+    window.addEventListener('df-messenger-loaded', function() {
+      const dfMessenger = document.querySelector('df-messenger');
+      if (dfMessenger) {
+        console.log('✅ Dialogflow Messenger loaded successfully');
+      }
+    });
+  </script>
+
+  <style>
+    /* Dialogflow Messenger Custom Styling */
+    df-messenger {
+      z-index: 999;
+      position: fixed;
+      bottom: 16px;
+      right: 16px;
+      --df-messenger-font-color: #1f2937;
+      --df-messenger-font-family: 'Poppins', sans-serif;
+      --df-messenger-chat-background: #f8fafc;
+      --df-messenger-message-user-background: #1e3a8a;
+      --df-messenger-message-bot-background: #ffffff;
+      --df-messenger-button-titlebar-color: #1e3a8a;
+      --df-messenger-button-titlebar-font-color: #ffffff;
+      --df-messenger-chat-bubble-background: #1e3a8a;
+      --df-messenger-chat-bubble-icon-color: #ffffff;
+    }
+  </style>
+
+</body>
+</html>
