@@ -62,30 +62,141 @@
   <section id="facilities" class="facilities">
     <div class="container">
       <h3>Campus Facilities</h3>
+
+      <!-- Search -->
+      <input type="text" 
+           id="facilitySearch" 
+           class="search-bar"
+           onkeyup="searchFacilities()"
+           placeholder="Search facilities...">
+
+      <!-- Filters -->
+      <div class="filters">
+        <button class="filter-btn active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="study">Study Areas</button>
+        <button class="filter-btn" data-filter="sports">Sports</button>
+        <button class="filter-btn" data-filter="food">Food & Café</button>
+        <button class="filter-btn" data-filter="hostel">Food & Café</button>
+      </div>
+
       <div class="grid">
-        <!-- Library -->
-        <div class="card">
-          <img src="https://images.unsplash.com/photo-1571260899304-425eee4c7efc?auto=format&fit=crop&w=800&q=60" alt="Library">
-          <h4>University Library</h4>
+        <!-- Study Areas -->
+        <div class="card" data-category="study">
+          <img src="https://www.tyg.jp/e/images/facilities/university_library/01.jpg" alt="Library">
+          <h3>University Library</h3>
           <p>Our fully equipped library offers digital and printed resources with study areas open 24/7.</p>
           <a href="#" onclick="askChatbot('Tell me about the library'); return false;">Read More →</a>
         </div>
 
+        <div class="card" data-category="study">
+          <img src="https://kierantimberlake.com/files/pages/800/0897_n25_m.jpg" alt="Innovation Hub">
+          <h3>Innovation Hub</h3>
+          <p>Creative study space for group discussions, design thinking workshops, and startup projects.</p>
+          <a href="#" onclick="askChatbot('Tell me about the library'); return false;">Read More →</a>
+        </div>
+
+        <div class="card" data-category="study">
+          <img src="https://www.lib.ncsu.edu/sites/default/files/styles/large_4_3/public/2019-07/Hunt_Quiet-Reading-Room_2_0.jpg?itok=8sHOTBXD" alt="Quiet Reading Lounge">
+          <h3>Quiet Reading Lounge</h3>
+          <p>A silent zone with comfortable seating for focused reading and deep study.</p>
+          <a href="#" onclick="askChatbot('Tell me about the library'); return false;">Read More →</a>
+        </div>
+
         <!-- Hostel -->
-        <div class="card">
+        <div class="card" data-category="hostel">
           <img src="https://wys.cuhk.edu.hk/cms/wp-content/uploads/2016/07/WYS_7708.jpg" alt="Hostel">
-          <h4>Student Hostels</h4>
+          <h3>Student Hostels</h3>
           <p>Comfortable, safe, and Wi-Fi-enabled hostel accommodation for both local and international students.</p>
           <a href="#" onclick="askChatbot('What accommodation options are available?'); return false;">Read More →</a>
         </div>
 
+        <div class="card" data-category="hostel">
+          <img src="https://www.shoreline.edu/Housing/images/dorm-room-interior.jpg" alt="On-Campus Housing">
+          <h3>On-Campus Housing</h3>
+          <p>Fully furnished rooms with common areas, laundry facilities, and 24/7 security.</p>
+          <a href="#" onclick="askChatbot('What accommodation options are available?'); return false;">Read More →</a>
+        </div>
+
+        <div class="card" data-category="hostel">
+          <img src="https://admission.blcu.edu.cn/_upload/article/images/48/7c/832ee08a4b4db5731a0aabd55a20/e034ed9b-f29d-4b50-9c69-62bda0785c42.jpg" alt="International Dorms">
+          <h3>International Student Dorms</h3>
+          <p>Specialized housing with cultural support services for international students.</p>
+          <a href="#" onclick="askChatbot('What accommodation options are available?'); return false;">Read More →</a>
+        </div>
+
+        <div class="card" data-category="hostel">
+         <img src="https://publicwebsite-media.apu.edu.my/assets/2025-09/master_room_1.jpg?VersionId=1fdDbhliE_4cjsczJBhvPc7RAclXHphg" alt="Off-Campus Partnerships">
+          <h3>Off-Campus Partnerships</h3>
+          <p>Assistance in finding nearby apartments and shared housing options.</p>
+          <a href="#" onclick="askChatbot('What accommodation options are available?'); return false;">Read More →</a>
+        </div>
+
         <!-- Sports Complex -->
-        <div class="card">
-          <img src="https://images.unsplash.com/photo-1596495577886-d920f1fb7238?auto=format&fit=crop&w=800&q=60" alt="Sports Complex">
-          <h4>Sports Complex</h4>
+        <div class="card" data-category="sports">
+          <img src="https://apicms.thestar.com.my/uploads/images/2023/06/09/2116926.webp" alt="Sports Complex">
+          <h3>Sports Complex</h3>
           <p>Facilities for football, basketball, gym, and indoor games – promoting fitness and teamwork.</p>
           <a href="#" onclick="askChatbot('What sports facilities do you have?'); return false;">Read More →</a>
         </div>
+
+        <div class="card" data-category="sports">
+          <img src="https://pbs.twimg.com/media/CZE-RFdUsAEx1UY.jpg" alt="Swimming Pool">
+          <h3>Olympic Swimming Pool</h3>
+          <p>50-meter pool available for training sessions and leisure swimming.</p>
+          <a href="#" onclick="askChatbot('What sports facilities do you have?'); return false;">Read More →</a>
+        </div>
+
+        <div class="card" data-category="sports">
+          <img src="https://5.imimg.com/data5/SELLER/Default/2022/3/DR/JC/EK/148784959/indoor-badminton-court-flooring-service.jpeg" alt="Badminton Court">
+          <h3>Indoor Badminton Court</h3>
+          <p>Air-conditioned courts open daily for student recreation and tournaments.</p>
+          <a href="#" onclick="askChatbot('What sports facilities do you have?'); return false;">Read More →</a>
+        </div>
+
+        <div class="card" data-category="sports">
+          <img src="https://www.hok.com/wp-content/uploads/2019/05/Auburn-University-Recreation-and-Wellness-Center_Yoga-Studio_1900-1600x1069.jpg" alt="Fitness & Yoga Studio">
+          <h3>Fitness & Yoga Studio</h3>
+          <p>Dedicated area for yoga classes, dance workouts, and mindfulness activities.</p>
+          <a href="#" onclick="askChatbot('What sports facilities do you have?'); return false;">Read More →</a>
+        </div>
+
+        <div class="card" data-category="sports">
+          <img src="https://www.sport.cam.ac.uk/sites/default/files/styles/leading/public/fitness-studio-2024-v2.jpg?itok=hOR0inkM" alt="Campus Gym Room">
+          <h3>Campus Gym Room</h3>
+          <p>Fully equipped gym with cardio machines, free weights, and strength-training equipment 
+              for beginners and advanced fitness enthusiasts.</p>
+          <a href="#" onclick="askChatbot('What sports facilities do you have?'); return false;">Read More →</a>
+        </div>
+
+        <!-- Food Facilities -->
+        <div class="card" data-category="food">
+          <img src="https://unicrm.my.site.com/adviser/servlet/rtaImage?eid=ka70I000000TVQg&feoid=00N0I00000K9Hgu&refid=0EM0I000001ovuG" alt="Cafeteria">
+          <h3>Cafeteria & Food Courts</h4>
+          <p>Diverse dining options offering healthy meals, snacks, and beverages at student-friendly prices.</p>
+          <a href="#" onclick="askChatbot('What food options are available on campus?'); return false;">Read More →</a>
+        </div>
+
+        <div class="card" data-category="food">
+          <img src="https://student.imu.edu.my/wp-content/uploads/2024/10/Dining-Campus-PandanSerai-1.jpg" alt="International Cuisine Corner">
+          <h3>International Cuisine Corner</h3>
+          <p>Experience flavors from around the world with rotating menus featuring global dishes.</p>
+          <a href="#" onclick="askChatbot('What food options are available on campus?'); return false;">Read More →</a>
+        </div>
+
+        <div class="card" data-category="food">
+          <img src="https://spoonuniversity.com/cdn-cgi/image/width=1020,height=680,fit=cover,format=auto/https://s3.amazonaws.com/secretsaucefiles/photos/images/000/098/512/original/rsz_13941227040_e004ae42d6_o.jpg?1485293444" alt="Campus Coffee Shop">
+          <h3>Campus Coffee Shop</h3>
+          <p>Cozy spot for coffee, pastries, and socializing with friends between classes.</p>
+          <a href="#" onclick="askChatbot('What food options are available on campus?'); return false;">Read More →</a>
+        </div>
+
+        <div class="card" data-category="food">
+          <img src="https://panas-group.com/wp-content/uploads/2024/10/utar-kampar-IT.jpg" alt="24-Hour Convenience Store">
+          <h3>24-Hour Convenience Store</h3>
+          <p>Sells snacks, drinks, stationery, prepaid cards, and daily essentials.</p>
+          <a href="#" onclick="askChatbot('What food options are available on campus?'); return false;">Read More →</a>
+        </div>
+
       </div>
     </div>
   </section>
@@ -96,11 +207,11 @@
       <h3>Student Life & Activities</h3>
       <p>Join over 40 active student clubs and societies. Participate in cultural events, competitions, and leadership programs that shape your university journey.</p>
       <div class="club-tags">
-        <span onclick="askChatbot('Tell me about Drama Club')">🎭 Drama Club</span>
-        <span onclick="askChatbot('Tell me about Tech Society')">💻 Tech Society</span>
-        <span onclick="askChatbot('Tell me about Sports Club')">⚽ Sports Club</span>
-        <span onclick="askChatbot('Tell me about Music Band')">🎵 Music Band</span>
-        <span onclick="askChatbot('Tell me about International Student Club')">🌍 International Student Club</span>
+        <span onclick="showClubInfo('Tell me about Drama Club')">🎭 Drama Club</span>
+        <span onclick="showClubInfo('Tell me about Tech Society')">💻 Tech Society</span>
+        <span onclick="showClubInfo('Tell me about Sports Club')">⚽ Sports Club</span>
+        <span onclick="showClubInfo('Tell me about Music Band')">🎵 Music Band</span>
+        <span onclick="showClubInfo('Tell me about International Student Club')">🌍 International Student Club</span>
       </div>
     </div>
   </section>
@@ -182,7 +293,17 @@
     <h3>Take a Virtual Campus Tour</h3>
     <p>Experience our beautiful campus from anywhere.</p>
     <div class="video-wrapper">
-      <iframe src="https://www.youtube.com/embed/k6tC0n1AOV8" title="Virtual Campus Tour" allowfullscreen></iframe>
+      <iframe 
+        src="https://www.youtube.com/embed/k6tC0n1AOV8" 
+        title="Virtual Campus Tour" 
+        allowfullscreen>
+      </iframe>
+    </div>
+
+    <div class="tour-hotspots">
+        <button onclick="loadTour('Library')">Library</button>
+        <button onclick="loadTour('Gym')">Gym</button>
+        <button onclick="loadTour('Cafeteria')">Cafeteria</button>
     </div>
   </section>
 

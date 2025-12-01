@@ -142,8 +142,8 @@ h1,h2,h3,h4 {
    Hero Section
 ---------------------------------*/
 .hero {
-  background: linear-gradient(180deg, #eff6ff 0%, #ffffff 100%);
   padding: 3rem 1rem;
+  background: #eff6ff;
 }
 
 .hero h2 {
@@ -229,7 +229,7 @@ h1,h2,h3,h4 {
    Facilities Section
 ---------------------------------*/
 .facilities {
-  padding: 3rem 1rem;
+  padding: 4rem 1rem;
 }
 
 .facilities h3 {
@@ -240,17 +240,22 @@ h1,h2,h3,h4 {
 
 .facilities .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(250px,1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fit,minmax(260px,1fr));
+  gap: 2.5rem;
 }
 
 .card {
   background: #fff;
   border: 1px solid #e5e7eb;
   border-radius: 1rem;
-  padding: 1rem;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  padding: 1.5rem;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.08);
   transition: transform 0.3s, box-shadow 0.3s;
+  transition: opacity 250ms ease, transform 250ms ease;
+  opacity: 1;
+  transform: translateY(0);
+  /* ensure cards participate in normal flow by default */
+  display: block;
 }
 
 .card:hover {
@@ -287,6 +292,7 @@ h1,h2,h3,h4 {
   text-decoration: underline;
 }
 
+
 /* -------------------------------
    Student Life
 ---------------------------------*/
@@ -311,13 +317,13 @@ h1,h2,h3,h4 {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 1rem;
+  gap: 1.25rem;
 }
 
 .club-tags span {
   background: #bfdbfe;
   color: #1e3a8a;
-  padding: 0.5rem 1.25rem;
+  padding: 0.75rem 1.5rem;
   border-radius: 9999px;
   cursor: pointer;
   transition: all 0.3s;
@@ -488,4 +494,83 @@ footer {
   background: white;
   border-radius: 10px;
   box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+}
+
+/* ================= SEARCH BAR ================= */
+.search-bar {
+  padding: 12px 18px;
+  width: 100%;
+  max-width: 420px;
+  border-radius: 999px;
+  border: 1px solid #ddd;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 6px 14px rgba(2,6,23,0.06);
+}
+
+/* ================= FILTER BUTTONS ================= */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .75rem;
+  justify-content: center;
+  align-items: center;
+  margin: 1rem auto 2rem;
+}
+.filters button {
+  background: var(--skl-blue, #1e3a8a);
+  color: white;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 600;
+  min-height: 44px;
+  box-shadow: 0 6px 18px rgba(2,6,23,0.08);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+.filters button:hover {
+  transform: translateY(-3px) scale(1.01);
+  background: #2563eb; /* lighter blue */
+  box-shadow: 0 12px 26px rgba(2,6,23,0.12);
+}
+.filters button:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(30,58,138, 0.12);
+}
+.filters button[aria-pressed="true"], .filters button.active {
+  background: var(--skl-yellow, #facc15);
+  color: var(--skl-dark, #0f172a);
+  transform: translateY(0);
+}
+
+@media (max-width: 480px) {
+  .filters { gap: 0.5rem; }
+  .filters button { flex: 1 1 calc(50% - .5rem); min-width: 120px; }
+}
+
+
+/* ================= TOUR HOTSPOTS ================= */
+.tour-hotspots button {
+  margin: .3rem;
+  padding: .5rem 1.3rem;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.tour-hotspots button:hover {
+  background: #1e40af;
+}
+
+/* ================= SUPPORT SECTION ================= */
+.help {
+  padding: 3rem 1rem;
+  background: #e0f2fe;
+}
+
+.help h3 {
+  color: #1e3a8a;
 }
