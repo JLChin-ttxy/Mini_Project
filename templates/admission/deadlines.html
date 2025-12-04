@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block title %}Important Dates & Deadlines - SKL Universiti{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-10 mx-auto">
+        <h1 class="mb-4">Important Dates & Deadlines</h1>
+        <p class="lead mb-5">Stay informed about application periods, intake dates, and important deadlines for all programs.</p>
+
+        <!-- Upcoming Deadlines -->
+        {% if upcoming_dates %}
+        <div class="card shadow mb-5">
+          <div class="card-header bg-primary text-white">
+            <h4 class="mb-0"><i class="bi bi-calendar-event"></i> Upcoming Deadlines</h4>
+          </div>
+          <div class="card-body">
+            {% for date in upcoming_dates %}
+            <div class="deadline-item mb-3 p-3 border rounded {% if date.urgency == 'critical' %}border-danger bg-danger bg-opacity-10{% elif date.urgency == 'high' %}border-warning bg-warning bg-opacity-10{% endif %}">
+              <div class="d-flex justify-content-between align-items-start">
+                <div class="flex-grow-1">
+                  <h5 class="mb-1">
+                    {{ date.event_type }}
+                    {% if date.urgency == 'critical' %}
+                    <span class="badge bg-danger">URGENT</span>
+                    {% elif date.urgency == 'high' %}
+                    <span class="badge bg-warning text-dark">SOON</span>
+                    {% endif %}
+                  </h5>
+                  <p class="mb-1"><strong>{{ date.program_name }}</strong></p>
+                  <p class="text-muted small mb-0">
+                    {% if date.start_date %}
+                      <i class="bi bi-calendar"></i> Starts: {{ date.start_date.strftime('%d %B %Y') }}
+                    {% endif %}
+                    {% if date.end_date %}
+                      <br><i class="bi bi-calendar-x"></i> Ends: {{ date.end_date.strftime('%d %B %Y') }}
+                      {% if date.days_remaining is not none %}
+                        <span class="badge bg-info ms-2">{{ date.days_remaining }} days remaining</span>
+                      {% endif %}
+                    {% endif %}
+                  </p>
+                  {% if date.description %}
+                  <p class="mt-2 mb-0">{{ date.description }}</p>
+                  {% endif %}
+                </div>
+                <div class="ms-3">
+                  {% if date.urgency == 'critical' %}
+                  <i class="bi bi-exclamation-triangle-fill text-danger" style="font-size: 2rem;"></i>
+                  {% elif date.urgency == 'high' %}
+                  <i class="bi bi-exclamation-circle-fill text-warning" style="font-size: 2rem;"></i>
+                  {% else %}
+                  <i class="bi bi-calendar-check text-primary" style="font-size: 2rem;"></i>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- All Dates -->
+        {% if all_dates %}
+        <div class="card shadow">
+          <div class="card-header">
+            <h4 class="mb-0"><i class="bi bi-calendar3"></i> All Important Dates</h4>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Event</th>
+                    <th>Program</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for date in all_dates %}
+                  <tr>
+                    <td>
+                      <strong>{{ date.event_type }}</strong>
+                      {% if date.urgency == 'critical' %}
+                      <span class="badge bg-danger ms-2">URGENT</span>
+                      {% elif date.urgency == 'high' %}
+                      <span class="badge bg-warning text-dark ms-2">SOON</span>
+                      {% endif %}
+                    </td>
+                    <td>{{ date.program_name }}</td>
+                    <td>
+                      {% if date.start_date %}
+                        {{ date.start_date.strftime('%d %B %Y') }}
+                      {% else %}
+                        N/A
+                      {% endif %}
+                    </td>
+                    <td>
+                      {% if date.end_date %}
+                        {{ date.end_date.strftime('%d %B %Y') }}
+                        {% if date.days_remaining is not none %}
+                          <br><small class="text-muted">{{ date.days_remaining }} days left</small>
+                        {% endif %}
+                      {% else %}
+                        N/A
+                      {% endif %}
+                    </td>
+                    <td>
+                      {% if date.status == 'expired' %}
+                      <span class="badge bg-secondary">Expired</span>
+                      {% elif date.status == 'active' %}
+                      <span class="badge bg-success">Active</span>
+                      {% else %}
+                      <span class="badge bg-info">Upcoming</span>
+                      {% endif %}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Reminder Section -->
+        <div class="card border-primary mt-5">
+          <div class="card-body">
+            <h5 class="card-title"><i class="bi bi-bell"></i> Set Reminders</h5>
+            <p class="card-text">Don't miss important deadlines! Our system will send you email reminders for upcoming deadlines.</p>
+            <button class="btn btn-primary" onclick="alert('Reminder feature coming soon!');">
+              <i class="bi bi-bell-fill"></i> Enable Email Reminders
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+

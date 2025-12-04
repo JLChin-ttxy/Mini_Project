@@ -1,0 +1,153 @@
+{% extends "base.html" %}
+
+{% block title %}Check Eligibility - SKL Universiti{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 mx-auto">
+        <h1 class="mb-4">Check Your Eligibility</h1>
+        <p class="lead mb-5">Use our AI-powered eligibility checker to see if you meet the admission requirements for your chosen program.</p>
+
+        <div class="card shadow">
+          <div class="card-body p-4">
+            <form id="eligibility-form">
+              <div class="mb-4">
+                <label for="program-select" class="form-label fw-bold">Select Program</label>
+                <select class="form-select" id="program-select" required>
+                  <option value="">Choose a program...</option>
+                </select>
+                <div class="form-text">Select the program you're interested in</div>
+              </div>
+
+              <div class="mb-4">
+                <label for="qualification" class="form-label fw-bold">Your Qualification</label>
+                <select class="form-select" id="qualification" required>
+                  <option value="">Select your qualification...</option>
+                  <option value="STPM">STPM (Sijil Tinggi Persekolahan Malaysia)</option>
+                  <option value="A-Level">A-Level (GCE Advanced Level)</option>
+                  <option value="UEC">UEC (Unified Examination Certificate)</option>
+                  <option value="Diploma">Diploma</option>
+                  <option value="Foundation">Foundation Studies</option>
+                  <option value="Matriculation">Matriculation</option>
+                  <option value="SPM">SPM (Sijil Pelajaran Malaysia)</option>
+                </select>
+              </div>
+
+              <div class="mb-4">
+                <label for="cgpa" class="form-label fw-bold">CGPA / Grade</label>
+                <input type="text" class="form-control" id="cgpa" placeholder="e.g., 3.50 or B+" required>
+                <div class="form-text">Enter your CGPA (for STPM/Diploma/Foundation) or letter grade</div>
+              </div>
+
+              <div class="mb-4">
+                <label for="additional-info" class="form-label fw-bold">Additional Information</label>
+                <textarea class="form-control" id="additional-info" rows="3" 
+                  placeholder="e.g., Credit in Mathematics and English at SPM level, Additional Mathematics, etc."></textarea>
+                <div class="form-text">Mention any relevant subjects or qualifications</div>
+              </div>
+
+              <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-lg">
+                  <i class="bi bi-search"></i> Check Eligibility
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Results Section -->
+        <div id="eligibility-results" class="mt-5" style="display: none;">
+          <div class="card">
+            <div class="card-body">
+              <h3 class="card-title">Eligibility Results</h3>
+              <div id="results-content"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+  // Load programs
+  $.get('/api/programs', function(data) {
+    const select = $('#program-select');
+    data.programs.forEach(function(program) {
+      select.append(`<option value="${program.program_id}">${program.program_name} (${program.level})</option>`);
+    });
+  });
+
+  // Handle form submission
+  $('#eligibility-form').on('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = {
+      program_id: parseInt($('#program-select').val()),
+      qualification: $('#qualification').val(),
+      grades: {
+        cgpa: $('#cgpa').val()
+      },
+      additional_info: $('#additional-info').val()
+    };
+
+    $.ajax({
+      url: '/api/check-eligibility',
+      method: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify(formData),
+      success: function(response) {
+        displayResults(response);
+      },
+      error: function(xhr) {
+        alert('Error checking eligibility. Please try again.');
+      }
+    });
+  });
+
+  function displayResults(result) {
+    const resultsDiv = $('#eligibility-results');
+    const contentDiv = $('#results-content');
+    
+    let html = '';
+    
+    if (result.eligible) {
+      html += `<div class="alert alert-success">
+        <h5><i class="bi bi-check-circle"></i> You appear to be eligible!</h5>
+        <p>${result.message}</p>
+        <p class="mb-0"><strong>Confidence Score:</strong> ${(result.confidence_score * 100).toFixed(0)}%</p>
+      </div>`;
+    } else {
+      html += `<div class="alert alert-warning">
+        <h5><i class="bi bi-exclamation-triangle"></i> Eligibility Check</h5>
+        <p>${result.message}</p>
+      </div>`;
+    }
+
+    if (result.best_match) {
+      html += `<div class="mt-3">
+        <h6>Best Match Requirement:</h6>
+        <ul>
+          <li><strong>Qualification:</strong> ${result.best_match.qualification_type}</li>
+          <li><strong>Minimum Grade:</strong> ${result.best_match.minimum_grade || 'Not specified'}</li>
+          ${result.best_match.additional_requirements ? `<li><strong>Additional:</strong> ${result.best_match.additional_requirements}</li>` : ''}
+        </ul>
+      </div>`;
+    }
+
+    contentDiv.html(html);
+    resultsDiv.show();
+    $('html, body').animate({
+      scrollTop: resultsDiv.offset().top - 100
+    }, 500);
+  }
+});
+</script>
+{% endblock %}
+
+

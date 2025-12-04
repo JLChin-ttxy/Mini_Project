@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+
+{% block title %}Document Checklist - SKL Universiti{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-10 mx-auto">
+        <h1 class="mb-4">Document Checklist</h1>
+        
+        {% if program %}
+        <div class="alert alert-info">
+          <h5><i class="bi bi-info-circle"></i> Checklist for: {{ program.program_name }}</h5>
+          <p class="mb-0">Country: <strong>{{ country }}</strong></p>
+        </div>
+
+        <!-- Mandatory Documents -->
+        {% if checklist.mandatory %}
+        <div class="card shadow mb-4">
+          <div class="card-header bg-danger text-white">
+            <h4 class="mb-0"><i class="bi bi-exclamation-triangle"></i> Mandatory Documents</h4>
+          </div>
+          <div class="card-body">
+            <ul class="list-group list-group-flush">
+              {% for doc in checklist.mandatory %}
+              <li class="list-group-item d-flex justify-content-between align-items-start">
+                <div class="ms-2 me-auto">
+                  <div class="fw-bold">{{ doc.name }}</div>
+                  <small class="text-muted">{{ doc.description }}</small>
+                </div>
+                <span class="badge bg-danger rounded-pill">Required</span>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Country-Specific Documents -->
+        {% if checklist.country_specific %}
+        <div class="card shadow mb-4">
+          <div class="card-header bg-warning text-dark">
+            <h4 class="mb-0"><i class="bi bi-globe"></i> Country-Specific Documents ({{ country }})</h4>
+          </div>
+          <div class="card-body">
+            <ul class="list-group list-group-flush">
+              {% for doc in checklist.country_specific %}
+              <li class="list-group-item d-flex justify-content-between align-items-start">
+                <div class="ms-2 me-auto">
+                  <div class="fw-bold">{{ doc.name }}</div>
+                  <small class="text-muted">{{ doc.description }}</small>
+                  {% if doc.link %}
+                  <br><a href="{{ doc.link }}" target="_blank" class="btn btn-sm btn-outline-primary mt-1">
+                    <i class="bi bi-box-arrow-up-right"></i> Apply Here
+                  </a>
+                  {% endif %}
+                </div>
+                <span class="badge {% if doc.mandatory %}bg-danger{% else %}bg-warning text-dark{% endif %} rounded-pill">
+                  {% if doc.mandatory %}Required{% else %}Recommended{% endif %}
+                </span>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Program-Specific Documents -->
+        {% if checklist.program_specific %}
+        <div class="card shadow mb-4">
+          <div class="card-header bg-info text-white">
+            <h4 class="mb-0"><i class="bi bi-file-earmark-text"></i> Program-Specific Documents</h4>
+          </div>
+          <div class="card-body">
+            <ul class="list-group list-group-flush">
+              {% for doc in checklist.program_specific %}
+              <li class="list-group-item d-flex justify-content-between align-items-start">
+                <div class="ms-2 me-auto">
+                  <div class="fw-bold">{{ doc.name }}</div>
+                  <small class="text-muted">{{ doc.description }}</small>
+                </div>
+                <span class="badge bg-info rounded-pill">Required</span>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Optional Documents -->
+        {% if checklist.optional %}
+        <div class="card shadow mb-4">
+          <div class="card-header bg-secondary text-white">
+            <h4 class="mb-0"><i class="bi bi-file-plus"></i> Optional Documents</h4>
+          </div>
+          <div class="card-body">
+            <ul class="list-group list-group-flush">
+              {% for doc in checklist.optional %}
+              <li class="list-group-item d-flex justify-content-between align-items-start">
+                <div class="ms-2 me-auto">
+                  <div class="fw-bold">{{ doc.name }}</div>
+                  <small class="text-muted">{{ doc.description }}</small>
+                </div>
+                <span class="badge bg-secondary rounded-pill">Optional</span>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Summary -->
+        {% if checklist.summary %}
+        <div class="card border-primary">
+          <div class="card-body">
+            <h5 class="card-title"><i class="bi bi-list-check"></i> Checklist Summary</h5>
+            <div class="row">
+              <div class="col-md-4">
+                <div class="text-center p-3 bg-danger bg-opacity-10 rounded">
+                  <h3 class="text-danger">{{ checklist.summary.total_mandatory }}</h3>
+                  <p class="mb-0">Mandatory Documents</p>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="text-center p-3 bg-secondary bg-opacity-10 rounded">
+                  <h3 class="text-secondary">{{ checklist.summary.total_optional }}</h3>
+                  <p class="mb-0">Optional Documents</p>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="text-center p-3 bg-primary bg-opacity-10 rounded">
+                  <h3 class="text-primary">{{ checklist.summary.total_documents }}</h3>
+                  <p class="mb-0">Total Documents</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        <div class="text-center mt-4">
+          <button class="btn btn-primary btn-lg" onclick="window.print()">
+            <i class="bi bi-printer"></i> Print Checklist
+          </button>
+          <a href="{{ url_for('admission.document_checklist') }}" class="btn btn-outline-primary btn-lg">
+            <i class="bi bi-arrow-left"></i> Generate Another Checklist
+          </a>
+        </div>
+
+        {% else %}
+        <!-- Program Selection -->
+        <div class="card shadow">
+          <div class="card-body p-4">
+            <h3 class="mb-4">Generate Your Document Checklist</h3>
+            <p class="lead mb-4">Select your program and country to get a personalized document checklist.</p>
+
+            <form method="GET" action="{{ url_for('admission.document_checklist') }}">
+              <div class="mb-4">
+                <label for="program-select" class="form-label fw-bold">Select Program</label>
+                <select class="form-select" id="program-select" name="program_id" required>
+                  <option value="">Choose a program...</option>
+                  {% for program in programs %}
+                  <option value="{{ program.program_id }}">{{ program.program_name }} ({{ program.level }})</option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <div class="mb-4">
+                <label for="country-select" class="form-label fw-bold">Your Country</label>
+                <select class="form-select" id="country-select" name="country" required>
+                  <option value="Malaysia">Malaysia</option>
+                  <option value="International">International (Other Countries)</option>
+                </select>
+                <div class="form-text">Select "International" if you're applying from outside Malaysia</div>
+              </div>
+
+              <div class="d-grid">
+                <button type="submit" class="btn btn-primary btn-lg">
+                  <i class="bi bi-file-earmark-check"></i> Generate Checklist
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+

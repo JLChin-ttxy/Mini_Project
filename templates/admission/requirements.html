@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Admission Requirements - SKL Universiti{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-10 mx-auto">
+        <h1 class="mb-4">Admission Requirements</h1>
+        
+        {% if program %}
+        <!-- Program Information -->
+        <div class="card shadow mb-4">
+          <div class="card-body">
+            <h2 class="card-title">{{ program.program_name }}</h2>
+            <p class="text-muted">{{ program.faculty_name }} • {{ program.level }} • {{ program.duration_years }} Years</p>
+            {% if program.description %}
+            <p class="card-text">{{ program.description }}</p>
+            {% endif %}
+          </div>
+        </div>
+
+        <!-- Requirements -->
+        {% if requirements %}
+        <div class="card shadow">
+          <div class="card-header bg-primary text-white">
+            <h4 class="mb-0"><i class="bi bi-clipboard-check"></i> Admission Requirements</h4>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-hover">
+                <thead>
+                  <tr>
+                    <th>Qualification</th>
+                    <th>Minimum Grade</th>
+                    <th>Additional Requirements</th>
+                    <th>Entrance Exam</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for req in requirements %}
+                  <tr>
+                    <td><strong>{{ req.qualification_type }}</strong></td>
+                    <td>{{ req.minimum_grade or 'Not specified' }}</td>
+                    <td>{{ req.additional_requirements or '-' }}</td>
+                    <td>{{ req.entrance_exam_info or 'Not required' }}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+        {% else %}
+        <div class="alert alert-warning">
+          <h5>No specific requirements found</h5>
+          <p>Please contact the admission office for detailed requirements for this program.</p>
+        </div>
+        {% endif %}
+
+        <div class="mt-4 d-flex gap-3">
+          <a href="{{ url_for('admission.check_eligibility') }}?program_id={{ program.program_id }}" class="btn btn-primary">
+            <i class="bi bi-check-circle"></i> Check My Eligibility
+          </a>
+          <a href="{{ url_for('admission.document_checklist', program_id=program.program_id) }}" class="btn btn-outline-primary">
+            <i class="bi bi-file-earmark-text"></i> Get Document Checklist
+          </a>
+          <a href="{{ url_for('admission.requirements') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to All Programs
+          </a>
+        </div>
+
+        {% else %}
+        <!-- All Programs List -->
+        <div class="card shadow">
+          <div class="card-body">
+            <h3 class="mb-4">Select a Program to View Requirements</h3>
+            <div class="list-group">
+              {% for program in programs %}
+              <a href="{{ url_for('admission.requirements', program_id=program.program_id) }}" 
+                 class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                  <h5 class="mb-1">{{ program.program_name }}</h5>
+                  <small class="text-muted">{{ program.level }}</small>
+                </div>
+                <p class="mb-1 text-muted">{{ program.faculty_name }}</p>
+              </a>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+
