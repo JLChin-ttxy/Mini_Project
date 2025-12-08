@@ -1,0 +1,297 @@
+{% extends "base.html" %}
+
+{% block title %}Application Procedure - SKL Universiti{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-10 mx-auto">
+        <h1 class="mb-4">Application Procedure</h1>
+        
+        <!-- Procedure Type Tabs -->
+        <ul class="nav nav-tabs mb-4" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link {% if procedure_type == 'online' %}active{% endif %}" 
+               href="{{ url_for('admission.application_procedure', type='online') }}">
+              <i class="bi bi-laptop"></i> Online Application
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if procedure_type == 'offline' %}active{% endif %}" 
+               href="{{ url_for('admission.application_procedure', type='offline') }}">
+              <i class="bi bi-file-earmark"></i> Offline Application
+            </a>
+          </li>
+        </ul>
+
+        {% if procedure_type == 'online' %}
+        <!-- Online Application Steps -->
+        <div class="card shadow mb-4">
+          <div class="card-body p-4">
+            <h3 class="mb-4">Online Application Steps</h3>
+            
+            <div class="steps">
+              <div class="step-item mb-4">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                  <h5>Create Account</h5>
+                  <p>Visit our online application portal and create your account using your email address. You'll receive a verification email to activate your account.</p>
+                  <div class="alert alert-info">
+                    <strong>Note:</strong> Keep your login credentials safe. You'll need them to track your application status.
+                  </div>
+                </div>
+              </div>
+
+              <div class="step-item mb-4">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                  <h5>Select Program</h5>
+                  <p>Choose your desired program from the list. You can select up to 3 program choices in order of preference.</p>
+                  <select class="form-select mt-2" id="program-select">
+                    <option value="">Select a program to see details...</option>
+                    {% for program in programs %}
+                    <option value="{{ program.program_id }}">{{ program.program_name }} ({{ program.level }})</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+              <div class="step-item mb-4">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                  <h5>Fill Application Form</h5>
+                  <p>Complete all required fields in the application form:</p>
+                  <ul>
+                    <li>Personal information (name, IC/passport, date of birth)</li>
+                    <li>Contact details (address, phone, email)</li>
+                    <li>Academic qualifications</li>
+                    <li>Emergency contact information</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="step-item mb-4">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                  <h5>Upload Documents</h5>
+                  <p>Upload scanned copies of required documents. All documents must be clear and legible.</p>
+                  <div class="alert alert-warning">
+                    <strong>Required Documents:</strong>
+                    <ul class="mb-0">
+                      <li>Identity Card (MyKad) or Passport</li>
+                      <li>Academic certificates (SPM, STPM, etc.)</li>
+                      <li>Passport-sized photographs</li>
+                      <li>Birth certificate</li>
+                    </ul>
+                  </div>
+                  <a href="{{ url_for('admission.document_checklist') }}" class="btn btn-sm btn-outline-primary">
+                    Get Complete Document Checklist
+                  </a>
+                </div>
+              </div>
+
+              <div class="step-item mb-4">
+                <div class="step-number">5</div>
+                <div class="step-content">
+                  <h5>Pay Application Fee</h5>
+                  <p>Pay the application fee of RM 50.00 through:</p>
+                  <ul>
+                    <li>Online payment (credit/debit card)</li>
+                    <li>Bank transfer</li>
+                    <li>FPX (Financial Process Exchange)</li>
+                  </ul>
+                  <div class="alert alert-success">
+                    <strong>Note:</strong> Application fee is non-refundable. Keep your payment receipt for reference.
+                  </div>
+                </div>
+              </div>
+
+              <div class="step-item mb-4">
+                <div class="step-number">6</div>
+                <div class="step-content">
+                  <h5>Submit Application</h5>
+                  <p>Review all information carefully before submitting. Once submitted, you'll receive:</p>
+                  <ul>
+                    <li>Application reference number</li>
+                    <li>Confirmation email</li>
+                    <li>Link to track application status</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="step-item">
+                <div class="step-number">7</div>
+                <div class="step-content">
+                  <h5>Track Application</h5>
+                  <p>Monitor your application status online. You'll be notified via email when there are updates.</p>
+                  <div class="alert alert-info">
+                    <strong>Application Status:</strong> Submitted → Under Review → Interview (if required) → Accepted/Rejected
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="text-center mt-5">
+              <a href="#" class="btn btn-primary btn-lg" onclick="alert('Application portal will be available soon!'); return false;">
+                <i class="bi bi-box-arrow-right"></i> Go to Application Portal
+              </a>
+            </div>
+          </div>
+        </div>
+
+        {% else %}
+        <!-- Offline Application Steps -->
+        <div class="card shadow mb-4">
+          <div class="card-body p-4">
+            <h3 class="mb-4">Offline Application Steps</h3>
+            
+            <div class="steps">
+              <div class="step-item mb-4">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                  <h5>Download Application Form</h5>
+                  <p>Download the application form from our website or collect it from the admission office.</p>
+                  <a href="#" class="btn btn-sm btn-outline-primary" onclick="alert('Download link will be available soon!'); return false;">
+                    <i class="bi bi-download"></i> Download Form
+                  </a>
+                </div>
+              </div>
+
+              <div class="step-item mb-4">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                  <h5>Fill Application Form</h5>
+                  <p>Complete the form in black or blue ink. Ensure all information is accurate and legible.</p>
+                  <div class="alert alert-warning">
+                    <strong>Important:</strong> Do not leave any required fields blank. Use "N/A" if not applicable.
+                  </div>
+                </div>
+              </div>
+
+              <div class="step-item mb-4">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                  <h5>Prepare Documents</h5>
+                  <p>Gather all required documents. Make photocopies of original documents.</p>
+                  <ul>
+                    <li>Original and photocopy of academic certificates</li>
+                    <li>Original and photocopy of identity card/passport</li>
+                    <li>Passport-sized photographs (4 copies)</li>
+                    <li>Birth certificate (original and copy)</li>
+                    <li>Medical report (if required)</li>
+                  </ul>
+                  <a href="{{ url_for('admission.document_checklist') }}" class="btn btn-sm btn-outline-primary">
+                    Get Complete Document Checklist
+                  </a>
+                </div>
+              </div>
+
+              <div class="step-item mb-4">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                  <h5>Pay Application Fee</h5>
+                  <p>Pay RM 50.00 application fee via:</p>
+                  <ul>
+                    <li>Bank draft (payable to SKL University)</li>
+                    <li>Cash (at admission office)</li>
+                    <li>Cheque (payable to SKL University)</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div class="step-item mb-4">
+                <div class="step-number">5</div>
+                <div class="step-content">
+                  <h5>Submit Application</h5>
+                  <p>Submit your completed application form and documents to:</p>
+                  <div class="alert alert-info">
+                    <strong>Admission Office</strong><br>
+                    SKL University<br>
+                    Main Campus<br>
+                    Office Hours: Monday - Friday, 9:00 AM - 5:00 PM
+                  </div>
+                  <p>You can also mail your application to the admission office address.</p>
+                </div>
+              </div>
+
+              <div class="step-item">
+                <div class="step-number">6</div>
+                <div class="step-content">
+                  <h5>Receive Confirmation</h5>
+                  <p>You'll receive an acknowledgment receipt with your application reference number. Keep this for tracking your application.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endif %}
+
+        <!-- Important Notes -->
+        <div class="card border-primary">
+          <div class="card-body">
+            <h5 class="card-title"><i class="bi bi-info-circle"></i> Important Notes</h5>
+            <ul class="mb-0">
+              <li>Application deadlines vary by program and intake. Check <a href="{{ url_for('admission.deadlines') }}">important dates</a>.</li>
+              <li>Incomplete applications will not be processed.</li>
+              <li>All documents must be certified true copies (for offline applications).</li>
+              <li>International students must also complete EMGS visa application process.</li>
+              <li>For assistance, contact our admission office or use the chatbot.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.steps {
+  position: relative;
+  padding-left: 40px;
+}
+
+.step-item {
+  position: relative;
+  padding-bottom: 20px;
+}
+
+.step-item::before {
+  content: '';
+  position: absolute;
+  left: -30px;
+  top: 0;
+  bottom: -20px;
+  width: 2px;
+  background: #dee2e6;
+}
+
+.step-item:last-child::before {
+  display: none;
+}
+
+.step-number {
+  position: absolute;
+  left: -40px;
+  top: 0;
+  width: 30px;
+  height: 30px;
+  background: #0d6efd;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  z-index: 1;
+}
+
+.step-content {
+  margin-left: 20px;
+}
+</style>
+{% endblock %}
+
+

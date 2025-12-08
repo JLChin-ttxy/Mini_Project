@@ -11,7 +11,7 @@ USE university_admission_db;
 -- TRUNCATE TABLE FEEDBACK;
 -- TRUNCATE TABLE CHAT_MESSAGE;
 -- TRUNCATE TABLE CHAT_SESSION;
--- TRUNCATE TABLE USER;
+-- TRUNCATE TABLE Users;
 -- TRUNCATE TABLE FAQ;
 -- TRUNCATE TABLE EVENT;
 -- TRUNCATE TABLE STUDENT_CLUB;
@@ -814,7 +814,7 @@ INSERT INTO FINANCIAL_AID (aid_name, aid_type, eligibility_criteria, application
 
 ('UTAR Installment Payment Plan', 'Payment Plan', 'Open to all students. Break down tuition into monthly installments with no interest', 'Apply at Finance Office. RM 200 processing fee. Automatic approval.', '2025-01-05'),
 
-('EPF Education Withdrawal', 'Withdrawal Scheme', 'Parents can withdraw from EPF Account 2 for children\'s education', 'Apply at EPF offices with university offer letter and identity documents.', NULL);
+('EPF Education Withdrawal', 'Withdrawal Scheme', 'Parents can withdraw from EPF Account 2 for children''s education', 'Apply at EPF offices with university offer letter and identity documents.', NULL);
 
 -- ============================================================================
 -- MODULE 4: CAMPUS FACILITIES (8 Key Facilities)
@@ -926,7 +926,7 @@ INSERT INTO FAQ (category, question, answer, view_count) VALUES
 -- MODULE 6: USERS (Sample users for testing)
 -- ============================================================================
 
-INSERT INTO USER (username, email, user_type, last_login) VALUES
+INSERT INTO Users (username, email, user_type, last_login) VALUES
 ('tanweijian', 'tanweijian@gmail.com', 'Applicant', '2024-11-12 14:30:00'),
 ('nurulaisyah', 'nurulaisyah@gmail.', 'Applicant', '2024-11-11 09:15:00'),
 ('limkaixuan', 'limkaixuan@gmail.com', 'Prospective Student', '2024-11-10 16:45:00'),
@@ -951,7 +951,7 @@ UNION ALL SELECT 'ACCOMMODATIONS', COUNT(*) FROM ACCOMMODATION
 UNION ALL SELECT 'STUDENT CLUBS', COUNT(*) FROM STUDENT_CLUB
 UNION ALL SELECT 'CAMPUS EVENTS', COUNT(*) FROM EVENT
 UNION ALL SELECT 'FAQs', COUNT(*) FROM FAQ
-UNION ALL SELECT 'USERS', COUNT(*) FROM USER
+UNION ALL SELECT 'USERS', COUNT(*) FROM Users
 UNION ALL SELECT 'APPLICANTS', COUNT(*) FROM APPLICANT
 UNION ALL SELECT 'APPLICATIONS', COUNT(*) FROM APPLICATION;
 
