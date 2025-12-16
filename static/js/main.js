@@ -10,6 +10,46 @@ if (menuToggle && mobileMenu) {
     });
 }
 
+// Dropdown menu toggle functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const dropdown = document.getElementById('admission-dropdown');
+    const dropdownToggle = document.getElementById('dropdown-toggle-link');
+    const dropdownMenu = document.getElementById('admission-dropdown-menu');
+    const dropdownArrow = document.getElementById('dropdown-arrow');
+    
+    if (dropdown && dropdownToggle && dropdownMenu) {
+        // Toggle dropdown on click
+        dropdownToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            dropdown.classList.toggle('show');
+        });
+        
+        // Keep dropdown open when clicking inside it
+        dropdownMenu.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+        
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!dropdown.contains(e.target)) {
+                dropdown.classList.remove('show');
+            }
+        });
+        
+        // Prevent dropdown from closing when hovering
+        dropdown.addEventListener('mouseenter', function() {
+            dropdown.classList.add('show');
+        });
+        
+        dropdown.addEventListener('mouseleave', function() {
+            // Only close if not clicked
+            if (!dropdown.classList.contains('show')) {
+                return;
+            }
+        });
+    }
+});
+
 // Toggle + / - icons in <details> elements
 document.querySelectorAll('details').forEach(detail => {
     detail.addEventListener('toggle', () => {

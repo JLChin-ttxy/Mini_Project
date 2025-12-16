@@ -1,0 +1,1170 @@
+{% extends "base.html" %}
+
+{% block title %}Online Application Form - SKL Universiti{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-10 mx-auto">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+          <h1 class="mb-0">Online Application Form</h1>
+          <a href="{{ url_for('admission.application_procedure', type='online') }}" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Application Steps
+          </a>
+        </div>
+
+        <!-- Nationality Selection (First Step) -->
+        <div class="card shadow mb-4" id="nationality-selection-card">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="bi bi-globe"></i> Applicant Type</h5>
+          </div>
+          <div class="card-body">
+            <p class="lead mb-4">Please select your nationality to proceed with the application:</p>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <button type="button" class="btn btn-outline-primary w-100 py-4 h-100 nationality-btn" data-nationality="Malaysian">
+                  <i class="bi bi-flag-fill fs-1 d-block mb-3"></i>
+                  <h4>Malaysian Student</h4>
+                  <p class="mb-0 text-muted">Local applicant</p>
+                </button>
+              </div>
+              <div class="col-md-6">
+                <button type="button" class="btn btn-outline-primary w-100 py-4 h-100 nationality-btn" data-nationality="International">
+                  <i class="bi bi-globe fs-1 d-block mb-3"></i>
+                  <h4>International Student</h4>
+                  <p class="mb-0 text-muted">Foreign applicant</p>
+                </button>
+              </div>
+            </div>
+            <div id="international-info" class="alert alert-warning mt-4" style="display: none;">
+              <h6><i class="bi bi-info-circle"></i> Important Information for International Students:</h6>
+              <ul class="mb-0">
+                <li>You will need to provide additional documents (passport, visa, English proficiency test results)</li>
+                <li>Student visa application through EMGS (Education Malaysia Global Services) is required</li>
+                <li>Additional fees may apply for international students</li>
+                <li>Please ensure you meet the English language proficiency requirements</li>
+                <li>For more details, visit our <a href="{{ url_for('admission.requirements') }}" target="_blank">International Student Requirements</a> page</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div id="application-form-container" style="display: none;">
+        <div class="alert alert-info">
+          <i class="bi bi-info-circle"></i> <strong>Important:</strong> Please fill in all required fields accurately. You can save your progress and return later to complete the form.
+        </div>
+
+        <form id="application-form" method="POST" action="{{ url_for('admission.submit_application') }}" enctype="multipart/form-data">
+          <!-- Progress Indicator -->
+          <div class="card mb-4">
+            <div class="card-body">
+              <h6 class="mb-3">Application Progress</h6>
+              <div class="progress mb-2" style="height: 25px;">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: 0%" id="form-progress">0%</div>
+              </div>
+              <small class="text-muted">Complete all sections to submit your application</small>
+            </div>
+          </div>
+
+          <!-- Section 1: Personal Information -->
+          <div class="card shadow mb-4" data-section="personal">
+            <div class="card-header bg-primary text-white">
+              <h5 class="mb-0"><i class="bi bi-person-fill"></i> Section 1: Personal Information</h5>
+            </div>
+            <div class="card-body">
+              <!-- Malaysian Student Fields -->
+              <div id="malaysian-personal-info">
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="full_name" class="form-label">Full Name (as per IC) <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="full_name" name="full_name" required>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="ic_passport" class="form-label">IC Number <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="ic_passport" name="ic_passport" placeholder="e.g., 990101-01-1234" required>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4 mb-3">
+                    <label for="date_of_birth" class="form-label">Date of Birth <span class="text-danger">*</span></label>
+                    <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" required>
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label for="gender" class="form-label">Gender <span class="text-danger">*</span></label>
+                    <select class="form-select" id="gender" name="gender" required>
+                      <option value="">Select...</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                    </select>
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label for="nationality" class="form-label">Nationality <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="nationality" name="nationality" value="Malaysian" readonly required>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="race" class="form-label">Race/Ethnicity</label>
+                    <select class="form-select" id="race" name="race">
+                      <option value="">Select...</option>
+                      <option value="Malay">Malay</option>
+                      <option value="Chinese">Chinese</option>
+                      <option value="Indian">Indian</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="religion" class="form-label">Religion</label>
+                    <input type="text" class="form-control" id="religion" name="religion">
+                  </div>
+                </div>
+              </div>
+
+              <!-- International Student Fields -->
+              <div id="international-personal-info" style="display: none;">
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="full_name_int" class="form-label">Full Name (as per Passport) <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="full_name_int" name="full_name" required>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="passport_number" class="form-label">Passport Number <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="passport_number" name="ic_passport" required>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4 mb-3">
+                    <label for="date_of_birth_int" class="form-label">Date of Birth <span class="text-danger">*</span></label>
+                    <input type="date" class="form-control" id="date_of_birth_int" name="date_of_birth" required>
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label for="gender_int" class="form-label">Gender <span class="text-danger">*</span></label>
+                    <select class="form-select" id="gender_int" name="gender" required>
+                      <option value="">Select...</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                    </select>
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label for="nationality_int" class="form-label">Nationality/Country <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="nationality_int" name="nationality" placeholder="e.g., Chinese, Indonesian, Indian" required>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-4 mb-3">
+                    <label for="passport_issue_date" class="form-label">Passport Issue Date <span class="text-danger">*</span></label>
+                    <input type="date" class="form-control" id="passport_issue_date" name="passport_issue_date" required>
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label for="passport_expiry_date" class="form-label">Passport Expiry Date <span class="text-danger">*</span></label>
+                    <input type="date" class="form-control" id="passport_expiry_date" name="passport_expiry_date" required>
+                    <small class="text-muted">Must be valid for at least 18 months from program start</small>
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label for="place_of_birth" class="form-label">Place of Birth <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="place_of_birth" name="place_of_birth" required>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="country_of_residence" class="form-label">Country of Residence <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="country_of_residence" name="country_of_residence" required>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="religion_int" class="form-label">Religion</label>
+                    <input type="text" class="form-control" id="religion_int" name="religion">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 2: Contact Details -->
+          <div class="card shadow mb-4" data-section="contact">
+            <div class="card-header bg-info text-white">
+              <h5 class="mb-0"><i class="bi bi-telephone-fill"></i> Section 2: Contact Details</h5>
+            </div>
+            <div class="card-body">
+              <div class="mb-3">
+                <label for="email" class="form-label">Email Address <span class="text-danger">*</span></label>
+                <input type="email" class="form-control" id="email" name="email" required>
+                <small class="text-muted">This email will be used for all communication regarding your application</small>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="phone" class="form-label">Phone Number <span class="text-danger">*</span></label>
+                  <input type="tel" class="form-control" id="phone" name="phone" placeholder="Include country code for international" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="alternate_phone" class="form-label">Alternate Phone Number</label>
+                  <input type="tel" class="form-control" id="alternate_phone" name="alternate_phone">
+                </div>
+              </div>
+              
+              <!-- Malaysian Address -->
+              <div id="malaysian-address">
+                <div class="mb-3">
+                  <label for="address" class="form-label">Mailing Address <span class="text-danger">*</span></label>
+                  <textarea class="form-control" id="address" name="address" rows="3" required></textarea>
+                </div>
+                <div class="row">
+                  <div class="col-md-4 mb-3">
+                    <label for="postcode" class="form-label">Postcode <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="postcode" name="postcode" required>
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label for="city" class="form-label">City <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="city" name="city" required>
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label for="state" class="form-label">State <span class="text-danger">*</span></label>
+                    <select class="form-select" id="state" name="state" required>
+                      <option value="">Select State...</option>
+                      <option value="Johor">Johor</option>
+                      <option value="Kedah">Kedah</option>
+                      <option value="Kelantan">Kelantan</option>
+                      <option value="Kuala Lumpur">Kuala Lumpur</option>
+                      <option value="Labuan">Labuan</option>
+                      <option value="Malacca">Malacca</option>
+                      <option value="Negeri Sembilan">Negeri Sembilan</option>
+                      <option value="Pahang">Pahang</option>
+                      <option value="Penang">Penang</option>
+                      <option value="Perak">Perak</option>
+                      <option value="Perlis">Perlis</option>
+                      <option value="Putrajaya">Putrajaya</option>
+                      <option value="Sabah">Sabah</option>
+                      <option value="Sarawak">Sarawak</option>
+                      <option value="Selangor">Selangor</option>
+                      <option value="Terengganu">Terengganu</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <!-- International Address -->
+              <div id="international-address" style="display: none;">
+                <div class="mb-3">
+                  <label for="address_int" class="form-label">Home Country Address <span class="text-danger">*</span></label>
+                  <textarea class="form-control" id="address_int" name="address" rows="3" required></textarea>
+                </div>
+                <div class="row">
+                  <div class="col-md-4 mb-3">
+                    <label for="postcode_int" class="form-label">Postcode/ZIP Code</label>
+                    <input type="text" class="form-control" id="postcode_int" name="postcode">
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label for="city_int" class="form-label">City <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="city_int" name="city" required>
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label for="country" class="form-label">Country <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="country" name="state" required>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="malaysian_address" class="form-label">Address in Malaysia (if applicable)</label>
+                    <textarea class="form-control" id="malaysian_address" name="malaysian_address" rows="2"></textarea>
+                    <small class="text-muted">If you are currently residing in Malaysia</small>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="current_location" class="form-label">Current Location</label>
+                    <select class="form-select" id="current_location" name="current_location">
+                      <option value="">Select...</option>
+                      <option value="Home Country">Home Country</option>
+                      <option value="Malaysia">Malaysia</option>
+                      <option value="Other Country">Other Country</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 3: Program Selection -->
+          <div class="card shadow mb-4" data-section="program">
+            <div class="card-header bg-success text-white">
+              <h5 class="mb-0"><i class="bi bi-book-fill"></i> Section 3: Program Selection</h5>
+            </div>
+            <div class="card-body">
+              <p class="text-muted">You can select up to 3 program choices in order of preference.</p>
+              
+              <div class="mb-3">
+                <label class="form-label fw-bold">Step 1: Choose Your Level of Study <span class="text-danger">*</span></label>
+                <div class="row g-3">
+                  <div class="col-md-6 col-lg-3">
+                    <input type="radio" class="btn-check" name="study_level" id="level-foundation" value="Foundation" required>
+                    <label class="btn btn-outline-primary w-100 py-3" for="level-foundation">
+                      <i class="bi bi-mortarboard-fill fs-4 d-block mb-2"></i>
+                      <strong>Foundation</strong>
+                    </label>
+                  </div>
+                  <div class="col-md-6 col-lg-3">
+                    <input type="radio" class="btn-check" name="study_level" id="level-degree" value="Bachelor" required>
+                    <label class="btn btn-outline-primary w-100 py-3" for="level-degree">
+                      <i class="bi bi-award-fill fs-4 d-block mb-2"></i>
+                      <strong>Degree</strong>
+                    </label>
+                  </div>
+                  <div class="col-md-6 col-lg-3">
+                    <input type="radio" class="btn-check" name="study_level" id="level-master" value="Master" required>
+                    <label class="btn btn-outline-primary w-100 py-3" for="level-master">
+                      <i class="bi bi-mortarboard fs-4 d-block mb-2"></i>
+                      <strong>Master</strong>
+                    </label>
+                  </div>
+                  <div class="col-md-6 col-lg-3">
+                    <input type="radio" class="btn-check" name="study_level" id="level-phd" value="PhD" required>
+                    <label class="btn btn-outline-primary w-100 py-3" for="level-phd">
+                      <i class="bi bi-book-fill fs-4 d-block mb-2"></i>
+                      <strong>PhD</strong>
+                    </label>
+                  </div>
+                </div>
+              </div>
+
+              <div id="program-choices-container">
+                <div class="mb-3">
+                  <label for="program_choice_1" class="form-label">1st Choice Program <span class="text-danger">*</span></label>
+                  <select class="form-select" id="program_choice_1" name="program_choice_1" required>
+                    <option value="">Select your level of study first...</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="program_choice_2" class="form-label">2nd Choice Program (Optional)</label>
+                  <select class="form-select" id="program_choice_2" name="program_choice_2">
+                    <option value="">None</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="program_choice_3" class="form-label">3rd Choice Program (Optional)</label>
+                  <select class="form-select" id="program_choice_3" name="program_choice_3">
+                    <option value="">None</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 4: Academic Qualifications -->
+          <div class="card shadow mb-4" data-section="qualifications">
+            <div class="card-header bg-warning text-dark">
+              <h5 class="mb-0"><i class="bi bi-award-fill"></i> Section 4: Academic Qualifications</h5>
+            </div>
+            <div class="card-body">
+              <!-- Malaysian Student Qualifications -->
+              <div id="malaysian-qualifications">
+                <p class="text-muted">Please provide details of all your academic qualifications.</p>
+                
+                <!-- SPM -->
+                <div class="qualification-section mb-4 p-3 border rounded">
+                  <h6>SPM (Sijil Pelajaran Malaysia)</h6>
+                  <div class="row">
+                    <div class="col-md-3 mb-3">
+                      <label class="form-label">Year</label>
+                      <input type="number" class="form-control" name="spm_year" min="1990" max="2030">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                      <label class="form-label">Number of Credits</label>
+                      <input type="number" class="form-control" name="spm_credits" min="0" max="20">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label">Best Subjects & Grades</label>
+                      <input type="text" class="form-control" name="spm_subjects" placeholder="e.g., Math A, English B, Science B">
+                    </div>
+                  </div>
+                </div>
+
+                <!-- STPM -->
+                <div class="qualification-section mb-4 p-3 border rounded">
+                  <h6>STPM (Sijil Tinggi Persekolahan Malaysia)</h6>
+                  <div class="row">
+                    <div class="col-md-3 mb-3">
+                      <label class="form-label">Year</label>
+                      <input type="number" class="form-control" name="stpm_year" min="1990" max="2030">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                      <label class="form-label">CGPA</label>
+                      <input type="number" step="0.01" class="form-control" name="stpm_cgpa" min="0" max="4.00">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label">Subjects & Grades</label>
+                      <input type="text" class="form-control" name="stpm_subjects" placeholder="e.g., Math A, Physics B">
+                    </div>
+                  </div>
+                </div>
+
+                <!-- UEC -->
+                <div class="qualification-section mb-4 p-3 border rounded">
+                  <h6>UEC (Unified Examination Certificate)</h6>
+                  <div class="row">
+                    <div class="col-md-3 mb-3">
+                      <label class="form-label">Year</label>
+                      <input type="number" class="form-control" name="uec_year" min="1990" max="2030">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                      <label class="form-label">Number of Bs</label>
+                      <input type="number" class="form-control" name="uec_bs" min="0" max="10">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label">Subjects & Grades</label>
+                      <input type="text" class="form-control" name="uec_subjects" placeholder="e.g., Math B, English B, Science B">
+                    </div>
+                  </div>
+                </div>
+
+                <!-- A-Level -->
+                <div class="qualification-section mb-4 p-3 border rounded">
+                  <h6>A-Level / GCE Advanced Level</h6>
+                  <div class="row">
+                    <div class="col-md-3 mb-3">
+                      <label class="form-label">Year</label>
+                      <input type="number" class="form-control" name="alevel_year" min="1990" max="2030">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                      <label class="form-label">Number of Passes</label>
+                      <input type="number" class="form-control" name="alevel_passes" min="0" max="5">
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label">Subjects & Grades</label>
+                      <input type="text" class="form-control" name="alevel_subjects" placeholder="e.g., Math C, Physics C">
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Diploma/Degree -->
+                <div class="qualification-section mb-4 p-3 border rounded">
+                  <h6>Diploma / Degree (if applicable)</h6>
+                  <div class="row">
+                    <div class="col-md-4 mb-3">
+                      <label class="form-label">Institution</label>
+                      <input type="text" class="form-control" name="diploma_institution">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                      <label class="form-label">Year Graduated</label>
+                      <input type="number" class="form-control" name="diploma_year" min="1990" max="2030">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                      <label class="form-label">CGPA</label>
+                      <input type="number" step="0.01" class="form-control" name="diploma_cgpa" min="0" max="4.00">
+                    </div>
+                    <div class="col-md-2 mb-3">
+                      <label class="form-label">Field of Study</label>
+                      <input type="text" class="form-control" name="diploma_field">
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- International Student Qualifications -->
+              <div id="international-qualifications" style="display: none;">
+                <p class="text-muted">Please provide details of all your academic qualifications. All documents must be in English or include certified English translations.</p>
+                
+                <!-- High School / Secondary Education -->
+                <div class="qualification-section mb-4 p-3 border rounded">
+                  <h6>High School / Secondary Education <span class="text-danger">*</span></h6>
+                  <div class="row">
+                    <div class="col-md-4 mb-3">
+                      <label class="form-label">Qualification Type <span class="text-danger">*</span></label>
+                      <select class="form-select" name="high_school_type" required>
+                        <option value="">Select...</option>
+                        <option value="O-Level/IGCSE">O-Level / IGCSE</option>
+                        <option value="A-Level">A-Level / GCE Advanced Level</option>
+                        <option value="IB">International Baccalaureate (IB)</option>
+                        <option value="High School Diploma">High School Diploma</option>
+                        <option value="Year 12 Equivalent">Year 12 Equivalent</option>
+                        <option value="Other">Other</option>
+                      </select>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                      <label class="form-label">Year Completed <span class="text-danger">*</span></label>
+                      <input type="number" class="form-control" name="high_school_year" min="1990" max="2030" required>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                      <label class="form-label">Institution/School <span class="text-danger">*</span></label>
+                      <input type="text" class="form-control" name="high_school_institution" required>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label">Results/Grades <span class="text-danger">*</span></label>
+                      <input type="text" class="form-control" name="high_school_results" placeholder="e.g., 5 A*, GPA 3.8, IB 32 points" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                      <label class="form-label">Country</label>
+                      <input type="text" class="form-control" name="high_school_country">
+                    </div>
+                  </div>
+                </div>
+
+                <!-- A-Level / IB -->
+                <div class="qualification-section mb-4 p-3 border rounded">
+                  <h6>A-Level / International Baccalaureate (if applicable)</h6>
+                  <div class="row">
+                    <div class="col-md-3 mb-3">
+                      <label class="form-label">Type</label>
+                      <select class="form-select" name="alevel_type">
+                        <option value="">Select...</option>
+                        <option value="A-Level">A-Level</option>
+                        <option value="IB">International Baccalaureate</option>
+                      </select>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                      <label class="form-label">Year</label>
+                      <input type="number" class="form-control" name="alevel_year_int" min="1990" max="2030">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                      <label class="form-label">Score/Points</label>
+                      <input type="text" class="form-control" name="alevel_score" placeholder="e.g., 2 Passes, 24 points">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                      <label class="form-label">Subjects & Grades</label>
+                      <input type="text" class="form-control" name="alevel_subjects_int" placeholder="e.g., Math C, Physics C">
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Foundation / Pre-University -->
+                <div class="qualification-section mb-4 p-3 border rounded">
+                  <h6>Foundation / Pre-University (if applicable)</h6>
+                  <div class="row">
+                    <div class="col-md-4 mb-3">
+                      <label class="form-label">Institution</label>
+                      <input type="text" class="form-control" name="foundation_institution">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                      <label class="form-label">Year Completed</label>
+                      <input type="number" class="form-control" name="foundation_year" min="1990" max="2030">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                      <label class="form-label">CGPA/Grade</label>
+                      <input type="text" class="form-control" name="foundation_cgpa" placeholder="e.g., 3.50, Distinction">
+                    </div>
+                    <div class="col-md-2 mb-3">
+                      <label class="form-label">Country</label>
+                      <input type="text" class="form-control" name="foundation_country">
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Diploma / Degree -->
+                <div class="qualification-section mb-4 p-3 border rounded">
+                  <h6>Diploma / Degree (if applicable)</h6>
+                  <div class="row">
+                    <div class="col-md-4 mb-3">
+                      <label class="form-label">Institution <span class="text-danger">*</span></label>
+                      <input type="text" class="form-control" name="diploma_institution_int">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                      <label class="form-label">Year Graduated</label>
+                      <input type="number" class="form-control" name="diploma_year_int" min="1990" max="2030">
+                    </div>
+                    <div class="col-md-3 mb-3">
+                      <label class="form-label">CGPA/Grade</label>
+                      <input type="text" class="form-control" name="diploma_cgpa_int" placeholder="e.g., 3.50, First Class">
+                    </div>
+                    <div class="col-md-2 mb-3">
+                      <label class="form-label">Country</label>
+                      <input type="text" class="form-control" name="diploma_country">
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12 mb-3">
+                      <label class="form-label">Field of Study</label>
+                      <input type="text" class="form-control" name="diploma_field_int">
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 5: Emergency Contact -->
+          <div class="card shadow mb-4" data-section="emergency">
+            <div class="card-header bg-danger text-white">
+              <h5 class="mb-0"><i class="bi bi-person-heart"></i> Section 5: Emergency Contact</h5>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="emergency_name" class="form-label">Name <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" id="emergency_name" name="emergency_name" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="emergency_relationship" class="form-label">Relationship <span class="text-danger">*</span></label>
+                  <select class="form-select" id="emergency_relationship" name="emergency_relationship" required>
+                    <option value="">Select...</option>
+                    <option value="Parent">Parent</option>
+                    <option value="Guardian">Guardian</option>
+                    <option value="Sibling">Sibling</option>
+                    <option value="Spouse">Spouse</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="emergency_phone" class="form-label">Phone Number <span class="text-danger">*</span></label>
+                  <input type="tel" class="form-control" id="emergency_phone" name="emergency_phone" placeholder="Include country code for international" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="emergency_email" class="form-label">Email Address</label>
+                  <input type="email" class="form-control" id="emergency_email" name="emergency_email">
+                </div>
+              </div>
+              <div id="emergency-address-int" class="row" style="display: none;">
+                <div class="col-md-12 mb-3">
+                  <label for="emergency_address" class="form-label">Address</label>
+                  <textarea class="form-control" id="emergency_address" name="emergency_address" rows="2"></textarea>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="emergency_country" class="form-label">Country</label>
+                  <input type="text" class="form-control" id="emergency_country" name="emergency_country">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 5.5: International Student Additional Information -->
+          <div class="card shadow mb-4" id="international-additional-section" data-section="international-info" style="display: none;">
+            <div class="card-header bg-warning text-dark">
+              <h5 class="mb-0"><i class="bi bi-globe"></i> Section 5.5: Additional Information for International Students</h5>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="english_proficiency_test" class="form-label">English Proficiency Test <span class="text-danger">*</span></label>
+                  <select class="form-select" id="english_proficiency_test" name="english_proficiency_test" required>
+                    <option value="">Select Test...</option>
+                    <option value="IELTS">IELTS</option>
+                    <option value="TOEFL">TOEFL</option>
+                    <option value="MUET">MUET</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div class="col-md-3 mb-3">
+                  <label for="english_test_score" class="form-label">Test Score <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" id="english_test_score" name="english_test_score" placeholder="e.g., 6.0, 550" required>
+                </div>
+                <div class="col-md-3 mb-3">
+                  <label for="english_test_date" class="form-label">Test Date</label>
+                  <input type="date" class="form-control" id="english_test_date" name="english_test_date">
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="visa_status" class="form-label">Current Visa Status</label>
+                  <select class="form-select" id="visa_status" name="visa_status">
+                    <option value="">Select...</option>
+                    <option value="No Visa">No Visa (Will apply through EMGS)</option>
+                    <option value="Tourist Visa">Tourist Visa</option>
+                    <option value="Student Visa">Student Visa (Existing)</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="previous_study_malaysia" class="form-label">Have you studied in Malaysia before?</label>
+                  <select class="form-select" id="previous_study_malaysia" name="previous_study_malaysia">
+                    <option value="">Select...</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-12 mb-3">
+                  <label for="sponsor_info" class="form-label">Sponsor Information (if applicable)</label>
+                  <textarea class="form-control" id="sponsor_info" name="sponsor_info" rows="2" placeholder="Name of sponsor, relationship, contact details"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Section 6: Document Upload -->
+          <div class="card shadow mb-4" data-section="documents">
+            <div class="card-header bg-secondary text-white">
+              <h5 class="mb-0"><i class="bi bi-file-earmark-arrow-up-fill"></i> Section 6: Document Upload</h5>
+            </div>
+            <div class="card-body">
+              <p class="text-muted">Upload scanned copies of required documents (PDF or JPG, max 2MB per file).</p>
+              
+              <!-- International Student Additional Documents Notice -->
+              <div id="international-docs-notice" class="alert alert-warning" style="display: none;">
+                <strong><i class="bi bi-exclamation-triangle"></i> Additional Documents Required for International Students:</strong>
+                <ul class="mb-0 mt-2">
+                  <li>Valid Passport (minimum 18 months validity)</li>
+                  <li>English Proficiency Test Results (IELTS/TOEFL/MUET) - <strong>Required</strong></li>
+                  <li>Medical Examination Report</li>
+                  <li>Financial Proof (Bank Statement)</li>
+                  <li>No-Objection Certificate (if applicable)</li>
+                </ul>
+              </div>
+              
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="doc_ic" class="form-label" id="doc_ic_label">Identity Card / Passport <span class="text-danger">*</span></label>
+                  <input type="file" class="form-control" id="doc_ic" name="doc_ic" accept=".pdf,.jpg,.jpeg" required>
+                  <small class="text-muted" id="doc_ic_help">Front and back (if applicable)</small>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="doc_certificates" class="form-label">Academic Certificates <span class="text-danger">*</span></label>
+                  <input type="file" class="form-control" id="doc_certificates" name="doc_certificates" accept=".pdf,.jpg,.jpeg" required>
+                  <small class="text-muted">SPM, STPM, UEC, Diploma, Degree certificates</small>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="doc_transcripts" class="form-label">Academic Transcripts</label>
+                  <input type="file" class="form-control" id="doc_transcripts" name="doc_transcripts" accept=".pdf,.jpg,.jpeg">
+                  <small class="text-muted">For Diploma/Degree holders</small>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="doc_photo" class="form-label">Passport Photo <span class="text-danger">*</span></label>
+                  <input type="file" class="form-control" id="doc_photo" name="doc_photo" accept=".jpg,.jpeg" required>
+                  <small class="text-muted">Recent colored photo, white background</small>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="doc_birth" class="form-label">Birth Certificate</label>
+                  <input type="file" class="form-control" id="doc_birth" name="doc_birth" accept=".pdf,.jpg,.jpeg">
+                </div>
+                <div class="col-md-6 mb-3">
+                  <label for="doc_english" class="form-label" id="doc_english_label">English Proficiency Test <span id="english_required" class="text-danger" style="display: none;">*</span></label>
+                  <input type="file" class="form-control" id="doc_english" name="doc_english" accept=".pdf,.jpg,.jpeg">
+                  <small class="text-muted" id="doc_english_help">IELTS, TOEFL, MUET results</small>
+                </div>
+              </div>
+              <!-- Additional International Documents -->
+              <div id="international-docs-fields" style="display: none;">
+                <hr>
+                <h6 class="mb-3">Additional Documents for International Students:</h6>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="doc_passport" class="form-label">Valid Passport <span class="text-danger">*</span></label>
+                    <input type="file" class="form-control" id="doc_passport" name="doc_passport" accept=".pdf,.jpg,.jpeg">
+                    <small class="text-muted">Minimum 18 months validity</small>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="doc_medical" class="form-label">Medical Examination Report</label>
+                    <input type="file" class="form-control" id="doc_medical" name="doc_medical" accept=".pdf,.jpg,.jpeg">
+                    <small class="text-muted">From recognized clinic</small>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6 mb-3">
+                    <label for="doc_financial" class="form-label">Financial Proof (Bank Statement)</label>
+                    <input type="file" class="form-control" id="doc_financial" name="doc_financial" accept=".pdf,.jpg,.jpeg">
+                    <small class="text-muted">Showing sufficient funds</small>
+                  </div>
+                  <div class="col-md-6 mb-3">
+                    <label for="doc_noc" class="form-label">No-Objection Certificate (if applicable)</label>
+                    <input type="file" class="form-control" id="doc_noc" name="doc_noc" accept=".pdf,.jpg,.jpeg">
+                  </div>
+                </div>
+              </div>
+              <a href="{{ url_for('admission.document_checklist') }}" class="btn btn-sm btn-outline-primary" target="_blank">
+                <i class="bi bi-list-check"></i> View Complete Document Checklist
+              </a>
+            </div>
+          </div>
+
+          <!-- Declaration -->
+          <div class="card shadow mb-4">
+            <div class="card-body">
+              <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="declaration" name="declaration" required>
+                <label class="form-check-label" for="declaration">
+                  I hereby declare that all information provided in this application is true and accurate. I understand that providing false information may result in the rejection of my application or cancellation of admission. <span class="text-danger">*</span>
+                </label>
+              </div>
+              <div class="form-check mb-3">
+                <input class="form-check-input" type="checkbox" id="consent" name="consent" required>
+                <label class="form-check-label" for="consent">
+                  I consent to the university processing my personal data for admission purposes. <span class="text-danger">*</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- Submit Buttons -->
+          <div class="d-flex justify-content-between mb-5">
+            <button type="button" class="btn btn-outline-secondary" id="save-draft-btn">
+              <i class="bi bi-save"></i> Save as Draft
+            </button>
+            <div>
+              <button type="reset" class="btn btn-outline-warning me-2">
+                <i class="bi bi-arrow-clockwise"></i> Reset Form
+              </button>
+              <button type="submit" class="btn btn-primary btn-lg">
+                <i class="bi bi-check-circle"></i> Submit Application
+              </button>
+            </div>
+          </div>
+        </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.btn.nationality-btn {
+  transition: all 0.3s;
+  border-width: 3px !important;
+  color: #0d6efd !important;
+  background-color: #ffffff !important;
+  font-weight: 500;
+}
+
+.btn.nationality-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  background-color: #e7f1ff !important;
+  border-color: #0d6efd !important;
+  color: #0d6efd !important;
+}
+
+.btn.nationality-btn.active,
+.btn.nationality-btn.active:hover,
+.btn.nationality-btn.active:focus {
+  background-color: #e7f1ff !important;
+  color: #0d6efd !important;
+  border-color: #0d6efd !important;
+  border-width: 3px !important;
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.2) !important;
+}
+
+.btn.nationality-btn.active *,
+.btn.nationality-btn.active:hover *,
+.btn.nationality-btn.active:focus * {
+  color: #0d6efd !important;
+}
+
+.btn.nationality-btn.active i,
+.btn.nationality-btn.active h4,
+.btn.nationality-btn.active p,
+.btn.nationality-btn.active:hover i,
+.btn.nationality-btn.active:hover h4,
+.btn.nationality-btn.active:hover p {
+  color: #0d6efd !important;
+  font-weight: 600;
+}
+
+.btn.nationality-btn i {
+  color: #0d6efd !important;
+}
+
+.btn.nationality-btn h4 {
+  color: #0d6efd !important;
+  font-weight: 600;
+}
+
+.btn.nationality-btn p {
+  color: #6c757d !important;
+}
+
+/* Radio button labels for level selection */
+.btn-check:checked + .btn.btn-outline-primary,
+.btn-check:checked + .btn.btn-outline-primary:hover,
+.btn-check:checked + .btn.btn-outline-primary:focus {
+  background-color: #e7f1ff !important;
+  color: #0d6efd !important;
+  border-color: #0d6efd !important;
+  border-width: 3px !important;
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.2) !important;
+}
+
+.btn-check:checked + .btn.btn-outline-primary *,
+.btn-check:checked + .btn.btn-outline-primary:hover *,
+.btn-check:checked + .btn.btn-outline-primary:focus * {
+  color: #0d6efd !important;
+}
+
+.btn-check:checked + .btn.btn-outline-primary i,
+.btn-check:checked + .btn.btn-outline-primary strong,
+.btn-check:checked + .btn.btn-outline-primary:hover i,
+.btn-check:checked + .btn.btn-outline-primary:hover strong {
+  color: #0d6efd !important;
+  font-weight: 600;
+}
+
+/* Ensure default state has proper colors for level selection */
+.btn.btn-outline-primary {
+  color: #0d6efd !important;
+  font-weight: 500;
+}
+
+.btn.btn-outline-primary i {
+  color: #0d6efd !important;
+}
+
+.btn.btn-outline-primary strong {
+  color: #0d6efd !important;
+  font-weight: 600;
+}
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+  var selectedNationality = '';
+  
+  // Handle nationality selection
+  $('.nationality-btn').on('click', function() {
+    selectedNationality = $(this).data('nationality');
+    
+    // Update button states
+    $('.nationality-btn').removeClass('active');
+    $(this).addClass('active');
+    
+    // Show/hide form sections based on nationality
+    if (selectedNationality === 'International') {
+      // Show international info
+      $('#international-info').slideDown();
+      
+      // Hide Malaysian fields, show International fields
+      $('#malaysian-personal-info').hide();
+      $('#international-personal-info').show();
+      $('#malaysian-address').hide();
+      $('#international-address').show();
+      $('#malaysian-qualifications').hide();
+      $('#international-qualifications').show();
+      $('#international-additional-section').show();
+      $('#emergency-address-int').show();
+      
+      // Set nationality
+      $('#nationality_int').val('International');
+      
+      // Update document requirements
+      $('#international-docs-notice').slideDown();
+      $('#international-docs-fields').slideDown();
+      $('#doc_english').prop('required', true);
+      $('#english_required').show();
+      $('#doc_ic_label').html('Passport <span class="text-danger">*</span>');
+      $('#doc_ic_help').text('Valid passport (minimum 18 months validity)');
+      $('#doc_english_label').html('English Proficiency Test <span class="text-danger">*</span>');
+      $('#doc_english_help').text('IELTS/TOEFL/MUET results (Required for international students)');
+      $('#doc_certificates').next('small').text('Academic certificates with certified English translation if not in English');
+    } else {
+      // Show Malaysian info
+      $('#international-info').slideUp();
+      
+      // Show Malaysian fields, hide International fields
+      $('#malaysian-personal-info').show();
+      $('#international-personal-info').hide();
+      $('#malaysian-address').show();
+      $('#international-address').hide();
+      $('#malaysian-qualifications').show();
+      $('#international-qualifications').hide();
+      $('#international-additional-section').hide();
+      $('#emergency-address-int').hide();
+      
+      // Set nationality
+      $('#nationality').val('Malaysian');
+      
+      // Update document requirements
+      $('#international-docs-notice').slideUp();
+      $('#international-docs-fields').slideUp();
+      $('#doc_english').prop('required', false);
+      $('#english_required').hide();
+      $('#doc_ic_label').html('Identity Card / Passport <span class="text-danger">*</span>');
+      $('#doc_ic_help').text('Front and back (if applicable)');
+      $('#doc_english_label').html('English Proficiency Test (if applicable)');
+      $('#doc_english_help').text('IELTS, TOEFL, MUET results');
+      $('#doc_certificates').next('small').text('SPM, STPM, UEC, Diploma, Degree certificates');
+    }
+    
+    // Show application form
+    $('#nationality-selection-card').fadeOut(300, function() {
+      $('#application-form-container').fadeIn(300);
+      $('html, body').animate({
+        scrollTop: $('#application-form-container').offset().top - 100
+      }, 500);
+    });
+  });
+
+  // Program data
+  var programsData = {
+    {% for program in programs %}
+    {{ program.program_id }}: {
+      id: {{ program.program_id }},
+      name: "{{ program.program_name }}",
+      level: "{{ program.level }}",
+      faculty: "{{ program.faculty_name }}"
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  };
+
+  // Handle study level selection
+  $('input[name="study_level"]').on('change', function() {
+    var selectedLevel = $(this).val();
+    var filteredPrograms = [];
+    
+    if (selectedLevel === 'Foundation') {
+      filteredPrograms = [
+        { id: 'foundation-arts', name: 'Foundation in Arts' },
+        { id: 'foundation-science', name: 'Foundation in Science' }
+      ];
+    } else if (selectedLevel === 'Bachelor') {
+      for (var id in programsData) {
+        if (programsData[id].level === 'Bachelor' || programsData[id].level === 'Diploma') {
+          filteredPrograms.push(programsData[id]);
+        }
+      }
+    } else {
+      for (var id in programsData) {
+        if (programsData[id].level === selectedLevel) {
+          filteredPrograms.push(programsData[id]);
+        }
+      }
+    }
+    
+    // Populate all three choice dropdowns
+    ['program_choice_1', 'program_choice_2', 'program_choice_3'].forEach(function(selectId, index) {
+      var $select = $('#' + selectId);
+      $select.empty();
+      if (index === 0) {
+        $select.append('<option value="">Select a program...</option>');
+      } else {
+        $select.append('<option value="">None</option>');
+      }
+      
+      filteredPrograms.forEach(function(program) {
+        var displayName = program.name;
+        if (program.faculty && program.faculty !== 'Foundation Studies') {
+          displayName += ' (' + program.faculty + ')';
+        }
+        $select.append('<option value="' + program.id + '">' + displayName + '</option>');
+      });
+    });
+  });
+
+  // Calculate form progress
+  function updateProgress() {
+    var sections = $('[data-section]').filter(':visible');
+    var completed = 0;
+    sections.each(function() {
+      var section = $(this);
+      var inputs = section.find('input[required]:visible, select[required]:visible, textarea[required]:visible');
+      var filled = 0;
+      inputs.each(function() {
+        if ($(this).val() && $(this).val() !== '') {
+          filled++;
+        }
+      });
+      if (inputs.length > 0 && filled === inputs.length) {
+        completed++;
+      }
+    });
+    var progress = sections.length > 0 ? (completed / sections.length) * 100 : 0;
+    $('#form-progress').css('width', progress + '%').text(Math.round(progress) + '%');
+  }
+
+  // Update progress on input
+  $('input, select, textarea').on('change input', updateProgress);
+  updateProgress();
+
+  // Form validation and submission
+  $('#application-form').on('submit', function(e) {
+    e.preventDefault();
+    
+    if (!$('#declaration').is(':checked') || !$('#consent').is(':checked')) {
+      alert('Please accept the declaration and consent to proceed.');
+      return false;
+    }
+    
+    // Validate international student specific fields
+    if (selectedNationality === 'International') {
+      if (!$('#full_name_int').val() || !$('#passport_number').val()) {
+        alert('Please fill in all required personal information fields.');
+        return false;
+      }
+      if (!$('#english_proficiency_test').val() || !$('#english_test_score').val()) {
+        alert('English proficiency test information is required for international students.');
+        return false;
+      }
+      if (!$('#passport_expiry_date').val()) {
+        alert('Passport expiry date is required.');
+        return false;
+      }
+      // Check passport validity (18 months from today)
+      var expiryDate = new Date($('#passport_expiry_date').val());
+      var minDate = new Date();
+      minDate.setMonth(minDate.getMonth() + 18);
+      if (expiryDate < minDate) {
+        alert('Passport must be valid for at least 18 months from today.');
+        return false;
+      }
+    }
+    
+    // Show loading state
+    var $submitBtn = $(this).find('button[type="submit"]');
+    var originalText = $submitBtn.html();
+    $submitBtn.prop('disabled', true).html('<i class="bi bi-hourglass-split"></i> Submitting...');
+    
+    // Submit form via AJAX
+    var formData = new FormData(this);
+    formData.append('applicant_type', selectedNationality);
+    
+    $.ajax({
+      url: $(this).attr('action'),
+      type: 'POST',
+      data: formData,
+      processData: false,
+      contentType: false,
+      success: function(response) {
+        if (response.success) {
+          // Clear draft
+          localStorage.removeItem('application_draft');
+          
+          // Show success message
+          alert('Application submitted successfully!\n\nReference Number: ' + response.reference_number + '\n\nYou will receive a confirmation email shortly.');
+          
+          // Redirect to confirmation page or home
+          window.location.href = '/admission/';
+        } else {
+          alert('Error: ' + response.message);
+          $submitBtn.prop('disabled', false).html(originalText);
+        }
+      },
+      error: function(xhr) {
+        var errorMsg = 'An error occurred while submitting your application.';
+        if (xhr.responseJSON && xhr.responseJSON.message) {
+          errorMsg = xhr.responseJSON.message;
+        }
+        alert(errorMsg);
+        $submitBtn.prop('disabled', false).html(originalText);
+      }
+    });
+  });
+
+  // Save draft functionality
+  $('#save-draft-btn').on('click', function() {
+    // Save form data to localStorage
+    var formData = {};
+    $('#application-form').serializeArray().forEach(function(item) {
+      formData[item.name] = item.value;
+    });
+    localStorage.setItem('application_draft', JSON.stringify(formData));
+    alert('Application draft saved! You can continue later.');
+  });
+
+  // Load draft if exists
+  var draft = localStorage.getItem('application_draft');
+  if (draft) {
+    if (confirm('You have a saved draft. Would you like to load it?')) {
+      var formData = JSON.parse(draft);
+      for (var name in formData) {
+        $('[name="' + name + '"]').val(formData[name]);
+      }
+      updateProgress();
+    }
+  }
+});
+</script>
+{% endblock %}

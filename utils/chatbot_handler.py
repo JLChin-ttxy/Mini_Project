@@ -168,7 +168,7 @@ Would you like detailed steps for online or offline application?"""
             cursor = self.conn.cursor(dictionary=True)
             
             cursor.execute("""
-                SELECT event_type, start_date, end_date, description, p.program_name
+                SELECT event_type, start_date, end_date, id.description, p.program_name
                 FROM IMPORTANT_DATE id
                 JOIN PROGRAM p ON id.program_id = p.program_id
                 WHERE end_date >= CURDATE()

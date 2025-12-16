@@ -16,10 +16,68 @@ class DocumentChecklistGenerator:
                 'optional': []
             },
             'International': {
-                'mandatory': ['Passport (valid for at least 18 months)', 
-                            'Student Visa/EMGS Approval Letter',
-                            'Medical Report (from recognized clinic)'],
-                'optional': ['English Proficiency Test (IELTS/TOEFL)']
+                'mandatory': [
+                    'Valid Passport (minimum 18 months validity from program start date) - MANDATORY FOR ALL INTERNATIONAL STUDENTS',
+                    'Student Visa / EMGS Approval Letter (Education Malaysia Global Services) - MANDATORY FOR ALL INTERNATIONAL STUDENTS',
+                    'Medical Examination Report (from recognized clinic/hospital approved by EMGS) - MANDATORY FOR ALL INTERNATIONAL STUDENTS',
+                    'English Proficiency Test Results (IELTS/TOEFL/MUET) - Original certificate - MANDATORY',
+                    'Financial Proof / Bank Statement (showing minimum RM 30,000 or equivalent for living expenses) - MANDATORY',
+                    'Academic Transcripts with Certified English Translation (if original is not in English) - MANDATORY',
+                    'Academic Certificates with Certified English Translation (if original is not in English) - MANDATORY',
+                    'Passport-sized Photographs (4 copies, white background, 35mm x 50mm) - MANDATORY',
+                    'EMGS Application Form (completed and signed) - MANDATORY FOR VISA PROCESSING'
+                ],
+                'optional': [
+                    'Police Clearance Certificate (from home country) - Required for some countries',
+                    'No-Objection Certificate (NOC) - if required by home country',
+                    'Sponsorship Letter (if sponsored by government or organization)',
+                    'Health Insurance Certificate (recommended)',
+                    'Character Reference Letter (from previous institution)'
+                ]
+            }
+        }
+        
+        # Nationality-specific identity documents
+        self.nationality_documents = {
+            'Indonesia': {
+                'identity': 'KTP (Kartu Tanda Penduduk) or Passport',
+                'additional': ['Academic transcripts with certified English translation']
+            },
+            'China': {
+                'identity': 'Chinese ID Card or Passport',
+                'additional': ['Notarized academic certificates', 'HSK certificate (if applicable)']
+            },
+            'India': {
+                'identity': 'Aadhaar Card or Passport',
+                'additional': ['Academic transcripts with certified English translation']
+            },
+            'Bangladesh': {
+                'identity': 'National ID Card or Passport',
+                'additional': ['Academic transcripts with certified English translation']
+            },
+            'Thailand': {
+                'identity': 'Thai National ID Card or Passport',
+                'additional': ['Academic transcripts with certified English translation']
+            },
+            'Vietnam': {
+                'identity': 'Vietnamese ID Card or Passport',
+                'additional': ['Academic transcripts with certified English translation']
+            },
+            'Philippines': {
+                'identity': 'Philippine National ID or Passport',
+                'additional': ['Academic transcripts with certified English translation']
+            },
+            'Pakistan': {
+                'identity': 'CNIC (Computerized National Identity Card) or Passport',
+                'additional': ['Academic transcripts with certified English translation']
+            },
+            'Nepal': {
+                'identity': 'Nepali Citizenship Certificate or Passport',
+                'additional': ['Academic transcripts with certified English translation']
+            },
+            'Sri Lanka': {
+                'identity': 'National Identity Card or Passport',
+                'additional': ['Academic transcripts with certified English translation']
             }
         }
         
@@ -96,15 +154,31 @@ class DocumentChecklistGenerator:
             country_key = 'International' if is_international else 'Malaysia'
             
             if country_key in self.country_documents:
-                for doc_name in self.country_documents[country_key]['mandatory']:
-                    checklist['country_specific'].append({
-                        'name': doc_name,
-                        'description': f'Required for {country_key} applicants',
-                        'status': 'pending',
-                        'source': 'country_requirement',
-                        'mandatory': True
-                    })
+                # For international students, replace base mandatory documents with international-specific ones
+                if is_international:
+                    # Clear Malaysian-specific mandatory documents
+                    checklist['mandatory'] = []
+                    # Add international mandatory documents
+                    for doc_name in self.country_documents[country_key]['mandatory']:
+                        checklist['mandatory'].append({
+                            'name': doc_name,
+                            'description': f'MANDATORY for international students - Required for visa processing',
+                            'status': 'pending',
+                            'source': 'international_requirement',
+                            'mandatory': True
+                        })
+                else:
+                    # For Malaysian students, add country-specific documents
+                    for doc_name in self.country_documents[country_key]['mandatory']:
+                        checklist['country_specific'].append({
+                            'name': doc_name,
+                            'description': f'Required for {country_key} applicants',
+                            'status': 'pending',
+                            'source': 'country_requirement',
+                            'mandatory': True
+                        })
                 
+                # Add optional documents
                 for doc_name in self.country_documents[country_key]['optional']:
                     checklist['country_specific'].append({
                         'name': doc_name,
@@ -112,6 +186,38 @@ class DocumentChecklistGenerator:
                         'status': 'pending',
                         'source': 'country_requirement',
                         'mandatory': False
+                    })
+            
+            # Add nationality-specific identity documents for international students
+            if is_international:
+                # Check if we have specific nationality requirements
+                nationality = country.strip()
+                if nationality in self.nationality_documents:
+                    nat_docs = self.nationality_documents[nationality]
+                    checklist['country_specific'].append({
+                        'name': f'National ID Document ({nat_docs["identity"]})',
+                        'description': f'Required identity document for {nationality} nationals',
+                        'status': 'pending',
+                        'source': 'nationality_requirement',
+                        'mandatory': True
+                    })
+                    
+                    for additional_doc in nat_docs.get('additional', []):
+                        checklist['country_specific'].append({
+                            'name': additional_doc,
+                            'description': f'Additional requirement for {nationality} applicants',
+                            'status': 'pending',
+                            'source': 'nationality_requirement',
+                            'mandatory': True
+                        })
+                else:
+                    # Generic international requirement
+                    checklist['country_specific'].append({
+                        'name': 'National ID Document or Passport',
+                        'description': 'Valid national identity document from your country',
+                        'status': 'pending',
+                        'source': 'nationality_requirement',
+                        'mandatory': True
                     })
             
             # Add program-specific documents based on program type

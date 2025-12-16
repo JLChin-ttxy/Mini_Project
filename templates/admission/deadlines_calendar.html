@@ -1,0 +1,532 @@
+{% extends "base.html" %}
+
+{% block title %}Important Dates & Deadlines - SKL Universiti{% endblock %}
+
+{% block extra_css %}
+<style>
+  .semesters-row {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+  
+  .semester-card {
+    flex: 1;
+    min-width: 300px;
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border: 2px solid #e5e7eb;
+  }
+  
+  .semester-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1.25rem;
+    border-radius: 8px;
+    margin-bottom: 1.25rem;
+    text-align: center;
+  }
+  
+  .semester-header h3 {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin: 0 0 0.5rem 0;
+  }
+  
+  .semester-header .period {
+    font-size: 1.1rem;
+    opacity: 0.95;
+  }
+  
+  .semester-header .weeks {
+    font-size: 0.95rem;
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid rgba(255,255,255,0.3);
+  }
+  
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+  }
+  
+  .calendar-day-header {
+    text-align: center;
+    font-weight: bold;
+    padding: 0.5rem 0.25rem;
+    background: #f3f4f6;
+    border-radius: 4px;
+    font-size: 0.85rem;
+  }
+  
+  .calendar-day {
+    aspect-ratio: 1;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    padding: 0.3rem;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.9rem;
+    min-height: 35px;
+  }
+  
+  .calendar-day:hover {
+    background: #f9fafb;
+    border-color: #3b82f6;
+    transform: scale(1.05);
+    z-index: 10;
+  }
+  
+  .calendar-day.has-event {
+    background: #dbeafe;
+    border-color: #3b82f6;
+    font-weight: 600;
+  }
+  
+  .calendar-day.today {
+    background: #fef3c7;
+    border-color: #f59e0b;
+    font-weight: bold;
+    box-shadow: 0 0 0 2px #f59e0b;
+  }
+  
+  .calendar-day-number {
+    display: block;
+    margin-bottom: 2px;
+  }
+  
+  .event-indicators {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+    justify-content: center;
+    margin-top: 2px;
+  }
+  
+  .event-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  
+  .event-dot.foundation { background: #10b981; }
+  .event-dot.diploma { background: #3b82f6; }
+  .event-dot.bachelor { background: #8b5cf6; }
+  .event-dot.master { background: #f59e0b; }
+  .event-dot.phd { background: #ef4444; }
+  
+  .important-dates-list {
+    background: #f9fafb;
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin-top: 2rem;
+  }
+  
+  .important-dates-list h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: #1e3a8a;
+  }
+  
+  .date-item {
+    background: white;
+    border-left: 4px solid #3b82f6;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+  
+  .date-item.critical {
+    border-left-color: #ef4444;
+    background: #fef2f2;
+  }
+  
+  .date-item.high {
+    border-left-color: #f59e0b;
+    background: #fffbeb;
+  }
+  
+  .date-item h5 {
+    font-size: 1.1rem;
+    margin: 0 0 0.5rem 0;
+    color: #1e3a8a;
+  }
+  
+  .date-item .date-range {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #667eea;
+    margin-bottom: 0.5rem;
+  }
+  
+  .date-item .programs {
+    font-size: 0.9rem;
+    color: #6b7280;
+  }
+  
+  .date-item .level-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    margin-right: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  
+  .level-badge.foundation { background: #d1fae5; color: #065f46; }
+  .level-badge.diploma { background: #dbeafe; color: #1e40af; }
+  .level-badge.bachelor { background: #e9d5ff; color: #6b21a8; }
+  .level-badge.master { background: #fed7aa; color: #92400e; }
+  .level-badge.phd { background: #fee2e2; color: #991b1b; }
+  
+  .calculation-info {
+    background: #eff6ff;
+    border-left: 4px solid #3b82f6;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-top: 2rem;
+  }
+  
+  .calculation-info h4 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+    color: #1e3a8a;
+  }
+  
+  @media (max-width: 1200px) {
+    .semesters-row {
+      flex-direction: column;
+    }
+    .semester-card {
+      min-width: 100%;
+    }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <h1 class="mb-3" style="font-size: 2.5rem;">Important Dates & Deadlines</h1>
+        <p class="lead mb-4" style="font-size: 1.2rem;">Stay informed about application periods, intake dates, and important deadlines organized by semester.</p>
+
+        <!-- Email Notification Button -->
+        <div class="card border-primary mb-4">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h5 class="card-title mb-1"><i class="bi bi-bell"></i> Email Reminders</h5>
+                <p class="card-text mb-0">Get notified via email when deadlines are approaching for your selected programs.</p>
+              </div>
+              <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#emailModal">
+                <i class="bi bi-bell-fill"></i> Enable Email Reminders
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Three Semesters in a Row -->
+        <div class="semesters-row">
+          <!-- Semester 1 -->
+          <div class="semester-card">
+            <div class="semester-header">
+              <h3>Semester 1</h3>
+              <div class="period">January - April 2025</div>
+              <div class="weeks">14 Weeks (Long Semester)</div>
+            </div>
+            <div class="calendar-grid" id="calendar-sem1"></div>
+          </div>
+
+          <!-- Semester 2 -->
+          <div class="semester-card">
+            <div class="semester-header">
+              <h3>Semester 2</h3>
+              <div class="period">May - August 2025</div>
+              <div class="weeks">14 Weeks (Long Semester)</div>
+            </div>
+            <div class="calendar-grid" id="calendar-sem2"></div>
+          </div>
+
+          <!-- Semester 3 -->
+          <div class="semester-card">
+            <div class="semester-header">
+              <h3>Semester 3</h3>
+              <div class="period">September - October 2025</div>
+              <div class="weeks">7 Weeks (Short Semester)</div>
+            </div>
+            <div class="calendar-grid" id="calendar-sem3"></div>
+          </div>
+        </div>
+
+        <!-- Legend -->
+        <div class="card mb-4">
+          <div class="card-body">
+            <h5 class="card-title mb-3">Legend</h5>
+            <div class="d-flex flex-wrap gap-4">
+              <span><span class="event-dot foundation"></span> <strong>Foundation</strong></span>
+              <span><span class="event-dot diploma"></span> <strong>Diploma</strong></span>
+              <span><span class="event-dot bachelor"></span> <strong>Bachelor</strong></span>
+              <span><span class="event-dot master"></span> <strong>Master</strong></span>
+              <span><span class="event-dot phd"></span> <strong>PhD</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Important Dates List -->
+        <div class="important-dates-list">
+          <h3><i class="bi bi-calendar-event"></i> Important Registration Dates & Periods</h3>
+          <div id="important-dates-container"></div>
+        </div>
+
+        <!-- Date Calculation Information -->
+        <div class="calculation-info">
+          <h4><i class="bi bi-info-circle"></i> How Important Dates Are Calculated</h4>
+          <p><strong>Registration periods are calculated consistently each year using the following formula:</strong></p>
+          <ul>
+            <li><strong>Semester 1 Registration:</strong> Opens 3 months before semester start (October of previous year), closes 2 weeks before semester start (mid-December)</li>
+            <li><strong>Semester 2 Registration:</strong> Opens 3 months before semester start (February), closes 2 weeks before semester start (mid-April)</li>
+            <li><strong>Semester 3 Registration:</strong> Opens 2 months before semester start (July), closes 1 week before semester start (late August)</li>
+            <li><strong>Application Deadlines:</strong> Always 4 weeks before registration opens (to allow time for processing)</li>
+            <li><strong>International Student Deadlines:</strong> 2 weeks earlier than local students (to allow time for visa processing)</li>
+          </ul>
+          <p class="mb-0"><strong>Note:</strong> These dates remain consistent year-to-year, only the year changes. For example, Semester 1 2026 will follow the same pattern as 2025, just shifted by one year.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Email Subscription Modal -->
+<div class="modal fade" id="emailModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="bi bi-bell"></i> Enable Email Reminders</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="emailSubscriptionForm">
+          <div class="mb-3">
+            <label for="emailInput" class="form-label">Email Address</label>
+            <input type="email" class="form-control" id="emailInput" required placeholder="your.email@example.com">
+            <small class="form-text text-muted">We'll send you reminders 7 days before deadlines.</small>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Select Programs to Monitor</label>
+            <div class="border rounded p-3" style="max-height: 300px; overflow-y: auto;">
+              {% for program in programs %}
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="program_ids" value="{{ program.program_id }}" id="program{{ program.program_id }}">
+                <label class="form-check-label" for="program{{ program.program_id }}">
+                  <strong>{{ program.program_name }}</strong> ({{ program.level }}) - {{ program.faculty_name }}
+                </label>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" onclick="subscribeToEmail()">
+          <i class="bi bi-check-circle"></i> Subscribe
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Calendar data from backend
+const deadlinesData = {{ all_dates | tojson }};
+
+// Semester definitions
+const semesters = {
+  1: { startMonth: 1, endMonth: 4, year: 2025, weeks: 14 },
+  2: { startMonth: 5, endMonth: 8, year: 2025, weeks: 14 },
+  3: { startMonth: 9, endMonth: 10, year: 2025, weeks: 7 }
+};
+
+function generateCalendar(containerId, semesterNum) {
+  const container = document.getElementById(containerId);
+  const sem = semesters[semesterNum];
+  const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  
+  let html = '';
+  
+  // Day headers
+  daysOfWeek.forEach(day => {
+    html += `<div class="calendar-day-header">${day}</div>`;
+  });
+  
+  // Generate calendar for the semester period
+  const startDate = new Date(sem.year, sem.startMonth - 1, 1);
+  const endDate = new Date(sem.year, sem.endMonth, 0);
+  
+  const firstDay = startDate.getDay();
+  const daysInPeriod = endDate.getDate();
+  
+  // Empty cells for days before period starts
+  for (let i = 0; i < firstDay; i++) {
+    html += '<div class="calendar-day"></div>';
+  }
+  
+  // Calendar days
+  const today = new Date();
+  for (let day = 1; day <= daysInPeriod; day++) {
+    const date = new Date(sem.year, sem.startMonth - 1, day);
+    const dateStr = date.toISOString().split('T')[0];
+    const isToday = date.toDateString() === today.toDateString();
+    
+    // Find events for this date
+    const events = deadlinesData.filter(d => {
+      if (!d.start_date || !d.end_date) return false;
+      const start = d.start_date.split('T')[0];
+      const end = d.end_date.split('T')[0];
+      return dateStr >= start && dateStr <= end;
+    });
+    
+    let classes = 'calendar-day';
+    if (isToday) classes += ' today';
+    if (events.length > 0) classes += ' has-event';
+    
+    let eventDots = '';
+    const levels = new Set();
+    events.forEach(event => {
+      const level = (event.level || 'bachelor').toLowerCase();
+      levels.add(level);
+    });
+    
+    levels.forEach(level => {
+      eventDots += `<span class="event-dot ${level}" title="${events.map(e => e.event_type).join(', ')}"></span>`;
+    });
+    
+    html += `<div class="${classes}" data-date="${dateStr}" title="${events.map(e => `${e.event_type} - ${e.program_name}`).join('; ')}">
+      <span class="calendar-day-number">${day}</span>
+      <div class="event-indicators">${eventDots}</div>
+    </div>`;
+  }
+  
+  container.innerHTML = html;
+}
+
+// Generate important dates list
+function generateImportantDatesList() {
+  const container = document.getElementById('important-dates-container');
+  let html = '';
+  
+  // Group dates by event type and level
+  const groupedDates = {};
+  
+  deadlinesData.forEach(date => {
+    if (!date.start_date || !date.end_date) return;
+    
+    const key = `${date.event_type}_${date.level || 'all'}`;
+    if (!groupedDates[key]) {
+      groupedDates[key] = {
+        event_type: date.event_type,
+        level: date.level || 'all',
+        start_date: date.start_date,
+        end_date: date.end_date,
+        programs: [],
+        urgency: date.urgency || 'normal'
+      };
+    }
+    if (date.program_name && !groupedDates[key].programs.includes(date.program_name)) {
+      groupedDates[key].programs.push(date.program_name);
+    }
+  });
+  
+  // Sort by start date
+  const sortedDates = Object.values(groupedDates).sort((a, b) => {
+    return new Date(a.start_date) - new Date(b.start_date);
+  });
+  
+  sortedDates.forEach(date => {
+    const start = new Date(date.start_date);
+    const end = new Date(date.end_date);
+    const startStr = start.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    const endStr = end.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    
+    let urgencyClass = '';
+    if (date.urgency === 'critical') urgencyClass = 'critical';
+    else if (date.urgency === 'high') urgencyClass = 'high';
+    
+    const levelClass = (date.level || 'bachelor').toLowerCase();
+    
+    html += `
+      <div class="date-item ${urgencyClass}">
+        <h5>${date.event_type}</h5>
+        <div class="date-range">
+          <i class="bi bi-calendar"></i> ${startStr} - ${endStr}
+        </div>
+        <div class="programs">
+          ${date.programs.length > 0 ? `<strong>Programs:</strong> ${date.programs.slice(0, 3).join(', ')}${date.programs.length > 3 ? ' and more...' : ''}` : 'All Programs'}
+        </div>
+        <span class="level-badge ${levelClass}">${date.level || 'All Levels'}</span>
+      </div>
+    `;
+  });
+  
+  container.innerHTML = html || '<p>No important dates found.</p>';
+}
+
+// Initialize calendars and dates list
+document.addEventListener('DOMContentLoaded', function() {
+  generateCalendar('calendar-sem1', 1);
+  generateCalendar('calendar-sem2', 2);
+  generateCalendar('calendar-sem3', 3);
+  generateImportantDatesList();
+});
+
+function subscribeToEmail() {
+  const email = document.getElementById('emailInput').value;
+  const checkboxes = document.querySelectorAll('input[name="program_ids"]:checked');
+  const programIds = Array.from(checkboxes).map(cb => parseInt(cb.value));
+  
+  if (!email || programIds.length === 0) {
+    alert('Please enter your email and select at least one program.');
+    return;
+  }
+  
+  fetch('/admission/subscribe-email', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      email: email,
+      program_ids: programIds
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      alert(data.message);
+      bootstrap.Modal.getInstance(document.getElementById('emailModal')).hide();
+      document.getElementById('emailSubscriptionForm').reset();
+    } else {
+      alert('Error: ' + data.message);
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('An error occurred. Please try again.');
+  });
+}
+</script>
+{% endblock %}
+

@@ -23,22 +23,16 @@
 
               <div class="mb-4">
                 <label for="qualification" class="form-label fw-bold">Your Qualification</label>
-                <select class="form-select" id="qualification" required>
-                  <option value="">Select your qualification...</option>
-                  <option value="STPM">STPM (Sijil Tinggi Persekolahan Malaysia)</option>
-                  <option value="A-Level">A-Level (GCE Advanced Level)</option>
-                  <option value="UEC">UEC (Unified Examination Certificate)</option>
-                  <option value="Diploma">Diploma</option>
-                  <option value="Foundation">Foundation Studies</option>
-                  <option value="Matriculation">Matriculation</option>
-                  <option value="SPM">SPM (Sijil Pelajaran Malaysia)</option>
+                <select class="form-select" id="qualification" required disabled>
+                  <option value="">Please select a program first...</option>
                 </select>
+                <div class="form-text" id="qualification-help">Select a program to see available qualifications</div>
               </div>
 
               <div class="mb-4">
                 <label for="cgpa" class="form-label fw-bold">CGPA / Grade</label>
                 <input type="text" class="form-control" id="cgpa" placeholder="e.g., 3.50 or B+" required>
-                <div class="form-text">Enter your CGPA (for STPM/Diploma/Foundation) or letter grade</div>
+                <div class="form-text" id="cgpa-help">Enter your CGPA (for STPM/Diploma/Foundation/Bachelor) or letter grade</div>
               </div>
 
               <div class="mb-4">
@@ -75,13 +69,89 @@
 {% block extra_js %}
 <script>
 $(document).ready(function() {
+  // Qualification options by program level
+  const qualificationOptions = {
+    'Foundation': [
+      {value: 'SPM', text: 'SPM (Sijil Pelajaran Malaysia)'},
+      {value: 'O-Level', text: 'O-Level / IGCSE'},
+      {value: 'UEC', text: 'UEC (Unified Examination Certificate)'},
+    ],
+    'Diploma': [
+      {value: 'SPM', text: 'SPM (Sijil Pelajaran Malaysia)'},
+      {value: 'O-Level', text: 'O-Level / IGCSE'},
+      {value: 'UEC', text: 'UEC (Unified Examination Certificate)'},
+    ],
+    'Bachelor': [
+      {value: 'STPM', text: 'STPM (Sijil Tinggi Persekolahan Malaysia)'},
+      {value: 'A-Level', text: 'A-Level (GCE Advanced Level)'},
+      {value: 'UEC', text: 'UEC (Unified Examination Certificate)'},
+      {value: 'Diploma', text: 'Diploma'},
+      {value: 'Foundation', text: 'Foundation Studies'},
+      {value: 'Matriculation', text: 'Matriculation'},
+      {value: 'SAM', text: 'SAM (South Australian Matriculation)'},
+      {value: 'IB', text: 'IB (International Baccalaureate)'},
+    ],
+    'Master': [
+      {value: 'Bachelor', text: 'Bachelor\'s Degree'},
+      {value: 'Professional Qualification', text: 'Professional Qualification (MQA recognized)'},
+    ],
+    'PhD': [
+      {value: 'Master', text: 'Master\'s Degree'},
+      {value: 'Bachelor', text: 'Bachelor\'s Degree (First Class Honours)'},
+    ]
+  };
+  
+  let programsData = {};
+  
   // Load programs
   $.get('/api/programs', function(data) {
     const select = $('#program-select');
     data.programs.forEach(function(program) {
-      select.append(`<option value="${program.program_id}">${program.program_name} (${program.level})</option>`);
+      select.append(`<option value="${program.program_id}" data-level="${program.level}">${program.program_name} (${program.level})</option>`);
+      programsData[program.program_id] = program;
     });
   });
+  
+    // Update qualification options when program is selected
+    $('#program-select').on('change', function() {
+      const programId = $(this).val();
+      const qualificationSelect = $('#qualification');
+      const helpText = $('#qualification-help');
+      const cgpaHelp = $('#cgpa-help');
+      
+      if (!programId) {
+        qualificationSelect.html('<option value="">Please select a program first...</option>').prop('disabled', true);
+        helpText.text('Select a program to see available qualifications');
+        cgpaHelp.text('Enter your CGPA (for STPM/Diploma/Foundation/Bachelor) or letter grade');
+        return;
+      }
+      
+      const program = programsData[programId];
+      if (!program) return;
+      
+      const level = program.level;
+      const options = qualificationOptions[level] || [];
+      
+      qualificationSelect.html('<option value="">Select your qualification...</option>');
+      
+      if (options.length > 0) {
+        options.forEach(function(opt) {
+          qualificationSelect.append(`<option value="${opt.value}">${opt.text}</option>`);
+        });
+        qualificationSelect.prop('disabled', false);
+        helpText.text(`Select your qualification for ${level} program`);
+        
+        // Update CGPA help text based on level
+        if (level === 'Master' || level === 'PhD') {
+          cgpaHelp.text('Enter your CGPA from your Bachelor\'s or Master\'s degree (e.g., 3.50)');
+        } else {
+          cgpaHelp.text('Enter your CGPA (for STPM/Diploma/Foundation) or letter grade (e.g., 3.50 or B+)');
+        }
+      } else {
+        qualificationSelect.html('<option value="">No qualifications available for this level</option>').prop('disabled', true);
+        helpText.text('This program level does not have qualification options configured');
+      }
+    });
 
   // Handle form submission
   $('#eligibility-form').on('submit', function(e) {

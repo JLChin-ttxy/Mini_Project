@@ -20,9 +20,14 @@
       <!-- Desktop Nav -->
       <nav class="nav-desktop">
         <a href="{{ url_for('index') }}">Home</a>
-        <a href="{{ url_for('admission.admission_home') }}">Admissions</a>
-        <a href="{{ url_for('admission.requirements') }}">Requirements</a>
-        <a href="{{ url_for('admission.application_procedure') }}">Apply</a>
+        <div class="nav-dropdown">
+          <a href="/admission/" class="dropdown-toggle">Admissions <i class="bi bi-chevron-down"></i></a>
+          <div class="dropdown-menu">
+            <a href="/admission/requirements">Requirements</a>
+            <a href="/admission/application-procedure">Apply</a>
+            <a href="/admission/deadlines">Deadlines</a>
+          </div>
+        </div>
         <a href="#facilities">Campus Life</a>
         <a href="#contact">Contact</a>
       </nav>
@@ -38,9 +43,10 @@
     <!-- Mobile Menu -->
     <nav id="mobile-menu" class="nav-mobile">
       <a href="{{ url_for('index') }}">Home</a>
-      <a href="{{ url_for('admission.admission_home') }}">Admissions</a>
-      <a href="{{ url_for('admission.requirements') }}">Requirements</a>
-      <a href="{{ url_for('admission.application_procedure') }}">Apply</a>
+      <a href="/admission/">Admissions</a>
+      <a href="/admission/requirements" class="submenu-item">→ Requirements</a>
+      <a href="/admission/application-procedure" class="submenu-item">→ Apply</a>
+      <a href="/admission/deadlines" class="submenu-item">→ Deadlines</a>
       <a href="#facilities">Campus Life</a>
       <a href="#contact">Contact</a>
     </nav>
