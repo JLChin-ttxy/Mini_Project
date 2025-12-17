@@ -4,212 +4,214 @@
 
 {% block extra_css %}
 <style>
-  .semesters-row {
+  .intake-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+
+  @media (max-width: 992px) {
+    .intake-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .intake-card {
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    border: 1px solid #e5e7eb;
+    background: #ffffff;
     display: flex;
+    flex-direction: column;
+  }
+
+  .intake-card-header {
+    padding: 1.75rem 1.5rem;
+    color: #ffffff;
+    font-weight: 700;
+    text-align: center;
+    font-size: 1.75rem;
+  }
+
+  .intake-card-header small {
+    font-size: 1rem;
+    opacity: 0.95;
+    display: block;
+    margin-top: 0.5rem;
+  }
+
+  .intake-card-header.undergrad { background: #1e3a8a; }
+  .intake-card-header.foundation { background: #1e3a8a; }
+  .intake-card-header.postgrad { background: #1e3a8a; }
+  .intake-card-header.special { background: #000000; }
+
+  .intake-card-body {
+    background: #ffffff;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .intake-row {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid #e5e7eb;
+    font-size: 1.1rem;
+    line-height: 1.7;
+  }
+
+  .intake-row:first-child {
+    border-top: none;
+  }
+
+  .intake-label {
+    display: block;
+    font-weight: 700;
+    font-size: 1.15rem;
+    color: #1f2937;
+    margin-bottom: 0.4rem;
+  }
+
+  .intake-date {
+    display: block;
+    font-size: 1.05rem;
+    color: #374151;
+    margin-bottom: 0.3rem;
+  }
+
+  .intake-details {
+    display: block;
+    font-size: 0.95rem;
+    color: #6b7280;
+    line-height: 1.6;
+  }
+
+  .intake-note {
+    padding: 1rem 1rem 1.25rem;
+    font-size: 0.95rem;
+    color: #ffffff;
+    background: #f97316;
+    font-weight: 500;
+    border-top: 2px solid #ea580c;
+  }
+
+  /* Academic Calendar Styles */
+  .academic-calendar-section {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 3px solid #1e3a8a;
+  }
+
+  .academic-calendar-section h2 {
+    font-size: 2rem;
+    color: #1e3a8a;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+  }
+
+  .calendar-year-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5rem;
     margin-bottom: 2rem;
-    flex-wrap: wrap;
   }
-  
-  .semester-card {
-    flex: 1;
-    min-width: 300px;
-    background: white;
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    border: 2px solid #e5e7eb;
-  }
-  
-  .semester-header {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 1.25rem;
+
+  .month-calendar {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
     border-radius: 8px;
-    margin-bottom: 1.25rem;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  }
+
+  .month-header {
+    background: #1e3a8a;
+    color: #ffffff;
+    padding: 0.75rem;
     text-align: center;
-  }
-  
-  .semester-header h3 {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin: 0 0 0.5rem 0;
-  }
-  
-  .semester-header .period {
+    font-weight: 700;
     font-size: 1.1rem;
-    opacity: 0.95;
+    border-radius: 6px 6px 0 0;
+    margin: -1rem -1rem 0.75rem -1rem;
   }
-  
-  .semester-header .weeks {
-    font-size: 0.95rem;
-    margin-top: 0.5rem;
-    padding-top: 0.5rem;
-    border-top: 1px solid rgba(255,255,255,0.3);
-  }
-  
-  .calendar-grid {
+
+  .calendar-days-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 0.4rem;
-    margin-bottom: 1rem;
+    gap: 0.25rem;
+    margin-bottom: 0.5rem;
   }
-  
-  .calendar-day-header {
+
+  .day-header {
     text-align: center;
-    font-weight: bold;
-    padding: 0.5rem 0.25rem;
-    background: #f3f4f6;
+    font-weight: 600;
+    font-size: 0.75rem;
+    padding: 0.25rem;
+    color: #6b7280;
+    background: #f9fafb;
     border-radius: 4px;
-    font-size: 0.85rem;
   }
-  
-  .calendar-day {
+
+  .calendar-day-cell {
     aspect-ratio: 1;
     border: 1px solid #e5e7eb;
     border-radius: 4px;
-    padding: 0.3rem;
+    padding: 0.25rem;
+    text-align: center;
+    font-size: 0.85rem;
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: relative;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-size: 0.9rem;
-    min-height: 35px;
   }
-  
-  .calendar-day:hover {
-    background: #f9fafb;
-    border-color: #3b82f6;
-    transform: scale(1.05);
-    z-index: 10;
-  }
-  
-  .calendar-day.has-event {
-    background: #dbeafe;
-    border-color: #3b82f6;
+
+  .calendar-day-cell.study-week {
+    background: #dcfce7;
+    border-color: #16a34a;
     font-weight: 600;
+    color: #166534;
   }
-  
-  .calendar-day.today {
-    background: #fef3c7;
-    border-color: #f59e0b;
-    font-weight: bold;
-    box-shadow: 0 0 0 2px #f59e0b;
+
+  .calendar-day-cell.application-period {
+    background: #fee2e2;
+    border-color: #ef4444;
+    font-weight: 600;
+    color: #991b1b;
   }
-  
-  .calendar-day-number {
-    display: block;
-    margin-bottom: 2px;
+
+  .calendar-day-cell.other-month {
+    opacity: 0.3;
+    background: #f9fafb;
   }
-  
-  .event-indicators {
+
+  .calendar-legend {
     display: flex;
     flex-wrap: wrap;
-    gap: 2px;
-    justify-content: center;
-    margin-top: 2px;
-  }
-  
-  .event-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    display: inline-block;
-  }
-  
-  .event-dot.foundation { background: #10b981; }
-  .event-dot.diploma { background: #3b82f6; }
-  .event-dot.bachelor { background: #8b5cf6; }
-  .event-dot.master { background: #f59e0b; }
-  .event-dot.phd { background: #ef4444; }
-  
-  .important-dates-list {
+    gap: 1.5rem;
+    margin-top: 1rem;
+    padding: 1rem;
     background: #f9fafb;
     border-radius: 8px;
-    padding: 1.5rem;
-    margin-top: 2rem;
   }
-  
-  .important-dates-list h3 {
-    font-size: 1.5rem;
-    margin-bottom: 1.5rem;
-    color: #1e3a8a;
-  }
-  
-  .date-item {
-    background: white;
-    border-left: 4px solid #3b82f6;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  }
-  
-  .date-item.critical {
-    border-left-color: #ef4444;
-    background: #fef2f2;
-  }
-  
-  .date-item.high {
-    border-left-color: #f59e0b;
-    background: #fffbeb;
-  }
-  
-  .date-item h5 {
-    font-size: 1.1rem;
-    margin: 0 0 0.5rem 0;
-    color: #1e3a8a;
-  }
-  
-  .date-item .date-range {
-    font-size: 1rem;
-    font-weight: 600;
-    color: #667eea;
-    margin-bottom: 0.5rem;
-  }
-  
-  .date-item .programs {
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     font-size: 0.9rem;
-    color: #6b7280;
   }
-  
-  .date-item .level-badge {
-    display: inline-block;
-    padding: 0.25rem 0.5rem;
+
+  .legend-color {
+    width: 20px;
+    height: 20px;
     border-radius: 4px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    margin-right: 0.5rem;
-    margin-top: 0.5rem;
+    border: 1px solid;
   }
-  
-  .level-badge.foundation { background: #d1fae5; color: #065f46; }
-  .level-badge.diploma { background: #dbeafe; color: #1e40af; }
-  .level-badge.bachelor { background: #e9d5ff; color: #6b21a8; }
-  .level-badge.master { background: #fed7aa; color: #92400e; }
-  .level-badge.phd { background: #fee2e2; color: #991b1b; }
-  
-  .calculation-info {
-    background: #eff6ff;
-    border-left: 4px solid #3b82f6;
-    padding: 1.5rem;
-    border-radius: 8px;
-    margin-top: 2rem;
-  }
-  
-  .calculation-info h4 {
-    font-size: 1.25rem;
-    margin-bottom: 1rem;
-    color: #1e3a8a;
-  }
-  
-  @media (max-width: 1200px) {
-    .semesters-row {
-      flex-direction: column;
-    }
-    .semester-card {
-      min-width: 100%;
-    }
-  }
+
+  .legend-color.study { background: #dcfce7; border-color: #16a34a; }
+  .legend-color.application { background: #fee2e2; border-color: #ef4444; }
 </style>
 {% endblock %}
 
@@ -219,89 +221,120 @@
     <div class="row">
       <div class="col-lg-12">
         <h1 class="mb-3" style="font-size: 2.5rem;">Important Dates & Deadlines</h1>
-        <p class="lead mb-4" style="font-size: 1.2rem;">Stay informed about application periods, intake dates, and important deadlines organized by semester.</p>
+        <p class="lead mb-4" style="font-size: 1.2rem;">Review fixed intake months and application deadlines for each level of study. These dates repeat every year so you can plan ahead.</p>
 
-        <!-- Email Notification Button -->
-        <div class="card border-primary mb-4">
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-center">
-              <div>
-                <h5 class="card-title mb-1"><i class="bi bi-bell"></i> Email Reminders</h5>
-                <p class="card-text mb-0">Get notified via email when deadlines are approaching for your selected programs.</p>
+        <!-- Intake cards similar to UTAR style -->
+        <div class="intake-grid mb-4">
+          <!-- Undergraduate -->
+          <div class="intake-card">
+            <div class="intake-card-header undergrad">
+              Undergraduate
+            </div>
+            <div class="intake-card-body">
+              <div class="intake-row">
+                <span class="intake-label">October / November Intake</span>
+                <span class="intake-date">3 November (every year)</span>
+                <span class="intake-details">Application opens: 3 August | Deadline: 27 October (every year)</span>
               </div>
-              <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#emailModal">
-                <i class="bi bi-bell-fill"></i> Enable Email Reminders
-              </button>
+              <div class="intake-row">
+                <span class="intake-label">February Intake</span>
+                <span class="intake-date">3 February (every year)</span>
+                <span class="intake-details">Application opens: 3 November (previous year) | Deadline: 27 January (every year)</span>
+              </div>
+              <div class="intake-row">
+                <span class="intake-label">June Intake</span>
+                <span class="intake-date">15 June (every year) </span>
+                <span class="intake-details">Application opens: 15 March </span>
+                <span class="intake-details">Deadline: 8 June (every year) </span>
+              </div>
+              <div class="intake-note">
+                ⚠️ Reminder: These dates repeat each year. Apply early if you need scholarship or loan processing.
+              </div>
+            </div>
+          </div>
+
+          <!-- Foundation -->
+          <div class="intake-card">
+            <div class="intake-card-header foundation">
+              Foundation
+            </div>
+            <div class="intake-card-body">
+              <div class="intake-row">
+                <span class="intake-label">October Intake</span>
+                <span class="intake-date">21 October (every year)</span>
+                <span class="intake-details">Application opens: 21 July </span>
+                <span class="intake-details">Deadline: 14 October (every year) </span>
+              </div>
+              <div class="intake-row">
+                <span class="intake-label">February Intake</span>
+                <span class="intake-date">3 February (every year)</span>
+                <span class="intake-details">Application opens: 3 November (previous year) </span>
+                <span class="intake-details">Deadline: 27 January (every year)</span>
+              </div>
+              <div class="intake-row">
+                <span class="intake-label">June Intake</span>
+                <span class="intake-date">15 June (every year)</span>
+                <span class="intake-details">Application opens: 15 March </span>
+                <span class="intake-details">Deadline: 8 June (every year) </span>
+              </div>
+              <div class="intake-note">
+                ⚠️ Reminder: Foundation applicants are encouraged to apply early to secure hostel and scholarship consideration.
+              </div>
+            </div>
+          </div>
+
+          <!-- Postgraduate -->
+          <div class="intake-card">
+            <div class="intake-card-header postgrad">
+              Postgraduate<br><small>(Master & PhD)</small>
+            </div>
+            <div class="intake-card-body">
+              <div class="intake-row">
+                <span class="intake-label">September Intake</span>
+                <span class="intake-date">17 September (every year)</span>
+                <span class="intake-details">Application opens: 17 June </span>
+                <span class="intake-details">Deadline: 10 September (every year)</span>
+              </div>
+              <div class="intake-row">
+                <span class="intake-label">February Intake</span>
+                <span class="intake-date">3 February (every year)</span>
+                <span class="intake-details">Application opens: 3 November (previous year) </span>
+                <span class="intake-details">Deadline: 27 January (every year)</span>
+              </div>
+              <div class="intake-row">
+                <span class="intake-label">June Intake</span>
+                <span class="intake-date">15 June (every year)</span>
+                <span class="intake-details">Application opens: 15 March </span>
+                <span class="intake-details">Deadline: 8 June (every year)</span>
+              </div>
+              <div class="intake-note">
+                ⚠️ Reminder: International postgraduate applicants should submit applications at least 2–3 months before the intake date for visa processing.
+              </div>
             </div>
           </div>
         </div>
 
-        <!-- Three Semesters in a Row -->
-        <div class="semesters-row">
-          <!-- Semester 1 -->
-          <div class="semester-card">
-            <div class="semester-header">
-              <h3>Semester 1</h3>
-              <div class="period">January - April 2025</div>
-              <div class="weeks">14 Weeks (Long Semester)</div>
-            </div>
-            <div class="calendar-grid" id="calendar-sem1"></div>
+        <!-- Academic Calendar Section -->
+        <div class="academic-calendar-section">
+          <h2><i class="bi bi-calendar3"></i> Academic Calendar</h2>
+          <p class="lead mb-4">View the academic calendar with highlighted study weeks for each semester. Dates repeat every year.</p>
+          
+          <div class="calendar-year-container" id="academic-calendar-container">
+            <!-- Calendar will be generated by JavaScript -->
           </div>
 
-          <!-- Semester 2 -->
-          <div class="semester-card">
-            <div class="semester-header">
-              <h3>Semester 2</h3>
-              <div class="period">May - August 2025</div>
-              <div class="weeks">14 Weeks (Long Semester)</div>
+          <div class="calendar-legend">
+            <div class="legend-item">
+              <span class="legend-color study"></span>
+              <strong>Study / Teaching Weeks</strong>
             </div>
-            <div class="calendar-grid" id="calendar-sem2"></div>
-          </div>
-
-          <!-- Semester 3 -->
-          <div class="semester-card">
-            <div class="semester-header">
-              <h3>Semester 3</h3>
-              <div class="period">September - October 2025</div>
-              <div class="weeks">7 Weeks (Short Semester)</div>
-            </div>
-            <div class="calendar-grid" id="calendar-sem3"></div>
-          </div>
-        </div>
-
-        <!-- Legend -->
-        <div class="card mb-4">
-          <div class="card-body">
-            <h5 class="card-title mb-3">Legend</h5>
-            <div class="d-flex flex-wrap gap-4">
-              <span><span class="event-dot foundation"></span> <strong>Foundation</strong></span>
-              <span><span class="event-dot diploma"></span> <strong>Diploma</strong></span>
-              <span><span class="event-dot bachelor"></span> <strong>Bachelor</strong></span>
-              <span><span class="event-dot master"></span> <strong>Master</strong></span>
-              <span><span class="event-dot phd"></span> <strong>PhD</strong></span>
+            <div class="legend-item">
+              <span class="legend-color application"></span>
+              <strong>Application Period</strong>
             </div>
           </div>
         </div>
 
-        <!-- Important Dates List -->
-        <div class="important-dates-list">
-          <h3><i class="bi bi-calendar-event"></i> Important Registration Dates & Periods</h3>
-          <div id="important-dates-container"></div>
-        </div>
-
-        <!-- Date Calculation Information -->
-        <div class="calculation-info">
-          <h4><i class="bi bi-info-circle"></i> How Important Dates Are Calculated</h4>
-          <p><strong>Registration periods are calculated consistently each year using the following formula:</strong></p>
-          <ul>
-            <li><strong>Semester 1 Registration:</strong> Opens 3 months before semester start (October of previous year), closes 2 weeks before semester start (mid-December)</li>
-            <li><strong>Semester 2 Registration:</strong> Opens 3 months before semester start (February), closes 2 weeks before semester start (mid-April)</li>
-            <li><strong>Semester 3 Registration:</strong> Opens 2 months before semester start (July), closes 1 week before semester start (late August)</li>
-            <li><strong>Application Deadlines:</strong> Always 4 weeks before registration opens (to allow time for processing)</li>
-            <li><strong>International Student Deadlines:</strong> 2 weeks earlier than local students (to allow time for visa processing)</li>
-          </ul>
-          <p class="mb-0"><strong>Note:</strong> These dates remain consistent year-to-year, only the year changes. For example, Semester 1 2026 will follow the same pattern as 2025, just shifted by one year.</p>
-        </div>
       </div>
     </div>
   </div>
@@ -350,147 +383,136 @@
 
 {% block extra_js %}
 <script>
-// Calendar data from backend
-const deadlinesData = {{ all_dates | tojson }};
-
-// Semester definitions
-const semesters = {
-  1: { startMonth: 1, endMonth: 4, year: 2025, weeks: 14 },
-  2: { startMonth: 5, endMonth: 8, year: 2025, weeks: 14 },
-  3: { startMonth: 9, endMonth: 10, year: 2025, weeks: 7 }
+// Academic Calendar Data - Fixed dates that repeat every year
+const academicCalendar = {
+  // Semester 1: January - April (14 weeks) - Starts mid-January
+  semester1: {
+    studyWeeks: [
+      { start: { month: 1, day: 13 }, end: { month: 4, day: 25 } } // Jan 13 - Apr 25 (14 weeks)
+    ],
+    applicationPeriods: [
+      { start: { month: 8, day: 3 }, end: { month: 10, day: 27 }, yearOffset: 0 } // Aug 3 - Oct 27 (for Nov intake)
+    ]
+  },
+  // Semester 2: May - August (14 weeks) - Starts mid-May
+  semester2: {
+    studyWeeks: [
+      { start: { month: 5, day: 19 }, end: { month: 8, day: 29 } } // May 19 - Aug 29 (14 weeks)
+    ],
+    applicationPeriods: [
+      { start: { month: 11, day: 3 }, end: { month: 1, day: 27 }, yearOffset: -1 } // Nov 3 (prev year) - Jan 27 (for Feb intake)
+    ]
+  },
+  // Semester 3: September - December (7 weeks) - Starts early September
+  semester3: {
+    studyWeeks: [
+      { start: { month: 9, day: 8 }, end: { month: 12, day: 19 } } // Sep 8 - Dec 19 (7 weeks)
+    ],
+    applicationPeriods: [
+      { start: { month: 3, day: 15 }, end: { month: 6, day: 8 }, yearOffset: 0 } // Mar 15 - Jun 8 (for Jun intake)
+    ]
+  }
 };
 
-function generateCalendar(containerId, semesterNum) {
-  const container = document.getElementById(containerId);
-  const sem = semesters[semesterNum];
-  const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+function isDateInRange(date, startMonth, startDay, endMonth, endDay, year) {
+  const startDate = new Date(year, startMonth - 1, startDay);
+  const endDate = new Date(year, endMonth - 1, endDay);
+  return date >= startDate && date <= endDate;
+}
+
+function generateMonthCalendar(year, month) {
+  const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                      'July', 'August', 'September', 'October', 'November', 'December'];
+  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   
-  let html = '';
+  const firstDay = new Date(year, month - 1, 1);
+  const lastDay = new Date(year, month, 0);
+  const daysInMonth = lastDay.getDate();
+  const startingDayOfWeek = firstDay.getDay();
+  
+  let html = `<div class="month-calendar">
+    <div class="month-header">${monthNames[month - 1]} ${year}</div>
+    <div class="calendar-days-grid">`;
   
   // Day headers
-  daysOfWeek.forEach(day => {
-    html += `<div class="calendar-day-header">${day}</div>`;
+  dayNames.forEach(day => {
+    html += `<div class="day-header">${day}</div>`;
   });
   
-  // Generate calendar for the semester period
-  const startDate = new Date(sem.year, sem.startMonth - 1, 1);
-  const endDate = new Date(sem.year, sem.endMonth, 0);
-  
-  const firstDay = startDate.getDay();
-  const daysInPeriod = endDate.getDate();
-  
-  // Empty cells for days before period starts
-  for (let i = 0; i < firstDay; i++) {
-    html += '<div class="calendar-day"></div>';
+  // Empty cells for days before month starts
+  for (let i = 0; i < startingDayOfWeek; i++) {
+    html += `<div class="calendar-day-cell other-month"></div>`;
   }
   
   // Calendar days
-  const today = new Date();
-  for (let day = 1; day <= daysInPeriod; day++) {
-    const date = new Date(sem.year, sem.startMonth - 1, day);
-    const dateStr = date.toISOString().split('T')[0];
-    const isToday = date.toDateString() === today.toDateString();
+  for (let day = 1; day <= daysInMonth; day++) {
+    const date = new Date(year, month - 1, day);
+    const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     
-    // Find events for this date
-    const events = deadlinesData.filter(d => {
-      if (!d.start_date || !d.end_date) return false;
-      const start = d.start_date.split('T')[0];
-      const end = d.end_date.split('T')[0];
-      return dateStr >= start && dateStr <= end;
+    let classes = 'calendar-day-cell';
+    let isStudyWeek = false;
+    let isApplicationPeriod = false;
+    
+    // Check if date falls within study weeks (current year)
+    Object.values(academicCalendar).forEach(semester => {
+      semester.studyWeeks.forEach(period => {
+        if (isDateInRange(date, period.start.month, period.start.day, period.end.month, period.end.day, year)) {
+          isStudyWeek = true;
+        }
+      });
+      
+      semester.applicationPeriods.forEach(period => {
+        if (period.start.month > period.end.month) {
+          // Crosses year boundary (e.g., Nov to Jan for Feb intake)
+          // Check if date is in Nov-Dec of previous year OR Jan of current year
+          const prevYearStart = new Date(year - 1, period.start.month - 1, period.start.day);
+          const currentYearEnd = new Date(year, period.end.month - 1, period.end.day);
+          if (date >= prevYearStart && date <= currentYearEnd) {
+            isApplicationPeriod = true;
+          }
+        } else {
+          // Same year period (e.g., Aug to Oct for Nov intake, Mar to Jun for Jun intake)
+          if (isDateInRange(date, period.start.month, period.start.day, period.end.month, period.end.day, year)) {
+            isApplicationPeriod = true;
+          }
+        }
+      });
     });
     
-    let classes = 'calendar-day';
-    if (isToday) classes += ' today';
-    if (events.length > 0) classes += ' has-event';
+    if (isStudyWeek) {
+      classes += ' study-week';
+    } else if (isApplicationPeriod) {
+      classes += ' application-period';
+    }
     
-    let eventDots = '';
-    const levels = new Set();
-    events.forEach(event => {
-      const level = (event.level || 'bachelor').toLowerCase();
-      levels.add(level);
-    });
-    
-    levels.forEach(level => {
-      eventDots += `<span class="event-dot ${level}" title="${events.map(e => e.event_type).join(', ')}"></span>`;
-    });
-    
-    html += `<div class="${classes}" data-date="${dateStr}" title="${events.map(e => `${e.event_type} - ${e.program_name}`).join('; ')}">
-      <span class="calendar-day-number">${day}</span>
-      <div class="event-indicators">${eventDots}</div>
-    </div>`;
+    html += `<div class="${classes}" title="${dateStr}">${day}</div>`;
+  }
+  
+  // Empty cells for days after month ends
+  const totalCells = startingDayOfWeek + daysInMonth;
+  const remainingCells = 7 - (totalCells % 7);
+  if (remainingCells < 7) {
+    for (let i = 0; i < remainingCells; i++) {
+      html += `<div class="calendar-day-cell other-month"></div>`;
+    }
+  }
+  
+  html += `</div></div>`;
+  return html;
+}
+
+function generateAcademicCalendar() {
+  const container = document.getElementById('academic-calendar-container');
+  const currentYear = new Date().getFullYear();
+  let html = '';
+  
+  // Generate calendar for all 12 months
+  for (let month = 1; month <= 12; month++) {
+    html += generateMonthCalendar(currentYear, month);
   }
   
   container.innerHTML = html;
 }
-
-// Generate important dates list
-function generateImportantDatesList() {
-  const container = document.getElementById('important-dates-container');
-  let html = '';
-  
-  // Group dates by event type and level
-  const groupedDates = {};
-  
-  deadlinesData.forEach(date => {
-    if (!date.start_date || !date.end_date) return;
-    
-    const key = `${date.event_type}_${date.level || 'all'}`;
-    if (!groupedDates[key]) {
-      groupedDates[key] = {
-        event_type: date.event_type,
-        level: date.level || 'all',
-        start_date: date.start_date,
-        end_date: date.end_date,
-        programs: [],
-        urgency: date.urgency || 'normal'
-      };
-    }
-    if (date.program_name && !groupedDates[key].programs.includes(date.program_name)) {
-      groupedDates[key].programs.push(date.program_name);
-    }
-  });
-  
-  // Sort by start date
-  const sortedDates = Object.values(groupedDates).sort((a, b) => {
-    return new Date(a.start_date) - new Date(b.start_date);
-  });
-  
-  sortedDates.forEach(date => {
-    const start = new Date(date.start_date);
-    const end = new Date(date.end_date);
-    const startStr = start.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-    const endStr = end.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-    
-    let urgencyClass = '';
-    if (date.urgency === 'critical') urgencyClass = 'critical';
-    else if (date.urgency === 'high') urgencyClass = 'high';
-    
-    const levelClass = (date.level || 'bachelor').toLowerCase();
-    
-    html += `
-      <div class="date-item ${urgencyClass}">
-        <h5>${date.event_type}</h5>
-        <div class="date-range">
-          <i class="bi bi-calendar"></i> ${startStr} - ${endStr}
-        </div>
-        <div class="programs">
-          ${date.programs.length > 0 ? `<strong>Programs:</strong> ${date.programs.slice(0, 3).join(', ')}${date.programs.length > 3 ? ' and more...' : ''}` : 'All Programs'}
-        </div>
-        <span class="level-badge ${levelClass}">${date.level || 'All Levels'}</span>
-      </div>
-    `;
-  });
-  
-  container.innerHTML = html || '<p>No important dates found.</p>';
-}
-
-// Initialize calendars and dates list
-document.addEventListener('DOMContentLoaded', function() {
-  generateCalendar('calendar-sem1', 1);
-  generateCalendar('calendar-sem2', 2);
-  generateCalendar('calendar-sem3', 3);
-  generateImportantDatesList();
-});
 
 function subscribeToEmail() {
   const email = document.getElementById('emailInput').value;
@@ -527,6 +549,11 @@ function subscribeToEmail() {
     alert('An error occurred. Please try again.');
   });
 }
+
+// Initialize calendar on page load
+document.addEventListener('DOMContentLoaded', function() {
+  generateAcademicCalendar();
+});
 </script>
 {% endblock %}
 
