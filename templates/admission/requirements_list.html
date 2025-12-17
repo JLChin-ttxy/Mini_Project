@@ -1,7 +1,1222 @@
-{% extends "admission/requirements.html" %}
+{% extends "base.html" %}
 
-{% block content %}
-{{ super() }}
+{% block title %}Admission Requirements - SKL University{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Grid layout for faculties - 3 per row */
+  #faculties-container,
+  #postgrad-faculties-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  
+  @media (max-width: 992px) {
+    #faculties-container,
+    #postgrad-faculties-container {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    #faculties-container,
+    #postgrad-faculties-container {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  .faculty-section {
+    margin-bottom: 0;
+  }
+  
+  .faculty-header {
+    background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    min-height: 100px;
+    height: 100px;
+    text-align: center;
+  }
+  
+  .faculty-header:hover {
+    background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  }
+  
+  .faculty-header > div:first-child {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+  
+  .faculty-header h3 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    line-height: 1.3;
+    text-align: center;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+  }
+  
+  .faculty-header .program-count {
+    font-size: 0.85rem;
+    opacity: 0.9;
+    margin: 0;
+    text-align: center;
+  }
+  
+  .faculty-header .toggle-icon {
+    flex-shrink: 0;
+    margin-left: 1rem;
+    font-size: 1.5rem;
+    transition: transform 0.3s;
+  }
+  
+  .faculty-header.collapsed .toggle-icon {
+    transform: rotate(-90deg);
+  }
+  
+  @media (max-width: 768px) {
+    .faculty-header {
+      min-height: 90px;
+      height: 90px;
+      padding: 1rem;
+    }
+    
+    .faculty-header h3 {
+      font-size: 1.1rem;
+    }
+    
+    .faculty-header .program-count {
+      font-size: 0.8rem;
+    }
+  }
+  
+  .faculty-content {
+    display: none;
+    padding: 0 0.5rem;
+  }
+  
+  .faculty-content.show {
+    display: block;
+  }
+  
+  .program-card {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    transition: all 0.2s;
+  }
+  
+  .program-card:hover {
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-color: #3b82f6;
+  }
+  
+  .program-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 1rem;
+    cursor: pointer;
+  }
+  
+  .program-title {
+    flex: 1;
+  }
+  
+  .program-title h5 {
+    margin: 0 0 0.5rem 0;
+    font-size: 1.2rem;
+    color: #1e3a8a;
+    font-weight: 600;
+  }
+  
+  .program-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.9rem;
+    color: #6b7280;
+  }
+  
+  .program-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+  
+  .badge-foundation { background: #d1fae5; color: #065f46; }
+  .badge-diploma { background: #dbeafe; color: #1e40af; }
+  .badge-bachelor { background: #e9d5ff; color: #6b21a8; }
+  .badge-master { background: #fed7aa; color: #92400e; }
+  .badge-phd { background: #fee2e2; color: #991b1b; }
+  
+  .program-toggle {
+    color: #3b82f6;
+    font-size: 1.2rem;
+    transition: transform 0.3s;
+  }
+  
+  .program-card.expanded .program-toggle {
+    transform: rotate(180deg);
+  }
+  
+  .requirements-details {
+    display: none;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 2px solid #e5e7eb;
+  }
+  
+  .program-card.expanded .requirements-details {
+    display: block;
+  }
+  
+  .requirement-group {
+    margin-bottom: 1.5rem;
+  }
+  
+  .requirement-group h6 {
+    color: #1e3a8a;
+    font-weight: 600;
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+  }
+  
+  .requirement-item {
+    background: #f9fafb;
+    border-left: 4px solid #3b82f6;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    border-radius: 4px;
+  }
+  
+  .requirement-item .qualification {
+    font-weight: 600;
+    color: #1e3a8a;
+    font-size: 1.05rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .requirement-item .grade {
+    color: #059669;
+    font-weight: 500;
+    margin-bottom: 0.25rem;
+  }
+  
+  .requirement-item .additional {
+    color: #6b7280;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+  }
+  
+  .search-box {
+    margin-bottom: 2rem;
+  }
+  
+  .no-results {
+    text-align: center;
+    padding: 3rem;
+    color: #6b7280;
+  }
+  
+  /* Foundation Programs Section */
+  .foundation-section {
+    margin-bottom: 3rem;
+  }
+  
+  .foundation-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+  
+  @media (max-width: 768px) {
+    .foundation-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  
+  .foundation-card {
+    background: white;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: all 0.3s;
+    position: relative;
+  }
+  
+  .foundation-card:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border-color: #3b82f6;
+  }
+  
+  .foundation-card.expanded {
+    border-color: #3b82f6;
+    box-shadow: 0 6px 16px rgba(59, 130, 246, 0.2);
+  }
+  
+  .foundation-card h3 {
+    color: #1e3a8a;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+  }
+  
+  .suggested-degrees {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 2px solid #e5e7eb;
+    display: none;
+  }
+  
+  .foundation-card.expanded .suggested-degrees {
+    display: block;
+  }
+  
+  .suggested-degrees h6 {
+    color: #1e3a8a;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    font-size: 1rem;
+  }
+  
+  .view-degrees-btn {
+    margin-top: 1rem;
+    width: 100%;
+    padding: 0.75rem;
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  
+  .view-degrees-btn:hover {
+    background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(59, 130, 246, 0.3);
+  }
+  
+  .view-degrees-btn i {
+    transition: transform 0.3s;
+  }
+  
+  .foundation-card.expanded .view-degrees-btn i {
+    transform: rotate(180deg);
+  }
+  
+  .degree-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+  }
+  
+  .degree-list::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .degree-list::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 3px;
+  }
+  
+  .degree-list::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 3px;
+  }
+  
+  .degree-list::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+  }
+  
+  .degree-item {
+    padding: 0.75rem;
+    background: #f9fafb;
+    border-left: 3px solid #3b82f6;
+    border-radius: 4px;
+    transition: all 0.2s;
+  }
+  
+  .degree-item:hover {
+    background: #eff6ff;
+    transform: translateX(4px);
+  }
+  
+  .degree-item a {
+    color: #1e3a8a;
+    text-decoration: none;
+    font-weight: 500;
+  }
+  
+  .degree-item a:hover {
+    text-decoration: underline;
+  }
+  
+  .degree-item .faculty-name {
+    font-size: 0.85rem;
+    color: #6b7280;
+    margin-top: 0.25rem;
+  }
+  
+  .section-divider {
+    margin: 3rem 0;
+    border-top: 3px solid #e5e7eb;
+  }
+  
+  .section-title {
+    color: #1e3a8a;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+  }
+</style>
 {% endblock %}
 
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <h1 class="mb-3" style="font-size: 2.5rem;">Admission Requirements</h1>
+        <p class="lead mb-4" style="font-size: 1.1rem;">Browse admission requirements by faculty and program. Click on any program to view detailed requirements.</p>
 
+        <!-- Search Box -->
+        <div class="search-box">
+          <div class="card">
+            <div class="card-body">
+              <div class="input-group">
+                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                <input type="text" class="form-control form-control-lg" id="searchInput" placeholder="Search by program name, faculty, or qualification type...">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Foundation Programs Section -->
+        {% if foundation_programs %}
+        <div class="foundation-section">
+          <h2 class="section-title"><i class="bi bi-mortarboard"></i> Foundation Studies</h2>
+          <p class="lead mb-4">Foundation programs prepare students for degree studies. Choose Foundation in Science for science and engineering programs, or Foundation in Arts for business, management, and arts programs.</p>
+          
+          <div class="foundation-grid">
+            <!-- Foundation in Science -->
+            <div class="foundation-card" data-foundation="science">
+              <h3><i class="bi bi-flask text-primary"></i> Foundation in Science</h3>
+              <p class="text-muted mb-3">1 Year Program</p>
+              
+              <!-- Entry Requirements -->
+              <div class="requirement-group">
+                <h6><i class="bi bi-flag-fill text-primary"></i> Entry Requirements for Malaysian Students</h6>
+                <div class="table-responsive">
+                  <table class="table table-sm table-bordered">
+                    <thead class="table-light">
+                      <tr>
+                        <th>Qualification</th>
+                        <th>Minimum Grade</th>
+                        <th>Additional Requirements</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><strong>SPM</strong><br><small class="text-muted">Sijil Pelajaran Malaysia</small></td>
+                        <td><span class="text-success fw-semibold">5 Credits</span><br><small class="text-muted">(Minimum requirement)</small></td>
+                        <td><small>Including Mathematics and Science. Credit = Grade C and above.</small></td>
+                      </tr>
+                      <tr>
+                        <td><strong>O-Level</strong><br><small class="text-muted">GCE Ordinary Level</small></td>
+                        <td><span class="text-success fw-semibold">5 Credits</span><br><small class="text-muted">(Minimum requirement)</small></td>
+                        <td><small>Including Mathematics and Science. Credit = Grade C and above.</small></td>
+                      </tr>
+                      <tr>
+                        <td><strong>UEC</strong><br><small class="text-muted">Unified Examination Certificate</small></td>
+                        <td><span class="text-success fw-semibold">5 Bs</span><br><small class="text-muted">(Minimum requirement)</small></td>
+                        <td><small>Including Mathematics and Science. Grade B (60-69%) or better.</small></td>
+                      </tr>
+                      <tr>
+                        <td><strong>IGCSE</strong><br><small class="text-muted">International General Certificate</small></td>
+                        <td><span class="text-success fw-semibold">5 Credits</span><br><small class="text-muted">(Minimum requirement)</small></td>
+                        <td><small>Including Mathematics and Science. Credit = Grade C and above.</small></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              
+              <!-- International Requirements -->
+              <div class="requirement-group">
+                <h6><i class="bi bi-globe text-info"></i> Entry Requirements for International Students</h6>
+                <div class="table-responsive">
+                  <table class="table table-sm table-bordered">
+                    <thead class="table-light">
+                      <tr>
+                        <th>Qualification</th>
+                        <th>Minimum Achievement</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><strong>IGCSE / O-Level</strong></td>
+                        <td>5 Credits including Math & Science</td>
+                      </tr>
+                      <tr>
+                        <td><strong>High School Diploma</strong></td>
+                        <td>GPA 2.5 with Math & Science</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Year 10 Equivalent</strong></td>
+                        <td>Pass with Math & Science subjects</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              
+              <!-- Suggested Degree Programs Button -->
+              {% if foundation_programs.science.suggested_degrees %}
+              <button class="view-degrees-btn" onclick="toggleFoundationDegrees(this)">
+                <i class="bi bi-chevron-down"></i> View Suggested Degree Programs ({{ foundation_programs.science.suggested_degrees|length }})
+              </button>
+              
+              <!-- Suggested Degree Programs -->
+              <div class="suggested-degrees">
+                <h6><i class="bi bi-arrow-right-circle text-success"></i> Suggested Degree Programs</h6>
+                <div class="degree-list">
+                  {% for degree in foundation_programs.science.suggested_degrees %}
+                  <div class="degree-item">
+                    <a href="/admission/requirements?program_id={{ degree.program_id }}">{{ degree.program_name }}</a>
+                    <div class="faculty-name">{{ degree.faculty_name }}</div>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+              {% endif %}
+            </div>
+            
+            <!-- Foundation in Arts -->
+            <div class="foundation-card" data-foundation="arts">
+              <h3><i class="bi bi-palette text-info"></i> Foundation in Arts</h3>
+              <p class="text-muted mb-3">1 Year Program</p>
+              
+              <!-- Entry Requirements -->
+              <div class="requirement-group">
+                <h6><i class="bi bi-flag-fill text-primary"></i> Entry Requirements for Malaysian Students</h6>
+                <div class="table-responsive">
+                  <table class="table table-sm table-bordered">
+                    <thead class="table-light">
+                      <tr>
+                        <th>Qualification</th>
+                        <th>Minimum Grade</th>
+                        <th>Additional Requirements</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><strong>SPM</strong><br><small class="text-muted">Sijil Pelajaran Malaysia</small></td>
+                        <td><span class="text-success fw-semibold">5 Credits</span><br><small class="text-muted">(Minimum requirement)</small></td>
+                        <td><small>Including Mathematics and English. Credit = Grade C and above.</small></td>
+                      </tr>
+                      <tr>
+                        <td><strong>O-Level</strong><br><small class="text-muted">GCE Ordinary Level</small></td>
+                        <td><span class="text-success fw-semibold">5 Credits</span><br><small class="text-muted">(Minimum requirement)</small></td>
+                        <td><small>Including Mathematics and English. Credit = Grade C and above.</small></td>
+                      </tr>
+                      <tr>
+                        <td><strong>UEC</strong><br><small class="text-muted">Unified Examination Certificate</small></td>
+                        <td><span class="text-success fw-semibold">5 Bs</span><br><small class="text-muted">(Minimum requirement)</small></td>
+                        <td><small>Including Mathematics and English. Grade B (60-69%) or better.</small></td>
+                      </tr>
+                      <tr>
+                        <td><strong>IGCSE</strong><br><small class="text-muted">International General Certificate</small></td>
+                        <td><span class="text-success fw-semibold">5 Credits</span><br><small class="text-muted">(Minimum requirement)</small></td>
+                        <td><small>Including Mathematics and English. Credit = Grade C and above.</small></td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              
+              <!-- International Requirements -->
+              <div class="requirement-group">
+                <h6><i class="bi bi-globe text-info"></i> Entry Requirements for International Students</h6>
+                <div class="table-responsive">
+                  <table class="table table-sm table-bordered">
+                    <thead class="table-light">
+                      <tr>
+                        <th>Qualification</th>
+                        <th>Minimum Achievement</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td><strong>IGCSE / O-Level</strong></td>
+                        <td>5 Credits including Math & English</td>
+                      </tr>
+                      <tr>
+                        <td><strong>High School Diploma</strong></td>
+                        <td>GPA 2.5 with Math & English</td>
+                      </tr>
+                      <tr>
+                        <td><strong>Year 10 Equivalent</strong></td>
+                        <td>Pass with Math & English subjects</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              
+              <!-- Suggested Degree Programs Button -->
+              {% if foundation_programs.arts.suggested_degrees %}
+              <button class="view-degrees-btn" onclick="toggleFoundationDegrees(this)">
+                <i class="bi bi-chevron-down"></i> View Suggested Degree Programs ({{ foundation_programs.arts.suggested_degrees|length }})
+              </button>
+              
+              <!-- Suggested Degree Programs -->
+              <div class="suggested-degrees">
+                <h6><i class="bi bi-arrow-right-circle text-success"></i> Suggested Degree Programs</h6>
+                <div class="degree-list">
+                  {% for degree in foundation_programs.arts.suggested_degrees %}
+                  <div class="degree-item">
+                    <a href="/admission/requirements?program_id={{ degree.program_id }}">{{ degree.program_name }}</a>
+                    <div class="faculty-name">{{ degree.faculty_name }}</div>
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        
+        <div class="section-divider"></div>
+        {% endif %}
+        
+        <!-- Undergraduate Programmes Section -->
+        {% if undergrad_faculties %}
+        <div class="undergrad-programs-section">
+          <h2 class="section-title"><i class="bi bi-mortarboard-fill"></i> Undergraduate Programmes</h2>
+          <p class="lead mb-4">Bachelor's and Diploma programmes offered by our faculties. Click on any programme to view detailed requirements.</p>
+        
+        <!-- Faculties and Programs -->
+        <div id="faculties-container">
+          {% for faculty_id, faculty_data in undergrad_faculties.items() %}
+          <div class="faculty-section" data-faculty="{{ faculty_data.faculty_name|lower }}">
+            <div class="faculty-header collapsed" onclick="toggleFaculty(this)">
+              <div>
+                <h3>{{ faculty_data.faculty_name }}</h3>
+                <span class="program-count">{{ faculty_data.programs|length }} programme(s)</span>
+              </div>
+              <i class="bi bi-chevron-down toggle-icon"></i>
+            </div>
+            
+            <div class="faculty-content">
+              {% for program_id, program_data in faculty_data.programs.items() %}
+              <div class="program-card" data-program="{{ program_data.program_name|lower }}" data-level="{{ program_data.level|lower }}">
+                <div class="program-header" onclick="toggleProgram(this)">
+                  <div class="program-title">
+                    <h5>{{ program_data.program_name }}</h5>
+                    <div class="program-meta">
+                      <span><i class="bi bi-award"></i> {{ program_data.level }}</span>
+                      <span><i class="bi bi-clock"></i> {{ program_data.duration_years }} Year(s)</span>
+                    </div>
+                  </div>
+                  <div>
+                    <span class="program-badge badge-{{ program_data.level|lower }}">{{ program_data.level }}</span>
+                    <i class="bi bi-chevron-down program-toggle"></i>
+                  </div>
+                </div>
+                
+                <div class="requirements-details">
+                  {% if program_data.requirements %}
+                    <!-- Malaysian Requirements - Table Format -->
+                    <div class="requirement-group">
+                      <h6><i class="bi bi-flag-fill text-primary"></i> Entry Requirements (Choose any ONE)</h6>
+                      <div class="table-responsive">
+                        <table class="table table-sm table-bordered">
+                          <thead class="table-light">
+                            <tr>
+                              <th style="width: 25%;">Qualification</th>
+                              <th style="width: 35%;">Minimum Grade</th>
+                              <th style="width: 40%;">Additional Requirements</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% set qual_order = ['STPM', 'UEC', 'A-Level', 'Matriculation', 'Foundation', 'Diploma', 'SPM'] %}
+                            {% for qual_type in qual_order %}
+                              {% set req = program_data.requirements|selectattr('qualification_type', 'equalto', qual_type)|first %}
+                            <tr>
+                              <td>
+                                <strong>{{ qual_type }}</strong>
+                                {% if qual_type == 'STPM' %}
+                                  <br><small class="text-muted">Sijil Tinggi Persekolahan Malaysia</small>
+                                {% elif qual_type == 'UEC' %}
+                                  <br><small class="text-muted">Unified Examination Certificate</small>
+                                {% elif qual_type == 'SPM' %}
+                                  <br><small class="text-muted">Sijil Pelajaran Malaysia</small>
+                                {% elif qual_type == 'SAM' %}
+                                  <br><small class="text-muted">South Australian Matriculation</small>
+                                {% elif qual_type == 'A-Level' %}
+                                  <br><small class="text-muted">GCE Advanced Level</small>
+                                {% elif qual_type == 'IB' %}
+                                  <br><small class="text-muted">International Baccalaureate</small>
+                                {% elif qual_type == 'Matriculation' %}
+                                  <br><small class="text-muted">Matriculation Certificate</small>
+                                {% elif qual_type == 'Foundation' %}
+                                  <br><small class="text-muted">Foundation Studies</small>
+                                {% elif qual_type == 'Diploma' %}
+                                  <br><small class="text-muted">Diploma (Level 4, MQF)</small>
+                                {% endif %}
+                              </td>
+                              <td>
+                                {% if qual_type == 'SPM' %}
+                                  {% if req and req.minimum_grade and ('Credit' in req.minimum_grade or 'credit' in req.minimum_grade) %}
+                                    <span class="text-success fw-semibold">{{ req.minimum_grade }}</span>
+                                  {% else %}
+                                    <span class="text-success fw-semibold">5 Credits</span>
+                                    <br><small class="text-muted">(Credit = Grade C and above)</small>
+                                  {% endif %}
+                                {% elif qual_type == 'UEC' %}
+                                  {% if req and req.minimum_grade and ('Bs' in req.minimum_grade or 'B' in req.minimum_grade or 'bs' in req.minimum_grade) %}
+                                    <span class="text-success fw-semibold">{{ req.minimum_grade }}</span>
+                                  {% else %}
+                                    <span class="text-success fw-semibold">5 Bs</span>
+                                    <br><small class="text-muted">(Grade B = 60-69% or better)</small>
+                                  {% endif %}
+                                {% elif qual_type == 'STPM' %}
+                                  {% if req and req.minimum_grade and ('CGPA' in req.minimum_grade or 'cgpa' in req.minimum_grade) %}
+                                    <span class="text-success fw-semibold">{{ req.minimum_grade }}</span>
+                                  {% else %}
+                                    <span class="text-success fw-semibold">CGPA 2.00</span>
+                                    <br><small class="text-muted">(Minimum Cumulative Grade Point Average)</small>
+                                  {% endif %}
+                                {% elif qual_type == 'Matriculation' %}
+                                  {% if req and req.minimum_grade %}
+                                    <span class="text-success fw-semibold">{{ req.minimum_grade }}</span>
+                                  {% else %}
+                                    <span class="text-success fw-semibold">CGPA 2.00</span>
+                                    <br><small class="text-muted">(In relevant stream: Science/Arts)</small>
+                                  {% endif %}
+                                {% elif qual_type == 'Foundation' %}
+                                  {% if req and req.minimum_grade %}
+                                    <span class="text-success fw-semibold">{{ req.minimum_grade }}</span>
+                                  {% else %}
+                                    <span class="text-success fw-semibold">CGPA 2.00</span>
+                                    <br><small class="text-muted">(In relevant field)</small>
+                                  {% endif %}
+                                {% elif qual_type == 'Diploma' %}
+                                  {% if req and req.minimum_grade %}
+                                    <span class="text-success fw-semibold">{{ req.minimum_grade }}</span>
+                                  {% else %}
+                                    <span class="text-success fw-semibold">CGPA 2.50</span>
+                                    <br><small class="text-muted">(In relevant field, Level 4 MQF)</small>
+                                  {% endif %}
+                                {% elif qual_type == 'A-Level' %}
+                                  {% if req and req.minimum_grade %}
+                                    <span class="text-success fw-semibold">{{ req.minimum_grade }}</span>
+                                  {% else %}
+                                    <span class="text-success fw-semibold">2 Passes at Grade C</span>
+                                    <br><small class="text-muted">(GCE Advanced Level)</small>
+                                  {% endif %}
+                                {% elif qual_type == 'IB' %}
+                                  {% if req and req.minimum_grade %}
+                                    <span class="text-success fw-semibold">{{ req.minimum_grade }}</span>
+                                  {% else %}
+                                    <span class="text-success fw-semibold">24 Points</span>
+                                    <br><small class="text-muted">(International Baccalaureate Diploma)</small>
+                                  {% endif %}
+                                {% elif qual_type == 'SAM' %}
+                                  {% if req and req.minimum_grade %}
+                                    <span class="text-success fw-semibold">{{ req.minimum_grade }}</span>
+                                  {% else %}
+                                    <span class="text-success fw-semibold">ATAR 70</span>
+                                    <br><small class="text-muted">(South Australian Matriculation)</small>
+                                  {% endif %}
+                                {% elif req and req.minimum_grade %}
+                                  <span class="text-success fw-semibold">{{ req.minimum_grade }}</span>
+                                {% else %}
+                                  <span class="text-muted">-</span>
+                                {% endif %}
+                              </td>
+                              <td>
+                                {% if req and req.additional_requirements %}
+                                  <small>{{ req.additional_requirements }}</small>
+                                {% else %}
+                                  {% if qual_type == 'SPM' %}
+                                    <small class="text-muted">Credit in relevant subjects (typically Mathematics and English)</small>
+                                  {% elif qual_type == 'UEC' %}
+                                    <small class="text-muted">Must include relevant subjects (typically Mathematics and English)</small>
+                                  {% elif qual_type == 'STPM' %}
+                                    <small class="text-muted">Pass in relevant subjects</small>
+                                  {% elif qual_type == 'Matriculation' %}
+                                    <small class="text-muted">In relevant stream (Science/Arts)</small>
+                                  {% elif qual_type == 'Foundation' %}
+                                    <small class="text-muted">In relevant field</small>
+                                  {% elif qual_type == 'Diploma' %}
+                                    <small class="text-muted">In relevant field</small>
+                                  {% else %}
+                                    <span class="text-muted">-</span>
+                                  {% endif %}
+                                {% endif %}
+                              </td>
+                            </tr>
+                            {% endfor %}
+                            
+                            {# Show other qualifications not in standard list #}
+                            {% for req in program_data.requirements %}
+                              {% if req.qualification_type not in qual_order %}
+                            <tr>
+                              <td>
+                                <strong>{{ req.qualification_type }}</strong>
+                              </td>
+                              <td>
+                                {% if req.minimum_grade %}
+                                  <span class="text-success fw-semibold">{{ req.minimum_grade }}</span>
+                                {% else %}
+                                  <span class="text-muted">See additional requirements</span>
+                                {% endif %}
+                              </td>
+                              <td>
+                                {% if req.additional_requirements %}
+                                  <small>{{ req.additional_requirements }}</small>
+                                {% else %}
+                                  <span class="text-muted">-</span>
+                                {% endif %}
+                              </td>
+                            </tr>
+                              {% endif %}
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                    <!-- International Equivalence Reference -->
+                    <div class="requirement-group">
+                      <h6><i class="bi bi-globe text-info"></i> International Academic Equivalence</h6>
+                      <div class="table-responsive">
+                        <table class="table table-sm table-bordered align-middle">
+                          <thead class="table-light">
+                            <tr>
+                              <th style="width: 35%;">Qualification</th>
+                              <th style="width: 30%;">Minimum Achievement</th>
+                              <th style="width: 35%;">Notes</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td><strong>A-Level / GCE</strong></td>
+                              <td>≥ 2 passes at Grade C</td>
+                              <td>Relevant subjects required</td>
+                            </tr>
+                            <tr>
+                              <td><strong>International Baccalaureate</strong></td>
+                              <td>≥ 24 points</td>
+                              <td>2 HL subjects preferred</td>
+                            </tr>
+                            <tr>
+                              <td><strong>Australian Year 12 / ATAR</strong></td>
+                              <td>ATAR 60+</td>
+                              <td>Subject prerequisites apply</td>
+                            </tr>
+                            <tr>
+                              <td><strong>US High School + SAT/ACT</strong></td>
+                              <td>GPA 2.5 + SAT 1100 / ACT 22</td>
+                              <td>AP/IB subjects accepted</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                      <p class="text-muted small mb-0">Benchmarks mirror UTAR-style guidance; confirm program-specific prerequisites with admissions.</p>
+                    </div>
+                    
+                    <!-- Quick Actions -->
+                    <div class="d-flex gap-2 mt-3">
+                      <a href="/admission/requirements?program_id={{ program_id }}" class="btn btn-sm btn-primary">
+                        <i class="bi bi-eye"></i> View Full Details
+                      </a>
+                      <a href="/admission/check-eligibility?program_id={{ program_id }}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-check-circle"></i> Check Eligibility
+                      </a>
+                      <a href="/admission/document-checklist?program_id={{ program_id }}" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-file-earmark-text"></i> Document Checklist
+                      </a>
+                    </div>
+                  {% else %}
+                    <div class="alert alert-info">
+                      <i class="bi bi-info-circle"></i> Requirements are being updated. Please contact the admission office for details.
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        
+        <div class="no-results" id="noResults" style="display: none;">
+          <i class="bi bi-search" style="font-size: 3rem; color: #d1d5db;"></i>
+          <h4 class="mt-3">No programs found</h4>
+          <p>Try adjusting your search terms</p>
+        </div>
+        
+        {% else %}
+        <div class="alert alert-warning">
+          <h5>No undergraduate programmes available</h5>
+          <p>Please check back later or contact the admission office.</p>
+        </div>
+        {% endif %}
+        </div>
+        
+        <!-- Postgraduate Programmes Section -->
+        {% if postgrad_faculties %}
+        <div class="section-divider"></div>
+        
+        <div class="postgrad-programs-section">
+          <h2 class="section-title"><i class="bi bi-graduation-cap"></i> Postgraduate Programmes</h2>
+          <p class="lead mb-4">Master's and PhD programmes offered by our faculties. Click on any programme to view detailed requirements.</p>
+        
+        <!-- Postgraduate Faculties and Programs -->
+        <div id="postgrad-faculties-container">
+          {% for faculty_id, faculty_data in postgrad_faculties.items() %}
+          <div class="faculty-section" data-faculty="{{ faculty_data.faculty_name|lower }}">
+            <div class="faculty-header collapsed" onclick="toggleFaculty(this)">
+              <div>
+                <h3>{{ faculty_data.faculty_name }}</h3>
+                <span class="program-count">{{ faculty_data.programs|length }} programme(s)</span>
+              </div>
+              <i class="bi bi-chevron-down toggle-icon"></i>
+            </div>
+            
+            <div class="faculty-content">
+              {% for program_id, program_data in faculty_data.programs.items() %}
+              <div class="program-card" data-program="{{ program_data.program_name|lower }}" data-level="{{ program_data.level|lower }}">
+                <div class="program-header" onclick="toggleProgram(this)">
+                  <div class="program-title">
+                    <h5>{{ program_data.program_name }}</h5>
+                    <div class="program-meta">
+                      <span><i class="bi bi-award"></i> {{ program_data.level }}</span>
+                      <span><i class="bi bi-clock"></i> {{ program_data.duration_years }} Year(s)</span>
+                    </div>
+                  </div>
+                  <div>
+                    <span class="program-badge badge-{{ program_data.level|lower }}">{{ program_data.level }}</span>
+                    <i class="bi bi-chevron-down program-toggle"></i>
+                  </div>
+                </div>
+                
+                <div class="requirements-details">
+                  {% if program_data.requirements %}
+                    <!-- Postgraduate Requirements - UTAR Style -->
+                    <div class="requirement-group">
+                      <h6><i class="bi bi-flag-fill text-primary"></i> Entry Requirements</h6>
+                      <div class="table-responsive">
+                        <table class="table table-sm table-bordered">
+                          <thead class="table-light">
+                            <tr>
+                              <th style="width: 30%;">Qualification</th>
+                              <th style="width: 35%;">Minimum Grade/Requirement</th>
+                              <th style="width: 35%;">Additional Requirements</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {% if program_data.level == 'Master' %}
+                            <tr>
+                              <td><strong>Bachelor's Degree or Equivalent</strong><br><small class="text-muted">Level 6 MQF or recognized professional degree</small></td>
+                              <td>
+                                {% set bachelor_req = program_data.requirements|selectattr('qualification_type', 'equalto', 'Bachelor')|first %}
+                                {% if bachelor_req and bachelor_req.minimum_grade %}
+                                  <span class="text-success fw-semibold">{{ bachelor_req.minimum_grade }}</span>
+                                {% else %}
+                                  <span class="text-success fw-semibold">Minimum CGPA 2.75</span>
+                                  <br><small class="text-muted">In relevant field (or equivalent)</small>
+                                {% endif %}
+                              </td>
+                              <td>
+                                {% if bachelor_req and bachelor_req.additional_requirements %}
+                                  <small>{{ bachelor_req.additional_requirements }}</small>
+                                {% else %}
+                                  <small>Relevant field; may consider Level 6 MQF professional degree</small>
+                                {% endif %}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td><strong>Recognized Professional Qualification</strong><br><small class="text-muted">MQA-recognized degree-equivalent</small></td>
+                              <td><span class="text-success fw-semibold">Degree-equivalent</span><br><small class="text-muted">With sufficient standing</small></td>
+                              <td><small>Typically with relevant work experience</small></td>
+                            </tr>
+                            {% elif program_data.level == 'PhD' %}
+                            <tr>
+                              <td><strong>Master's Degree or Equivalent</strong><br><small class="text-muted">Level 7 MQF or recognized professional Master</small></td>
+                              <td>
+                                {% set master_req = program_data.requirements|selectattr('qualification_type', 'equalto', 'Master')|first %}
+                                {% if master_req and master_req.minimum_grade %}
+                                  <span class="text-success fw-semibold">{{ master_req.minimum_grade }}</span>
+                                {% else %}
+                                  <span class="text-success fw-semibold">Minimum CGPA 3.00</span>
+                                  <br><small class="text-muted">In relevant field (or equivalent)</small>
+                                {% endif %}
+                              </td>
+                              <td>
+                                {% if master_req and master_req.additional_requirements %}
+                                  <small>{{ master_req.additional_requirements }}</small>
+                                {% else %}
+                                  <small>Relevant field; research proposal/interview may apply</small>
+                                {% endif %}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td><strong>Bachelor's Degree (First Class Honours)</strong><br><small class="text-muted">Direct PhD entry pathway</small></td>
+                              <td><span class="text-success fw-semibold">Minimum CGPA 3.67</span><br><small class="text-muted">(First Class Honours)</small></td>
+                              <td><small>Subject to research proposal & panel approval</small></td>
+                            </tr>
+                            {% endif %}
+                            
+                            {# Show other requirements from database #}
+                            {% for req in program_data.requirements %}
+                              {% if req.qualification_type not in ['Bachelor', 'Master'] %}
+                            <tr>
+                              <td><strong>{{ req.qualification_type }}</strong></td>
+                              <td>
+                                {% if req.minimum_grade %}
+                                  <span class="text-success">{{ req.minimum_grade }}</span>
+                                {% else %}
+                                  <span class="text-muted">-</span>
+                                {% endif %}
+                              </td>
+                              <td>
+                                {% if req.additional_requirements %}
+                                  <small>{{ req.additional_requirements }}</small>
+                                {% else %}
+                                  <span class="text-muted">-</span>
+                                {% endif %}
+                              </td>
+                            </tr>
+                              {% endif %}
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                    <!-- International Requirements for Postgraduate -->
+                    <div class="requirement-group">
+                      <h6><i class="bi bi-globe text-info"></i> International Students Additional Requirements</h6>
+                      <div class="table-responsive">
+                        <table class="table table-sm table-bordered align-middle">
+                          <thead class="table-light">
+                            <tr>
+                              <th style="width: 40%;">Requirement</th>
+                              <th style="width: 60%;">Details</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td><strong>English Language Proficiency</strong></td>
+                              <td>
+                                {% if program_data.level == 'Master' %}
+                                  IELTS Band 6.0 / TOEFL 550 (PBT) / 79 (iBT) / MUET Band 4
+                                {% else %}
+                                  IELTS Band 6.0 / TOEFL 580 (PBT) / 92 (iBT) / MUET Band 4
+                                {% endif %}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td><strong>Research Proposal</strong></td>
+                              <td>Required for PhD programmes (2-3 pages)</td>
+                            </tr>
+                            <tr>
+                              <td><strong>Supervisor Acceptance</strong></td>
+                              <td>PhD applicants must secure supervisor approval</td>
+                            </tr>
+                            <tr>
+                              <td><strong>Work Experience</strong></td>
+                              <td>May be required for certain Master's programmes</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                    
+                    <!-- Quick Actions -->
+                    <div class="d-flex gap-2 mt-3">
+                      <a href="/admission/requirements?program_id={{ program_id }}" class="btn btn-sm btn-primary">
+                        <i class="bi bi-eye"></i> View Full Details
+                      </a>
+                      <a href="/admission/check-eligibility?program_id={{ program_id }}" class="btn btn-sm btn-outline-primary">
+                        <i class="bi bi-check-circle"></i> Check Eligibility
+                      </a>
+                      <a href="/admission/document-checklist?program_id={{ program_id }}" class="btn btn-sm btn-outline-secondary">
+                        <i class="bi bi-file-earmark-text"></i> Document Checklist
+                      </a>
+                    </div>
+                  {% else %}
+                    <div class="alert alert-info">
+                      <i class="bi bi-info-circle"></i> Requirements are being updated. Please contact the admission office for details.
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+          <h5>No postgraduate programmes available</h5>
+          <p>Please check back later or contact the admission office.</p>
+        </div>
+        {% endif %}
+        {% if postgrad_faculties %}
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function toggleFaculty(header) {
+  const content = header.nextElementSibling;
+  header.classList.toggle('collapsed');
+  content.classList.toggle('show');
+}
+
+function toggleProgram(header) {
+  const card = header.closest('.program-card');
+  card.classList.toggle('expanded');
+}
+
+function toggleFoundationDegrees(button) {
+  const foundationCard = button.closest('.foundation-card');
+  foundationCard.classList.toggle('expanded');
+  
+  // Update button text
+  const suggestedDegrees = foundationCard.querySelector('.suggested-degrees');
+  const degreeCount = suggestedDegrees ? suggestedDegrees.querySelectorAll('.degree-item').length : 0;
+  
+  if (foundationCard.classList.contains('expanded')) {
+    button.innerHTML = '<i class="bi bi-chevron-up"></i> Hide Suggested Degree Programs (' + degreeCount + ')';
+  } else {
+    button.innerHTML = '<i class="bi bi-chevron-down"></i> View Suggested Degree Programs (' + degreeCount + ')';
+  }
+}
+
+// Search functionality
+document.getElementById('searchInput').addEventListener('input', function(e) {
+  const searchTerm = e.target.value.toLowerCase().trim();
+  const foundationCards = document.querySelectorAll('.foundation-card');
+  let visibleCount = 0;
+  
+  if (searchTerm === '') {
+    // Show all
+    const allFacultySections = document.querySelectorAll('.faculty-section');
+    const allPrograms = document.querySelectorAll('.program-card');
+    
+    allFacultySections.forEach(section => {
+      section.style.display = 'block';
+    });
+    allPrograms.forEach(program => {
+      program.style.display = 'block';
+    });
+    foundationCards.forEach(card => {
+      card.style.display = 'block';
+    });
+    document.getElementById('noResults').style.display = 'none';
+    return;
+  }
+  
+  // Search through foundation programs
+  foundationCards.forEach(card => {
+    const cardText = card.textContent.toLowerCase();
+    if (cardText.includes(searchTerm)) {
+      card.style.display = 'block';
+      visibleCount++;
+    } else {
+      card.style.display = 'none';
+    }
+  });
+  
+  // Search through all programs (undergraduate and postgraduate)
+  const allPrograms = document.querySelectorAll('.program-card');
+  const allFacultySections = document.querySelectorAll('.faculty-section');
+  
+  allPrograms.forEach(program => {
+    const programName = program.dataset.program;
+    const level = program.dataset.level;
+    const programText = program.textContent.toLowerCase();
+    
+    if (programName.includes(searchTerm) || level.includes(searchTerm) || programText.includes(searchTerm)) {
+      program.style.display = 'block';
+      visibleCount++;
+      
+      // Show parent faculty
+      const facultySection = program.closest('.faculty-section');
+      if (facultySection) {
+        facultySection.style.display = 'block';
+        const facultyHeader = facultySection.querySelector('.faculty-header');
+        const facultyContent = facultySection.querySelector('.faculty-content');
+        if (!facultyContent.classList.contains('show')) {
+          facultyHeader.classList.remove('collapsed');
+          facultyContent.classList.add('show');
+        }
+      }
+    } else {
+      program.style.display = 'none';
+    }
+  });
+  
+  // Hide faculties with no visible programs
+  allFacultySections.forEach(section => {
+    const visiblePrograms = section.querySelectorAll('.program-card[style="display: block;"]');
+    if (visiblePrograms.length === 0) {
+      section.style.display = 'none';
+    }
+  });
+  
+  // Show/hide no results message
+  if (visibleCount === 0) {
+    document.getElementById('noResults').style.display = 'block';
+  } else {
+    document.getElementById('noResults').style.display = 'none';
+  }
+});
+
+// Expand first faculty by default
+document.addEventListener('DOMContentLoaded', function() {
+  const firstFaculty = document.querySelector('.faculty-header');
+  if (firstFaculty) {
+    toggleFaculty(firstFaculty);
+  }
+});
+</script>
+{% endblock %}

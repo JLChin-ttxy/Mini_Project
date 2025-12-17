@@ -1,6 +1,59 @@
 {% extends "base.html" %}
 
-{% block title %}Admissions - SKL Universiti{% endblock %}
+{% block title %}Admissions - SKL University{% endblock %}
+
+{% block extra_css %}
+<style>
+/* Ensure all primary buttons have visible white text */
+.btn-primary,
+.btn.btn-primary,
+a.btn-primary,
+button.btn-primary {
+  color: #ffffff !important;
+  background-color: #0d6efd !important;
+  border-color: #0d6efd !important;
+  font-weight: 500;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary.active,
+.btn.btn-primary:hover,
+.btn.btn-primary:focus,
+.btn.btn-primary:active,
+a.btn-primary:hover,
+a.btn-primary:focus,
+button.btn-primary:hover,
+button.btn-primary:focus {
+  color: #ffffff !important;
+  background-color: #0b5ed7 !important;
+  border-color: #0a58ca !important;
+}
+
+.btn-primary *,
+.btn-primary i,
+.btn-primary span,
+.btn.btn-primary *,
+.btn.btn-primary i,
+.btn.btn-primary span,
+a.btn-primary *,
+a.btn-primary i,
+button.btn-primary *,
+button.btn-primary i {
+  color: #ffffff !important;
+}
+
+.btn-primary:hover *,
+.btn-primary:hover i,
+.btn-primary:hover span,
+.btn-primary:focus *,
+.btn-primary:focus i,
+.btn-primary:focus span {
+  color: #ffffff !important;
+}
+</style>
+{% endblock %}
 
 {% block content %}
 <!-- Hero Section -->
@@ -19,8 +72,8 @@
           </a>
         </div>
       </div>
-      <div class="col-lg-6">
-        <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?w=800" alt="University" class="img-fluid rounded">
+      <div class="col-lg-6 text-center">
+        <img src="{{ url_for('static', filename='images/SKL logo.png') }}" alt="SKL University Logo" class="university-logo">
       </div>
     </div>
   </div>
@@ -78,24 +131,161 @@
 <section class="py-5">
   <div class="container">
     <h2 class="text-center mb-5">Available Programs</h2>
-    <div class="row g-4">
-      {% for program in programs %}
-      <div class="col-md-6 col-lg-4">
-        <div class="card h-100">
-          <div class="card-body">
-            <span class="badge bg-primary mb-2">{{ program.level }}</span>
-            <h5 class="card-title">{{ program.program_name }}</h5>
-            <p class="text-muted small">{{ program.faculty_name }}</p>
-            <p class="card-text">{{ program.description[:150] }}...</p>
-            <div class="d-flex gap-2">
-              <a href="{{ url_for('admission.requirements', program_id=program.program_id) }}" class="btn btn-sm btn-outline-primary">Requirements</a>
-              <a href="{{ url_for('admission.document_checklist', program_id=program.program_id) }}" class="btn btn-sm btn-outline-secondary">Documents</a>
+    
+    <!-- Foundation Programs -->
+    {% if programs_by_level.Foundation and programs_by_level.Foundation|length > 0 %}
+    <div class="mb-5">
+      <h3 class="mb-4 text-primary">
+        <i class="bi bi-mortarboard-fill"></i> Foundation Programs
+      </h3>
+      <div class="row g-4">
+        {% for program in programs_by_level.Foundation %}
+        <div class="col-md-6 col-lg-4">
+          <div class="card h-100 shadow-sm">
+            <div class="card-body d-flex flex-column">
+              <span class="badge bg-success mb-2 align-self-start">{{ program.level }}</span>
+              <h5 class="card-title">{{ program.program_name }}</h5>
+              <p class="text-muted small mb-2">
+                <i class="bi bi-building"></i> {{ program.faculty_name }}
+              </p>
+              <p class="card-text flex-grow-1">
+                {{ program.description[:150] if program.description else 'A comprehensive foundation program designed to prepare students for undergraduate studies.' }}...
+              </p>
+              <div class="d-flex gap-2 mt-auto">
+                <a href="{{ url_for('admission.requirements', program_id=program.program_id) }}" class="btn btn-sm btn-outline-primary">
+                  <i class="bi bi-clipboard-check"></i> Requirements
+                </a>
+                <a href="{{ url_for('admission.document_checklist', program_id=program.program_id) }}" class="btn btn-sm btn-outline-secondary">
+                  <i class="bi bi-file-earmark-text"></i> Documents
+                </a>
+              </div>
             </div>
           </div>
         </div>
+        {% endfor %}
       </div>
-      {% endfor %}
     </div>
+    {% else %}
+    <!-- Show message if no Foundation programs found (for debugging) -->
+    <!-- <div class="alert alert-info">
+      <i class="bi bi-info-circle"></i> Foundation programs are being added. Please check back soon.
+    </div> -->
+    {% endif %}
+    
+    <!-- Diploma Programs -->
+    {% if programs_by_level.Diploma %}
+    <div class="mb-5">
+      <h3 class="mb-4 text-primary">
+        <i class="bi bi-award-fill"></i> Diploma Programs
+      </h3>
+      <div class="row g-4">
+        {% for program in programs_by_level.Diploma %}
+        <div class="col-md-6 col-lg-4">
+          <div class="card h-100">
+            <div class="card-body">
+              <span class="badge bg-info mb-2">{{ program.level }}</span>
+              <h5 class="card-title">{{ program.program_name }}</h5>
+              <p class="text-muted small">{{ program.faculty_name }}</p>
+              <p class="card-text">{{ program.description[:150] if program.description else 'Diploma program' }}...</p>
+              <div class="d-flex gap-2">
+                <a href="{{ url_for('admission.requirements', program_id=program.program_id) }}" class="btn btn-sm btn-outline-primary">Requirements</a>
+                <a href="{{ url_for('admission.document_checklist', program_id=program.program_id) }}" class="btn btn-sm btn-outline-secondary">Documents</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+    
+    <!-- Bachelor Programs -->
+    {% if programs_by_level.Bachelor %}
+    <div class="mb-5">
+      <h3 class="mb-4 text-primary">
+        <i class="bi bi-graduation-cap-fill"></i> Undergraduate Programs (Bachelor's Degree)
+      </h3>
+      <div class="row g-4">
+        {% for program in programs_by_level.Bachelor %}
+        <div class="col-md-6 col-lg-4">
+          <div class="card h-100">
+            <div class="card-body">
+              <span class="badge bg-primary mb-2">{{ program.level }}</span>
+              <h5 class="card-title">{{ program.program_name }}</h5>
+              <p class="text-muted small">{{ program.faculty_name }}</p>
+              <p class="card-text">{{ program.description[:150] if program.description else 'Bachelor program' }}...</p>
+              <div class="d-flex gap-2">
+                <a href="{{ url_for('admission.requirements', program_id=program.program_id) }}" class="btn btn-sm btn-outline-primary">Requirements</a>
+                <a href="{{ url_for('admission.document_checklist', program_id=program.program_id) }}" class="btn btn-sm btn-outline-secondary">Documents</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+    
+    <!-- Master Programs -->
+    {% if programs_by_level.Master %}
+    <div class="mb-5">
+      <h3 class="mb-4 text-primary">
+        <i class="bi bi-mortarboard"></i> Postgraduate Programs (Master's Degree)
+      </h3>
+      <div class="row g-4">
+        {% for program in programs_by_level.Master %}
+        <div class="col-md-6 col-lg-4">
+          <div class="card h-100">
+            <div class="card-body">
+              <span class="badge bg-warning text-dark mb-2">{{ program.level }}</span>
+              <h5 class="card-title">{{ program.program_name }}</h5>
+              <p class="text-muted small">{{ program.faculty_name }}</p>
+              <p class="card-text">{{ program.description[:150] if program.description else 'Master program' }}...</p>
+              <div class="d-flex gap-2">
+                <a href="{{ url_for('admission.requirements', program_id=program.program_id) }}" class="btn btn-sm btn-outline-primary">Requirements</a>
+                <a href="{{ url_for('admission.document_checklist', program_id=program.program_id) }}" class="btn btn-sm btn-outline-secondary">Documents</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+    
+    <!-- PhD Programs -->
+    {% if programs_by_level.PhD %}
+    <div class="mb-5">
+      <h3 class="mb-4 text-primary">
+        <i class="bi bi-mortarboard-fill"></i> Postgraduate Programs (Doctor of Philosophy)
+      </h3>
+      <div class="row g-4">
+        {% for program in programs_by_level.PhD %}
+        <div class="col-md-6 col-lg-4">
+          <div class="card h-100">
+            <div class="card-body">
+              <span class="badge bg-danger mb-2">{{ program.level }}</span>
+              <h5 class="card-title">{{ program.program_name }}</h5>
+              <p class="text-muted small">{{ program.faculty_name }}</p>
+              <p class="card-text">{{ program.description[:150] if program.description else 'PhD program' }}...</p>
+              <div class="d-flex gap-2">
+                <a href="{{ url_for('admission.requirements', program_id=program.program_id) }}" class="btn btn-sm btn-outline-primary">Requirements</a>
+                <a href="{{ url_for('admission.document_checklist', program_id=program.program_id) }}" class="btn btn-sm btn-outline-secondary">Documents</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+    
+    <!-- Message if no programs -->
+    {% if not programs_by_level.Foundation and not programs_by_level.Diploma and not programs_by_level.Bachelor and not programs_by_level.Master and not programs_by_level.PhD %}
+    <div class="alert alert-info text-center">
+      <i class="bi bi-info-circle"></i> No programs available at this time. Please check back later or contact the admission office.
+    </div>
+    {% endif %}
   </div>
 </section>
 

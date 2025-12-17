@@ -1,0 +1,299 @@
+{% extends "base.html" %}
+
+{% block title %}Important Dates & Deadlines - SKL University{% endblock %}
+
+{% block extra_css %}
+<style>
+  .calendar-container {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+  
+  .calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.5rem;
+  }
+  
+  .calendar-day-header {
+    text-align: center;
+    font-weight: bold;
+    padding: 0.5rem;
+    background: #f3f4f6;
+    border-radius: 4px;
+  }
+  
+  .calendar-day {
+    aspect-ratio: 1;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    padding: 0.5rem;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  
+  .calendar-day:hover {
+    background: #f9fafb;
+    border-color: #3b82f6;
+  }
+  
+  .calendar-day.has-event {
+    background: #dbeafe;
+    border-color: #3b82f6;
+  }
+  
+  .calendar-day.today {
+    background: #fef3c7;
+    border-color: #f59e0b;
+    font-weight: bold;
+  }
+  
+  .event-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    display: inline-block;
+    margin: 1px;
+  }
+  
+  .event-dot.foundation { background: #10b981; }
+  .event-dot.diploma { background: #3b82f6; }
+  .event-dot.bachelor { background: #8b5cf6; }
+  .event-dot.master { background: #f59e0b; }
+  .event-dot.phd { background: #ef4444; }
+  
+  .semester-section {
+    margin-bottom: 3rem;
+  }
+  
+  .semester-title {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="py-5">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-12">
+        <h1 class="mb-4">Important Dates & Deadlines</h1>
+        <p class="lead mb-5">Stay informed about application periods, intake dates, and important deadlines organized by semester.</p>
+
+        <!-- Email Notification Button -->
+        <div class="card border-primary mb-4">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <h5 class="card-title mb-1"><i class="bi bi-bell"></i> Email Reminders</h5>
+                <p class="card-text mb-0">Get notified via email when deadlines are approaching for your selected programs.</p>
+              </div>
+              <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#emailModal">
+                <i class="bi bi-bell-fill"></i> Enable Email Reminders
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Calendar View by Semester -->
+        <div class="semester-section">
+          <div class="semester-title">
+            <h3 class="mb-0"><i class="bi bi-calendar3"></i> Semester 1, 2025</h3>
+            <small>January - April 2025</small>
+          </div>
+          <div class="calendar-container" id="calendar-sem1"></div>
+        </div>
+
+        <div class="semester-section">
+          <div class="semester-title">
+            <h3 class="mb-0"><i class="bi bi-calendar3"></i> Semester 2, 2025</h3>
+            <small>May - August 2025</small>
+          </div>
+          <div class="calendar-container" id="calendar-sem2"></div>
+        </div>
+
+        <div class="semester-section">
+          <div class="semester-title">
+            <h3 class="mb-0"><i class="bi bi-calendar3"></i> Semester 3, 2025</h3>
+            <small>September - December 2025</small>
+          </div>
+          <div class="calendar-container" id="calendar-sem3"></div>
+        </div>
+
+        <!-- Legend -->
+        <div class="card mt-4">
+          <div class="card-body">
+            <h5 class="card-title">Legend</h5>
+            <div class="d-flex flex-wrap gap-3">
+              <span><span class="event-dot foundation"></span> Foundation</span>
+              <span><span class="event-dot diploma"></span> Diploma</span>
+              <span><span class="event-dot bachelor"></span> Bachelor</span>
+              <span><span class="event-dot master"></span> Master</span>
+              <span><span class="event-dot phd"></span> PhD</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Email Subscription Modal -->
+<div class="modal fade" id="emailModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="bi bi-bell"></i> Enable Email Reminders</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <form id="emailSubscriptionForm">
+          <div class="mb-3">
+            <label for="emailInput" class="form-label">Email Address</label>
+            <input type="email" class="form-control" id="emailInput" required placeholder="your.email@example.com">
+            <small class="form-text text-muted">We'll send you reminders 7 days before deadlines.</small>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Select Programs to Monitor</label>
+            <div class="border rounded p-3" style="max-height: 300px; overflow-y: auto;">
+              {% for program in programs %}
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" name="program_ids" value="{{ program.program_id }}" id="program{{ program.program_id }}">
+                <label class="form-check-label" for="program{{ program.program_id }}">
+                  <strong>{{ program.program_name }}</strong> ({{ program.level }}) - {{ program.faculty_name }}
+                </label>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" onclick="subscribeToEmail()">
+          <i class="bi bi-check-circle"></i> Subscribe
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Calendar data from backend
+const deadlinesData = {{ all_dates | tojson }};
+
+function generateCalendar(containerId, startMonth, endMonth, year) {
+  const container = document.getElementById(containerId);
+  const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  
+  let html = '<div class="calendar-grid">';
+  
+  // Day headers
+  daysOfWeek.forEach(day => {
+    html += `<div class="calendar-day-header">${day}</div>`;
+  });
+  
+  // Get first day of month and days in month
+  const firstDay = new Date(year, startMonth - 1, 1).getDay();
+  const daysInMonth = new Date(year, startMonth, 0).getDate();
+  
+  // Empty cells for days before month starts
+  for (let i = 0; i < firstDay; i++) {
+    html += '<div class="calendar-day"></div>';
+  }
+  
+  // Calendar days
+  const today = new Date();
+  for (let day = 1; day <= daysInMonth; day++) {
+    const date = new Date(year, startMonth - 1, day);
+    const dateStr = date.toISOString().split('T')[0];
+    const isToday = date.toDateString() === today.toDateString();
+    
+    // Find events for this date
+    const events = deadlinesData.filter(d => {
+      const start = d.start_date ? d.start_date.split('T')[0] : null;
+      const end = d.end_date ? d.end_date.split('T')[0] : null;
+      return dateStr >= start && (!end || dateStr <= end);
+    });
+    
+    let classes = 'calendar-day';
+    if (isToday) classes += ' today';
+    if (events.length > 0) classes += ' has-event';
+    
+    let eventDots = '';
+    events.forEach(event => {
+      const level = (event.level || 'bachelor').toLowerCase();
+      eventDots += `<span class="event-dot ${level}" title="${event.event_type} - ${event.program_name}"></span>`;
+    });
+    
+    html += `<div class="${classes}" data-date="${dateStr}" title="${events.map(e => e.event_type).join(', ')}">
+      <div>${day}</div>
+      <div>${eventDots}</div>
+    </div>`;
+  }
+  
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+// Generate calendars for each semester
+document.addEventListener('DOMContentLoaded', function() {
+  generateCalendar('calendar-sem1', 1, 4, 2025);
+  generateCalendar('calendar-sem2', 5, 8, 2025);
+  generateCalendar('calendar-sem3', 9, 12, 2025);
+});
+
+function subscribeToEmail() {
+  const email = document.getElementById('emailInput').value;
+  const checkboxes = document.querySelectorAll('input[name="program_ids"]:checked');
+  const programIds = Array.from(checkboxes).map(cb => parseInt(cb.value));
+  
+  if (!email || programIds.length === 0) {
+    alert('Please enter your email and select at least one program.');
+    return;
+  }
+  
+  fetch('{{ url_for("admission.subscribe_email") }}', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      email: email,
+      program_ids: programIds
+    })
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.success) {
+      alert(data.message);
+      bootstrap.Modal.getInstance(document.getElementById('emailModal')).hide();
+      document.getElementById('emailSubscriptionForm').reset();
+    } else {
+      alert('Error: ' + data.message);
+    }
+  })
+  .catch(error => {
+    console.error('Error:', error);
+    alert('An error occurred. Please try again.');
+  });
+}
+</script>
+{% endblock %}
+

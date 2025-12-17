@@ -36,14 +36,22 @@ def get_db_connection():
 
 # Import routes
 try:
-    from routes import admission_routes, chatbot_routes, api_routes
+    from routes import admission_routes, chatbot_routes, api_routes, dialogflow_webhook
     
     # Register blueprints
     app.register_blueprint(admission_routes.bp)
     app.register_blueprint(chatbot_routes.bp)
     app.register_blueprint(api_routes.bp)
+    app.register_blueprint(dialogflow_webhook.bp)
+    print("✓ All blueprints registered successfully")
 except ImportError as e:
-    print(f"Warning: Could not import routes: {e}")
+    print(f"✗ ERROR: Could not import routes: {e}")
+    import traceback
+    traceback.print_exc()
+except Exception as e:
+    print(f"✗ ERROR: Failed to register blueprints: {e}")
+    import traceback
+    traceback.print_exc()
 
 @app.route('/')
 def index():

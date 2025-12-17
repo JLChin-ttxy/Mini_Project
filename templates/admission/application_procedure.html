@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Application Procedure - SKL Universiti{% endblock %}
+{% block title %}Application Procedure - SKL University{% endblock %}
 
 {% block content %}
 <section class="py-5">
@@ -29,112 +29,297 @@
         <!-- Online Application Steps -->
         <div class="card shadow mb-4">
           <div class="card-body p-4">
-            <h3 class="mb-4">Online Application Steps</h3>
+            <h3 class="mb-4"><i class="bi bi-laptop text-primary"></i> Online Application Steps</h3>
+            <p class="lead mb-4">Follow these detailed steps to complete your online application. Click on highlighted terms for more information.</p>
             
             <div class="steps">
+              <!-- Step 1: Check Entry Requirements -->
               <div class="step-item mb-4">
                 <div class="step-number">1</div>
                 <div class="step-content">
-                  <h5>Create Account</h5>
-                  <p>Visit our online application portal and create your account using your email address. You'll receive a verification email to activate your account.</p>
-                  <div class="alert alert-info">
-                    <strong>Note:</strong> Keep your login credentials safe. You'll need them to track your application status.
+                  <h5>Check Entry Requirements</h5>
+                  <p>Before applying, please ensure you meet the <a href="#" class="clickable-link" data-bs-toggle="modal" data-bs-target="#entryRequirementsModal">entry requirements</a> for your chosen program. You can also use our <a href="{{ url_for('admission.check_eligibility') }}" class="text-primary fw-semibold">eligibility checker</a> to verify your qualifications.</p>
+                  <div class="expandable-section mt-3">
+                    <button class="btn btn-sm btn-outline-info" type="button" data-bs-toggle="collapse" data-bs-target="#step1Details" aria-expanded="false">
+                      <i class="bi bi-chevron-down"></i> View Entry Requirements Details
+                    </button>
+                    <div class="collapse mt-2" id="step1Details">
+                      <div class="card card-body bg-light">
+                        <h6>Common Entry Requirements:</h6>
+                        <ul class="mb-0">
+                          <li><strong>Foundation Programs:</strong> SPM with 5 Credits (including Mathematics and English)</li>
+                          <li><strong>Diploma Programs:</strong> SPM with 3 Credits or equivalent</li>
+                          <li><strong>Bachelor's Degree:</strong> STPM (CGPA 2.00), UEC (5 Bs), A-Level (2 Passes), or equivalent</li>
+                          <li><strong>Master's Degree:</strong> Bachelor's Degree (CGPA 2.75) or equivalent</li>
+                          <li><strong>PhD:</strong> Master's Degree (CGPA 3.00) or equivalent</li>
+                        </ul>
+                        <a href="{{ url_for('admission.requirements') }}" class="btn btn-sm btn-primary mt-2">View Full Requirements</a>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
 
+              <!-- Step 2: Create Account -->
               <div class="step-item mb-4">
                 <div class="step-number">2</div>
                 <div class="step-content">
-                  <h5>Select Program</h5>
-                  <p>Choose your desired program from the list. You can select up to 3 program choices in order of preference.</p>
-                  <select class="form-select mt-2" id="program-select">
-                    <option value="">Select a program to see details...</option>
-                    {% for program in programs %}
-                    <option value="{{ program.program_id }}">{{ program.program_name }} ({{ program.level }})</option>
-                    {% endfor %}
-                  </select>
+                  <h5>Create Account</h5>
+                  <p>Visit our <a href="#" class="clickable-link" data-bs-toggle="modal" data-bs-target="#accountModal">online application portal</a> and create your account using your email address. You'll receive a verification email to activate your account.</p>
+                  <div class="alert alert-info">
+                    <strong><i class="bi bi-info-circle"></i> Important:</strong> Keep your login credentials safe. You'll need them to track your application status throughout the admission process.
+                  </div>
+                  <div class="expandable-section mt-3">
+                    <button class="btn btn-sm btn-outline-info" type="button" data-bs-toggle="collapse" data-bs-target="#step2Details" aria-expanded="false">
+                      <i class="bi bi-chevron-down"></i> Account Creation Tips
+                    </button>
+                    <div class="collapse mt-2" id="step2Details">
+                      <div class="card card-body bg-light">
+                        <ul class="mb-0">
+                          <li>Use a valid email address that you check regularly</li>
+                          <li>Choose a strong password (minimum 8 characters with letters and numbers)</li>
+                          <li>Verify your email within 24 hours to activate your account</li>
+                          <li>If you don't receive the verification email, check your spam folder</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
+              <!-- Step 3: Select Program -->
               <div class="step-item mb-4">
                 <div class="step-number">3</div>
                 <div class="step-content">
-                  <h5>Fill Application Form</h5>
-                  <p>Complete all required fields in the application form:</p>
-                  <ul>
-                    <li>Personal information (name, IC/passport, date of birth)</li>
-                    <li>Contact details (address, phone, email)</li>
-                    <li>Academic qualifications</li>
-                    <li>Emergency contact information</li>
-                  </ul>
+                  <h5>Select Program</h5>
+                  <p>First, choose your desired level of study. Then select your specific program. You can select up to <strong>3 program choices</strong> in order of preference. Make sure to review the <a href="#" class="clickable-link" data-bs-toggle="modal" data-bs-target="#programInfoModal">program details</a> before making your selection.</p>
+                  
+                  <!-- Level Selection Buttons -->
+                  <div class="level-selection mb-4">
+                    <label class="form-label fw-bold">Step 1: Choose Your Level of Study</label>
+                    <div class="row g-3">
+                      <div class="col-md-6 col-lg-3">
+                        <button type="button" class="btn btn-outline-primary level-btn w-100 h-100 py-3" data-level="Foundation">
+                          <i class="bi bi-mortarboard-fill fs-3 d-block mb-2"></i>
+                          <strong>Foundation</strong>
+                          <br><small class="text-muted">1 Year</small>
+                        </button>
+                      </div>
+                      <div class="col-md-6 col-lg-3">
+                        <button type="button" class="btn btn-outline-primary level-btn w-100 h-100 py-3" data-level="Bachelor">
+                          <i class="bi bi-award-fill fs-3 d-block mb-2"></i>
+                          <strong>Degree</strong>
+                          <br><small class="text-muted">3-4 Years</small>
+                        </button>
+                      </div>
+                      <div class="col-md-6 col-lg-3">
+                        <button type="button" class="btn btn-outline-primary level-btn w-100 h-100 py-3" data-level="Master">
+                          <i class="bi bi-mortarboard fs-3 d-block mb-2"></i>
+                          <strong>Master</strong>
+                          <br><small class="text-muted">1-2 Years</small>
+                        </button>
+                      </div>
+                      <div class="col-md-6 col-lg-3">
+                        <button type="button" class="btn btn-outline-primary level-btn w-100 h-100 py-3" data-level="PhD">
+                          <i class="bi bi-book-fill fs-3 d-block mb-2"></i>
+                          <strong>PhD</strong>
+                          <br><small class="text-muted">3-4 Years</small>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Program Selection Dropdown (Hidden until level is selected) -->
+                  <div id="program-selection-container" class="mb-3" style="display: none;">
+                    <label class="form-label fw-bold">Step 2: Select Your Program</label>
+                    <select class="form-select" id="program-select">
+                      <option value="">Select a program...</option>
+                    </select>
+                  </div>
+
+                  <!-- Program Details Display -->
+                  <div id="program-details" class="mt-3" style="display: none;">
+                    <div class="card bg-light border-primary">
+                      <div class="card-body">
+                        <h6 id="program-name" class="text-primary"></h6>
+                        <p id="program-info" class="mb-2"></p>
+                        <div class="d-flex gap-2">
+                          <a href="#" id="program-requirements-link" class="btn btn-sm btn-primary">
+                            <i class="bi bi-clipboard-check"></i> View Entry Requirements
+                          </a>
+                          <a href="#" id="program-check-eligibility-link" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-check-circle"></i> Check Eligibility
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="expandable-section mt-3">
+                    <button class="btn btn-sm btn-outline-info" type="button" data-bs-toggle="collapse" data-bs-target="#step3Details" aria-expanded="false">
+                      <i class="bi bi-chevron-down"></i> Program Selection Guidelines
+                    </button>
+                    <div class="collapse mt-2" id="step3Details">
+                      <div class="card card-body bg-light">
+                        <ul class="mb-0">
+                          <li><strong>Foundation:</strong> Pre-university program (Foundation in Arts or Foundation in Science)</li>
+                          <li><strong>Degree:</strong> Undergraduate Bachelor's degree programs</li>
+                          <li><strong>Master:</strong> Postgraduate Master's degree programs (requires Bachelor's degree)</li>
+                          <li><strong>PhD:</strong> Doctoral programs (requires Master's degree)</li>
+                          <li>Ensure you meet the entry requirements for each selected program</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
+              <!-- Step 4: Fill Application Form -->
               <div class="step-item mb-4">
                 <div class="step-number">4</div>
                 <div class="step-content">
-                  <h5>Upload Documents</h5>
-                  <p>Upload scanned copies of required documents. All documents must be clear and legible.</p>
+                  <h5>Fill Application Form</h5>
+                  <p>Complete all required fields in the <a href="{{ url_for('admission.application_form') }}" class="text-primary fw-semibold">online application form</a> accurately. The form includes several sections:</p>
+                  <ul>
+                    <li><strong>Personal Information:</strong> Full name (as per IC/passport), IC/Passport number, date of birth, gender, nationality</li>
+                    <li><strong>Contact Details:</strong> Mailing address, phone number, email address</li>
+                    <li><strong>Academic Qualifications:</strong> All academic achievements including <a href="#" class="clickable-link" data-bs-toggle="modal" data-bs-target="#qualificationsModal">SPM, STPM, UEC, Diploma, Degree</a> results</li>
+                    <li><strong>Emergency Contact:</strong> Name, relationship, phone number of emergency contact person</li>
+                    <li><strong>Program Selection:</strong> Your preferred program choices (up to 3)</li>
+                    <li><strong>Document Upload:</strong> Upload scanned copies of required documents</li>
+                  </ul>
                   <div class="alert alert-warning">
-                    <strong>Required Documents:</strong>
-                    <ul class="mb-0">
-                      <li>Identity Card (MyKad) or Passport</li>
-                      <li>Academic certificates (SPM, STPM, etc.)</li>
-                      <li>Passport-sized photographs</li>
-                      <li>Birth certificate</li>
-                    </ul>
+                    <strong><i class="bi bi-exclamation-triangle"></i> Important:</strong> All information must be accurate. Incorrect information may result in application rejection.
                   </div>
-                  <a href="{{ url_for('admission.document_checklist') }}" class="btn btn-sm btn-outline-primary">
-                    Get Complete Document Checklist
+                  <a href="{{ url_for('admission.application_form') }}" class="btn btn-primary mt-2">
+                    <i class="bi bi-pencil-square"></i> Start Filling Application Form
                   </a>
                 </div>
               </div>
 
+              <!-- Step 5: Upload Documents -->
               <div class="step-item mb-4">
                 <div class="step-number">5</div>
                 <div class="step-content">
-                  <h5>Pay Application Fee</h5>
-                  <p>Pay the application fee of RM 50.00 through:</p>
-                  <ul>
-                    <li>Online payment (credit/debit card)</li>
-                    <li>Bank transfer</li>
-                    <li>FPX (Financial Process Exchange)</li>
-                  </ul>
-                  <div class="alert alert-success">
-                    <strong>Note:</strong> Application fee is non-refundable. Keep your payment receipt for reference.
+                  <h5>Upload Documents</h5>
+                  <p>Upload scanned copies of all <a href="#" class="clickable-link" data-toggle="modal" data-target="#documentsModal">required documents</a>. All documents must be clear, legible, and in PDF or JPG format (maximum 2MB per file).</p>
+                  <div class="alert alert-warning">
+                    <strong>Required Documents:</strong>
+                    <ul class="mb-0">
+                      <li>Identity Card (MyKad) or Passport (front and back)</li>
+                      <li>Academic certificates (SPM, STPM, UEC, Diploma, Degree, etc.)</li>
+                      <li>Academic transcripts (for Diploma/Degree holders)</li>
+                      <li>Passport-sized photographs (recent, colored, white background)</li>
+                      <li>Birth certificate</li>
+                      <li>English proficiency test results (if applicable)</li>
+                    </ul>
+                  </div>
+                  <a href="{{ url_for('admission.document_checklist') }}" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-list-check"></i> Get Complete Document Checklist
+                  </a>
+                  <div class="expandable-section mt-3">
+                    <button class="btn btn-sm btn-outline-info" type="button" data-bs-toggle="collapse" data-bs-target="#step5Details" aria-expanded="false">
+                      <i class="bi bi-chevron-down"></i> Document Upload Guidelines
+                    </button>
+                    <div class="collapse mt-2" id="step5Details">
+                      <div class="card card-body bg-light">
+                        <ul class="mb-0">
+                          <li>Scan documents at 300 DPI resolution for clarity</li>
+                          <li>Ensure all text is readable and not cut off</li>
+                          <li>Save files with descriptive names (e.g., "SPM_Certificate.pdf")</li>
+                          <li>Check file size before uploading (max 2MB per file)</li>
+                          <li>For international students, include certified English translations</li>
+                        </ul>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
 
+              <!-- Step 6: Pay Application Fee -->
               <div class="step-item mb-4">
                 <div class="step-number">6</div>
                 <div class="step-content">
-                  <h5>Submit Application</h5>
-                  <p>Review all information carefully before submitting. Once submitted, you'll receive:</p>
+                  <h5>Pay Application Fee</h5>
+                  <p>Pay the application fee of <strong>RM 50.00</strong> through one of the following payment methods:</p>
                   <ul>
-                    <li>Application reference number</li>
-                    <li>Confirmation email</li>
-                    <li>Link to track application status</li>
+                    <li><strong>Online Payment:</strong> Credit card, debit card, or online banking</li>
+                    <li><strong>Bank Transfer:</strong> Direct transfer to university account</li>
+                    <li><strong>FPX (Financial Process Exchange):</strong> Secure online payment gateway</li>
                   </ul>
+                  <div class="alert alert-success">
+                    <strong><i class="bi bi-check-circle"></i> Note:</strong> Application fee is non-refundable. Keep your payment receipt for reference. You will receive a payment confirmation email after successful payment.
+                  </div>
+                  <div class="expandable-section mt-3">
+                    <button class="btn btn-sm btn-outline-info" type="button" data-bs-toggle="collapse" data-bs-target="#step6Details" aria-expanded="false">
+                      <i class="bi bi-chevron-down"></i> Payment Instructions
+                    </button>
+                    <div class="collapse mt-2" id="step6Details">
+                      <div class="card card-body bg-light">
+                        <h6>Bank Transfer Details:</h6>
+                        <p class="mb-1"><strong>Bank:</strong> PUBLIC BANK</p>
+                        <p class="mb-1"><strong>Account Name:</strong> SKL University</p>
+                        <p class="mb-1"><strong>Account Number:</strong> 12345678890</p>
+                        <p class="mb-0"><strong>Reference:</strong> Use your application reference number + your name</p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              <div class="step-item">
+              <!-- Step 7: Submit Application -->
+              <div class="step-item mb-4">
                 <div class="step-number">7</div>
                 <div class="step-content">
-                  <h5>Track Application</h5>
-                  <p>Monitor your application status online. You'll be notified via email when there are updates.</p>
+                  <h5>Submit Application</h5>
+                  <p>Review all information carefully before submitting. Make sure all required fields are completed and documents are uploaded. Once submitted, you'll receive:</p>
+                  <ul>
+                    <li><strong>Application Reference Number:</strong> Use this to track your application</li>
+                    <li><strong>Confirmation Email:</strong> Sent to your registered email address</li>
+                    <li><strong>Application Tracking Link:</strong> Access your application status anytime</li>
+                  </ul>
                   <div class="alert alert-info">
-                    <strong>Application Status:</strong> Submitted → Under Review → Interview (if required) → Accepted/Rejected
+                    <strong><i class="bi bi-info-circle"></i> Reminder:</strong> You cannot modify your application after submission. Please review everything carefully.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Step 8: Track Application -->
+              <div class="step-item">
+                <div class="step-number">8</div>
+                <div class="step-content">
+                  <h5>Track Application Status</h5>
+                  <p>Monitor your application status online using your application reference number. You'll be notified via email when there are updates to your application.</p>
+                  <div class="alert alert-info">
+                    <strong>Application Status Flow:</strong><br>
+                    <span class="badge bg-secondary">Submitted</span> → 
+                    <span class="badge bg-warning">Under Review</span> → 
+                    <span class="badge bg-info">Interview (if required)</span> → 
+                    <span class="badge bg-success">Accepted</span> / 
+                    <span class="badge bg-danger">Rejected</span>
+                  </div>
+                  <div class="expandable-section mt-3">
+                    <button class="btn btn-sm btn-outline-info" type="button" data-bs-toggle="collapse" data-bs-target="#step8Details" aria-expanded="false">
+                      <i class="bi bi-chevron-down"></i> What Happens After Submission?
+                    </button>
+                    <div class="collapse mt-2" id="step8Details">
+                      <div class="card card-body bg-light">
+                        <ul class="mb-0">
+                          <li><strong>Week 1-2:</strong> Application received and initial review</li>
+                          <li><strong>Week 3-4:</strong> Document verification and qualification assessment</li>
+                          <li><strong>Week 5-6:</strong> Interview (if required for your program)</li>
+                          <li><strong>Week 7-8:</strong> Final decision and offer letter (if accepted)</li>
+                        </ul>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
             <div class="text-center mt-5">
-              <a href="#" class="btn btn-primary btn-lg" onclick="alert('Application portal will be available soon!'); return false;">
-                <i class="bi bi-box-arrow-right"></i> Go to Application Portal
+              <a href="{{ url_for('admission.application_form') }}" class="btn btn-primary btn-lg">
+                <i class="bi bi-box-arrow-right"></i> Go to Application Form
               </a>
             </div>
           </div>
@@ -151,10 +336,13 @@
                 <div class="step-number">1</div>
                 <div class="step-content">
                   <h5>Download Application Form</h5>
-                  <p>Download the application form from our website or collect it from the admission office.</p>
-                  <a href="#" class="btn btn-sm btn-outline-primary" onclick="alert('Download link will be available soon!'); return false;">
-                    <i class="bi bi-download"></i> Download Form
+                  <p>Download the official offline application form (PDF) from our website. You can fill it out and submit it in person or by mail.</p>
+                  <a href="{{ url_for('admission.download_application_form') }}" class="btn btn-primary" target="_blank">
+                    <i class="bi bi-download"></i> Download Application Form (PDF)
                   </a>
+                  <p class="mt-2 small text-muted">
+                    <i class="bi bi-info-circle"></i> The form includes all necessary fields for personal information, academic background, and program selection.
+                  </p>
                 </div>
               </div>
 
@@ -208,7 +396,9 @@
                   <div class="alert alert-info">
                     <strong>Admission Office</strong><br>
                     SKL University<br>
+                    Email : SKL123@edu.my <br>
                     Main Campus<br>
+                    123, Jalan Bandar Timah, 31900 Kampar Perak. <br>
                     Office Hours: Monday - Friday, 9:00 AM - 5:00 PM
                   </div>
                   <p>You can also mail your application to the admission office address.</p>
@@ -244,6 +434,165 @@
     </div>
   </div>
 </section>
+
+<!-- Modals for Interactive Content -->
+<!-- Entry Requirements Modal -->
+<div class="modal fade" id="entryRequirementsModal" tabindex="-1" aria-labelledby="entryRequirementsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="entryRequirementsModalLabel"><i class="bi bi-clipboard-check"></i> Entry Requirements</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p class="lead">Please ensure you meet the minimum entry requirements for your chosen program:</p>
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead class="table-light">
+              <tr>
+                <th>Program Level</th>
+                <th>Minimum Requirements</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Foundation</strong></td>
+                <td>SPM: 5 Credits (including Mathematics and English)<br>UEC: 5 Bs (including Mathematics and English)</td>
+              </tr>
+              <tr>
+                <td><strong>Diploma</strong></td>
+                <td>SPM: 3 Credits or equivalent</td>
+              </tr>
+              <tr>
+                <td><strong>Bachelor's Degree</strong></td>
+                <td>STPM: CGPA 2.00<br>UEC: 5 Bs<br>A-Level: 2 Passes at Grade C<br>Foundation: CGPA 2.00<br>Diploma: CGPA 2.50</td>
+              </tr>
+              <tr>
+                <td><strong>Master's Degree</strong></td>
+                <td>Bachelor's Degree: CGPA 2.75 or equivalent</td>
+              </tr>
+              <tr>
+                <td><strong>PhD</strong></td>
+                <td>Master's Degree: CGPA 3.00 or equivalent</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="mt-3">
+          <a href="{{ url_for('admission.requirements') }}" class="btn btn-primary">View Full Requirements</a>
+          <a href="{{ url_for('admission.check_eligibility') }}" class="btn btn-outline-primary">Check My Eligibility</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Account Creation Modal -->
+<div class="modal fade" id="accountModal" tabindex="-1" aria-labelledby="accountModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-info text-white">
+        <h5 class="modal-title" id="accountModalLabel"><i class="bi bi-person-plus"></i> Online Application Portal</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <h6>Creating Your Account:</h6>
+        <ol>
+          <li>Click on "Go to Application Portal" button</li>
+          <li>Select "Create New Account"</li>
+          <li>Enter your email address and create a password</li>
+          <li>Verify your email through the confirmation link sent to your inbox</li>
+          <li>Log in with your credentials to start your application</li>
+        </ol>
+        <div class="alert alert-warning">
+          <strong>Important:</strong> Use an email address you check regularly. All application updates will be sent to this email.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Program Information Modal -->
+<div class="modal fade" id="programInfoModal" tabindex="-1" aria-labelledby="programInfoModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title" id="programInfoModalLabel"><i class="bi bi-book"></i> Program Details</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>When selecting a program, consider the following:</p>
+        <ul>
+          <li><strong>Program Duration:</strong> Foundation (1 year), Diploma (2-3 years), Bachelor's (3-4 years)</li>
+          <li><strong>Career Prospects:</strong> Research job opportunities and career paths</li>
+          <li><strong>Entry Requirements:</strong> Ensure you meet the minimum qualifications</li>
+          <li><strong>Program Structure:</strong> Review course modules and curriculum</li>
+          <li><strong>Faculty:</strong> Check faculty expertise and facilities</li>
+        </ul>
+        <p class="mb-0">You can select up to 3 program choices. Rank them in order of preference.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Qualifications Modal -->
+<div class="modal fade" id="qualificationsModal" tabindex="-1" aria-labelledby="qualificationsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-warning text-dark">
+        <h5 class="modal-title" id="qualificationsModalLabel"><i class="bi bi-award"></i> Academic Qualifications</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>You need to provide details for all your academic qualifications:</p>
+        <ul>
+          <li><strong>SPM (Sijil Pelajaran Malaysia):</strong> Year, subjects, grades</li>
+          <li><strong>STPM (Sijil Tinggi Persekolahan Malaysia):</strong> Year, subjects, CGPA</li>
+          <li><strong>UEC (Unified Examination Certificate):</strong> Year, subjects, grades</li>
+          <li><strong>A-Level:</strong> Year, subjects, grades</li>
+          <li><strong>Diploma:</strong> Institution, year, CGPA, field of study</li>
+          <li><strong>Degree:</strong> Institution, year, CGPA, field of study (for postgraduate applications)</li>
+        </ul>
+        <div class="alert alert-info">
+          <strong>Tip:</strong> Have your certificates and transcripts ready before filling the form. You'll need to upload scanned copies later.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Documents Modal -->
+<div class="modal fade" id="documentsModal" tabindex="-1" aria-labelledby="documentsModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="documentsModalLabel"><i class="bi bi-file-earmark-text"></i> Required Documents</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <h6>Essential Documents:</h6>
+        <ul>
+          <li><strong>Identity Card/Passport:</strong> Front and back (scanned copy)</li>
+          <li><strong>Academic Certificates:</strong> SPM, STPM, UEC, Diploma, Degree certificates</li>
+          <li><strong>Academic Transcripts:</strong> For Diploma and Degree holders</li>
+          <li><strong>Passport Photos:</strong> Recent colored photos (white background, 35mm x 45mm)</li>
+          <li><strong>Birth Certificate:</strong> Certified copy</li>
+          <li><strong>English Proficiency:</strong> IELTS/TOEFL/MUET results (if applicable)</li>
+        </ul>
+        <div class="alert alert-warning">
+          <strong>Document Requirements:</strong>
+          <ul class="mb-0">
+            <li>All documents must be clear and legible</li>
+            <li>File format: PDF or JPG</li>
+            <li>Maximum file size: 2MB per document</li>
+            <li>For international students: Include certified English translations</li>
+          </ul>
+        </div>
+        <a href="{{ url_for('admission.document_checklist') }}" class="btn btn-primary">Get Complete Checklist</a>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
 
 {% block extra_css %}
@@ -291,7 +640,206 @@
 .step-content {
   margin-left: 20px;
 }
+
+.clickable-link {
+  color: #0d6efd;
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.clickable-link:hover {
+  color: #0a58ca;
+  text-decoration: underline;
+  transform: translateY(-1px);
+}
+
+.expandable-section {
+  margin-top: 10px;
+}
+
+.expandable-section .btn {
+  border-radius: 5px;
+}
+
+.expandable-section .collapse {
+  transition: all 0.3s ease;
+}
+
+.badge {
+  margin: 0 2px;
+}
+
+.level-selection .btn.level-btn {
+  transition: all 0.3s;
+  border-width: 3px !important;
+  min-height: 120px;
+  color: #0d6efd !important;
+  background-color: #ffffff !important;
+  font-weight: 500;
+}
+
+.level-selection .btn.level-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  background-color: #e7f1ff !important;
+  border-color: #0d6efd !important;
+  color: #0d6efd !important;
+}
+
+.level-selection .btn.level-btn.active,
+.level-selection .btn.level-btn.active:hover,
+.level-selection .btn.level-btn.active:focus {
+  background-color: #e7f1ff !important;
+  color: #0d6efd !important;
+  border-color: #0d6efd !important;
+  border-width: 3px !important;
+  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.2) !important;
+}
+
+.level-selection .btn.level-btn.active *,
+.level-selection .btn.level-btn.active:hover *,
+.level-selection .btn.level-btn.active:focus * {
+  color: #0d6efd !important;
+}
+
+.level-selection .btn.level-btn.active i,
+.level-selection .btn.level-btn.active strong,
+.level-selection .btn.level-btn.active small,
+.level-selection .btn.level-btn.active:hover i,
+.level-selection .btn.level-btn.active:hover strong,
+.level-selection .btn.level-btn.active:hover small {
+  color: #0d6efd !important;
+  font-weight: 600;
+}
+
+.level-selection .btn.level-btn i {
+  color: #0d6efd !important;
+}
+
+.level-selection .btn.level-btn strong {
+  color: #0d6efd !important;
+  font-weight: 600;
+}
+
+.level-selection .btn.level-btn small {
+  color: #6c757d !important;
+}
 </style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+  // Handle clickable links to show modals (Bootstrap 5)
+  $('.clickable-link[data-bs-toggle="modal"]').on('click', function(e) {
+    e.preventDefault();
+    // Bootstrap 5 will handle the modal automatically via data attributes
+  });
+
+  // Program data from template
+  var programsData = {
+    {% for program in programs %}
+    {{ program.program_id }}: {
+      id: {{ program.program_id }},
+      name: "{{ program.program_name }}",
+      level: "{{ program.level }}",
+      faculty: "{{ program.faculty_name }}"
+    }{% if not loop.last %},{% endif %}
+    {% endfor %}
+  };
+
+  // Handle level selection
+  $('.level-btn').on('click', function() {
+    var selectedLevel = $(this).data('level');
+    
+    // Update button states
+    $('.level-btn').removeClass('active');
+    $(this).addClass('active');
+    
+    // Filter programs by level
+    var filteredPrograms = [];
+    
+    // Special handling for Foundation
+    if (selectedLevel === 'Foundation') {
+      filteredPrograms = [
+        { id: 'foundation-arts', name: 'Foundation in Arts', level: 'Foundation', faculty: 'Foundation Studies' },
+        { id: 'foundation-science', name: 'Foundation in Science', level: 'Foundation', faculty: 'Foundation Studies' }
+      ];
+    } else if (selectedLevel === 'Bachelor') {
+      // Include both Bachelor and Diploma for "Degree" selection
+      for (var id in programsData) {
+        if (programsData[id].level === 'Bachelor' || programsData[id].level === 'Diploma') {
+          filteredPrograms.push(programsData[id]);
+        }
+      }
+    } else {
+      // For Master and PhD, filter by exact level match
+      for (var id in programsData) {
+        if (programsData[id].level === selectedLevel) {
+          filteredPrograms.push(programsData[id]);
+        }
+      }
+    }
+    
+    // Populate program dropdown
+    var $programSelect = $('#program-select');
+    $programSelect.empty();
+    $programSelect.append('<option value="">Select a program...</option>');
+    
+    if (filteredPrograms.length === 0) {
+      $programSelect.append('<option value="">No programs available for this level</option>');
+    } else {
+      filteredPrograms.forEach(function(program) {
+        var displayName = program.name;
+        if (program.faculty && program.faculty !== 'Foundation Studies') {
+          displayName += ' (' + program.faculty + ')';
+        }
+        $programSelect.append('<option value="' + program.id + '">' + displayName + '</option>');
+      });
+    }
+    
+    // Show program selection dropdown
+    $('#program-selection-container').slideDown();
+    $('#program-details').slideUp();
+  });
+
+  // Handle program selection
+  $('#program-select').on('change', function() {
+    var programId = $(this).val();
+    if (programId) {
+      var programText = $(this).find('option:selected').text();
+      $('#program-name').text(programText);
+      $('#program-info').text('Click below to view detailed entry requirements and check your eligibility for this program.');
+      
+      // Set links
+      if (programId.startsWith('foundation-')) {
+        // For foundation programs, link to requirements list page
+        $('#program-requirements-link').attr('href', '/admission/requirements');
+        $('#program-check-eligibility-link').attr('href', '/admission/check_eligibility');
+      } else {
+        $('#program-requirements-link').attr('href', '/admission/requirements?program_id=' + programId);
+        $('#program-check-eligibility-link').attr('href', '/admission/check_eligibility?program_id=' + programId);
+      }
+      
+      $('#program-details').slideDown();
+    } else {
+      $('#program-details').slideUp();
+    }
+  });
+
+  // Smooth scroll for expandable sections
+  $('[data-bs-toggle="collapse"]').on('click', function() {
+    var target = $(this).data('bs-target');
+    setTimeout(function() {
+      $('html, body').animate({
+        scrollTop: $(target).offset().top - 100
+      }, 500);
+    }, 300);
+  });
+});
+</script>
 {% endblock %}
 
 

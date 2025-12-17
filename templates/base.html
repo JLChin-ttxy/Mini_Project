@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="SKL University - Admission Requirements & Application Procedure" />
-  <title>{% block title %}SKL Universiti{% endblock %}</title>
+  <title>{% block title %}SKL University{% endblock %}</title>
   
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -21,16 +21,20 @@
     <div class="header-container">
       <div class="logo-container">
         <img src="{{ url_for('static', filename='images/SKL logo.png') }}" alt="SKL Logo" class="logo">
-        <h1>SKL Universiti</h1>
+        <h1>SKL University</h1>
       </div>
 
       <!-- Desktop Nav -->
       <nav class="nav-desktop">
         <a href="{{ url_for('index') }}">Home</a>
-        <a href="{{ url_for('admission.admission_home') }}">Admissions</a>
-        <a href="{{ url_for('admission.requirements') }}">Requirements</a>
-        <a href="{{ url_for('admission.application_procedure') }}">Apply</a>
-        <a href="{{ url_for('admission.deadlines') }}">Deadlines</a>
+        <div class="nav-dropdown" id="admission-dropdown">
+          <a href="/admission/" class="dropdown-toggle" id="dropdown-toggle-link">Admissions <i class="bi bi-chevron-down" id="dropdown-arrow"></i></a>
+          <div class="dropdown-menu" id="admission-dropdown-menu">
+            <a href="/admission/requirements">Requirements</a>
+            <a href="/admission/application-procedure">Apply</a>
+            <a href="/admission/deadlines">Deadlines</a>
+          </div>
+        </div>
         <a href="{{ url_for('index') }}#facilities">Campus Life</a>
         <a href="#contact">Contact</a>
       </nav>
@@ -46,10 +50,10 @@
     <!-- Mobile Menu -->
     <nav id="mobile-menu" class="nav-mobile">
       <a href="{{ url_for('index') }}">Home</a>
-      <a href="{{ url_for('admission.admission_home') }}">Admissions</a>
-      <a href="{{ url_for('admission.requirements') }}">Requirements</a>
-      <a href="{{ url_for('admission.application_procedure') }}">Apply</a>
-      <a href="{{ url_for('admission.deadlines') }}">Deadlines</a>
+      <a href="/admission/">Admissions</a>
+      <a href="/admission/requirements" class="submenu-item">→ Requirements</a>
+      <a href="/admission/application-procedure" class="submenu-item">→ Apply</a>
+      <a href="/admission/deadlines" class="submenu-item">→ Deadlines</a>
       <a href="{{ url_for('index') }}#facilities">Campus Life</a>
       <a href="#contact">Contact</a>
     </nav>
@@ -63,7 +67,7 @@
   <!-- Footer -->
   <footer class="footer">
     <div class="container">
-      <p>&copy; 2025 SKL Universiti. All rights reserved.</p>
+      <p>&copy; 2025 SKL University. All rights reserved.</p>
     </div>
   </footer>
 

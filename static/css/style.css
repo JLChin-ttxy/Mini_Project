@@ -66,6 +66,92 @@ h1,h2,h3,h4 {
   text-decoration: underline;
 }
 
+/* Dropdown Menu */
+.nav-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.nav-dropdown .dropdown-toggle {
+  cursor: pointer;
+}
+
+.nav-dropdown .dropdown-toggle i {
+  font-size: 0.75rem;
+  margin-left: 0.25rem;
+  transition: transform 0.3s;
+}
+
+.nav-dropdown:hover .dropdown-toggle i {
+  transform: rotate(180deg);
+}
+
+.nav-dropdown .dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #1e3a8a;
+  min-width: 200px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  margin-top: 0.5rem;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.nav-dropdown:hover .dropdown-menu,
+.nav-dropdown.show .dropdown-menu {
+  display: block;
+}
+
+.nav-dropdown.show .dropdown-toggle i {
+  transform: rotate(180deg);
+}
+
+.nav-dropdown .dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: #1e3a8a;
+  min-width: 200px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  z-index: 1000;
+  margin-top: 0.5rem;
+}
+
+.nav-dropdown .dropdown-toggle {
+  cursor: pointer;
+  position: relative;
+}
+
+.nav-dropdown .dropdown-toggle i {
+  transition: transform 0.3s;
+  display: inline-block;
+  margin-left: 0.25rem;
+}
+
+.nav-dropdown .dropdown-menu a {
+  display: block;
+  padding: 0.75rem 1.5rem;
+  color: #f8fafc;
+  text-decoration: none;
+  margin-left: 0;
+  transition: background 0.3s;
+}
+
+.nav-dropdown .dropdown-menu a:hover {
+  background: #2563eb;
+  color: #facc15;
+  text-decoration: none;
+}
+
+.nav-mobile .submenu-item {
+  padding-left: 2rem;
+  font-size: 0.9rem;
+  color: #cbd5e1;
+}
+
 .hamburger {
   display: none;
   background: none;
@@ -447,6 +533,50 @@ footer, .footer {
   padding: 0.5rem 1rem;
 }
 
+/* Bootstrap Primary Buttons - Ensure text is always visible */
+.btn-primary,
+.btn.btn-primary,
+a.btn-primary,
+button.btn-primary {
+  color: #ffffff !important;
+  background-color: #0d6efd !important;
+  border-color: #0d6efd !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.btn-primary.active,
+.btn.btn-primary:hover,
+.btn.btn-primary:focus,
+.btn.btn-primary:active,
+a.btn-primary:hover,
+a.btn-primary:focus,
+button.btn-primary:hover,
+button.btn-primary:focus {
+  color: #ffffff !important;
+  background-color: #0b5ed7 !important;
+  border-color: #0a58ca !important;
+}
+
+.btn-primary *,
+.btn-primary i,
+.btn-primary span,
+.btn.btn-primary *,
+.btn.btn-primary i,
+.btn.btn-primary span {
+  color: #ffffff !important;
+}
+
+.btn-primary:hover *,
+.btn-primary:hover i,
+.btn-primary:hover span,
+.btn-primary:focus *,
+.btn-primary:focus i,
+.btn-primary:focus span {
+  color: #ffffff !important;
+}
+
 /* Admission specific styles */
 .admission-hero {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -456,6 +586,19 @@ footer, .footer {
 
 .admission-hero h1 {
   color: white;
+}
+
+.admission-hero .university-logo {
+  max-width: 100%;
+  height: auto;
+  max-height: 400px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+  animation: fadeInDown 0.8s ease-out;
+}
+
+.admission-hero .row {
+  align-items: center;
 }
 
 /* -------------------------------

@@ -48,10 +48,22 @@ class DeadlineTracker:
                        id.end_date,
                        id.description,
                        p.program_name,
-                       p.program_id
+                       p.program_id,
+                       p.level,
+                       CASE 
+                           WHEN id.end_date < CURDATE() THEN 'expired'
+                           WHEN id.start_date <= CURDATE() AND (id.end_date IS NULL OR id.end_date >= CURDATE()) THEN 'active'
+                           ELSE 'upcoming'
+                       END as status,
+                       CASE 
+                           WHEN id.end_date IS NOT NULL AND id.end_date < DATE_ADD(CURDATE(), INTERVAL 7 DAY) THEN 'critical'
+                           WHEN id.end_date IS NOT NULL AND id.end_date < DATE_ADD(CURDATE(), INTERVAL 30 DAY) THEN 'high'
+                           ELSE 'normal'
+                       END as urgency,
+                       DATEDIFF(id.end_date, CURDATE()) as days_remaining
                 FROM IMPORTANT_DATE id
                 JOIN PROGRAM p ON id.program_id = p.program_id
-                ORDER BY id.start_date DESC
+                ORDER BY id.start_date ASC
                 """
             )
             dates = cursor.fetchall()
