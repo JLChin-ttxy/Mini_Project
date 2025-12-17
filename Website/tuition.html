@@ -1,0 +1,2338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="SKL Universiti - Tuition Fees & Scholarships" />
+  <title>SKL Universiti - Tuition & Scholarships</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+  <style>
+   
+    .tuition-hero {
+      background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+      color: white;
+      padding: 3rem 1rem;
+      text-align: center;
+    }
+    
+    .tuition-hero h2 {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+      color: white;
+    }
+    
+    .tuition-hero p {
+      max-width: 700px;
+      margin: 0 auto 2rem;
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+    
+  
+    .main-content {
+      padding: 2rem 1rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    
+    .selection-card {
+      background: white;
+      border-radius: 1rem;
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      margin-bottom: 2rem;
+      display: none;
+    }
+    
+    .selection-card.active {
+      display: block;
+      animation: fadeIn 0.5s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .card-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #e5e7eb;
+    }
+    
+    .card-header h3 {
+      color: #1e3a8a;
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+    
+   
+    .selection-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2rem;
+    }
+    
+    
+    .select-item {
+      background: white;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: 2px solid #e5e7eb;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .select-item:hover {
+      border-color: #93c5fd;
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(30, 58, 138, 0.1);
+    }
+    
+    .select-item.selected {
+      border-color: #1e3a8a;
+      background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    }
+    
+    .select-item.selected::after {
+      content: '✓ Selected';
+      position: absolute;
+      top: 0;
+      right: 0;
+      background: #1e3a8a;
+      color: white;
+      padding: 0.25rem 0.75rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      border-radius: 0 0.75rem 0 0.75rem;
+    }
+    
+    .item-icon {
+      font-size: 2.2rem;
+      margin-bottom: 1rem;
+      color: #1e3a8a;
+      text-align: center;
+    }
+    
+    .item-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #1e3a8a;
+      margin-bottom: 0.5rem;
+      text-align: center;
+    }
+    
+    .item-desc {
+      color: #4b5563;
+      font-size: 0.875rem;
+      line-height: 1.5;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    
+    .item-meta {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      font-size: 0.8rem;
+      color: #6b7280;
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid #e5e7eb;
+    }
+    
+    /* Subject Items */
+    .subject-item {
+      background: white;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      border: 2px solid #e5e7eb;
+    }
+    
+    .subject-item:hover {
+      transform: translateY(-4px);
+      border-color: #93c5fd;
+      box-shadow: 0 6px 16px rgba(30, 58, 138, 0.1);
+    }
+    
+    .subject-item.selected {
+      border-color: #1e3a8a;
+      background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+    }
+    
+    .subject-code {
+      font-family: 'Courier New', monospace;
+      font-weight: 600;
+      color: #1e3a8a;
+      margin-bottom: 0.25rem;
+      font-size: 0.9rem;
+    }
+    
+    .subject-name {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #1e3a8a;
+      margin-bottom: 0.75rem;
+    }
+    
+    .subject-details {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.875rem;
+      color: #6b7280;
+      margin-top: 0.75rem;
+      padding-top: 0.75rem;
+      border-top: 1px solid #e5e7eb;
+    }
+    
+    .subject-credits {
+      font-weight: 600;
+      color: #1e3a8a;
+    }
+    
+    .subject-fee {
+      font-weight: 600;
+      color: #10b981;
+    }
+    
+    .mandatory-badge {
+      display: inline-block;
+      background: #fee2e2;
+      color: #dc2626;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-right: 0.5rem;
+    }
+    
+    .elective-badge {
+      display: inline-block;
+      background: #dbeafe;
+      color: #1e3a8a;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-right: 0.5rem;
+    }
+    
+
+    .summary-section {
+      background: #f8fafc;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      margin-top: 2rem;
+      border: 2px solid #e5e7eb;
+    }
+    
+    .summary-title {
+      color: #1e3a8a;
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .summary-item:last-child {
+      border-bottom: none;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+    
+    .summary-label {
+      color: #4b5563;
+    }
+    
+    .summary-value {
+      font-weight: 600;
+      color: #1e3a8a;
+    }
+    
+    .summary-total {
+      color: #10b981 !important;
+    }
+    
+
+    .current-selection {
+      background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+      border-radius: 0.75rem;
+      padding: 1rem 1.5rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 2px solid #93c5fd;
+    }
+    
+    .selection-info h4 {
+      color: #1e3a8a;
+      margin-bottom: 0.25rem;
+      font-size: 1rem;
+    }
+    
+    .selection-info p {
+      color: #4b5563;
+      font-size: 0.875rem;
+    }
+    
+    .change-btn {
+      background: white;
+      color: #1e3a8a;
+      border: 2px solid #1e3a8a;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.875rem;
+    }
+    
+    .change-btn:hover {
+      background: #1e3a8a;
+      color: white;
+    }
+    
+    .financial-plan-section {
+      display: none;
+    }
+    
+    .financial-plan-section.active {
+      display: block;
+    }
+    
+    .plan-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+    
+    .plan-card {
+      background: white;
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+    
+    .plan-card h4 {
+      color: #1e3a8a;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .cost-breakdown {
+      margin-bottom: 1.5rem;
+    }
+    
+    .cost-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    
+    .cost-item:last-child {
+      border-bottom: 2px solid #dbeafe;
+      font-weight: 600;
+    }
+    
+    .net-total {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1e3a8a;
+      text-align: center;
+      padding: 1rem;
+      background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+      border-radius: 0.75rem;
+      margin: 1.5rem 0;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+    
+    .action-btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-family: 'Poppins', sans-serif;
+      min-width: 160px;
+      justify-content: center;
+    }
+    
+    .btn-primary {
+      background: #1e3a8a;
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: #1d4ed8;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(30, 58, 138, 0.3);
+    }
+    
+    .btn-success {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+    }
+    
+    .btn-success:hover {
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+    }
+    
+    .btn-secondary {
+      background: #6b7280;
+      color: white;
+    }
+    
+    .btn-secondary:hover {
+      background: #4b5563;
+      transform: translateY(-2px);
+    }
+    
+    /* Loading State */
+    .loading-state {
+      text-align: center;
+      padding: 3rem;
+      display: none;
+    }
+    
+    .loading-state.show {
+      display: block;
+    }
+    
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #e5e7eb;
+      border-top-color: #1e3a8a;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+    
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    .double-click-hint {
+      text-align: center;
+      color: #d97706;
+      font-size: 0.875rem;
+      margin: 1rem 0;
+      padding: 0.75rem;
+      background: #fef3c7;
+      border-radius: 0.5rem;
+      border: 1px solid #fbbf24;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    
+    /* Scholarship Matching  */
+    .scholarship-matching-section {
+      display: none;
+    }
+    
+    .scholarship-matching-section.active {
+      display: block;
+    }
+    
+    .profile-form {
+      background: white;
+      border-radius: 1rem;
+      padding: 2rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      margin-bottom: 2rem;
+    }
+    
+    .form-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .form-group label {
+      font-weight: 600;
+      color: #1e3a8a;
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 0.75rem;
+      border: 2px solid #e5e7eb;
+      border-radius: 0.5rem;
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.95rem;
+      transition: all 0.3s;
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #1e3a8a;
+      box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+    }
+    
+    .gpa-input {
+      position: relative;
+    }
+    
+    .gpa-input input {
+      padding-right: 3rem;
+    }
+    
+    .gpa-input::after {
+      content: '/4.0';
+      position: absolute;
+      right: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #6b7280;
+      font-weight: 600;
+    }
+    
+    .achievement-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    
+    .achievement-tag {
+      background: #dbeafe;
+      color: #1e3a8a;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid #93c5fd;
+    }
+    
+    .achievement-tag:hover {
+      background: #93c5fd;
+    }
+    
+    .achievement-tag.selected {
+      background: #1e3a8a;
+      color: white;
+    }
+    
+  
+    .scholarship-results {
+      background: white;
+      border-radius: 1rem;
+      padding: 2rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      margin-top: 2rem;
+    }
+    
+    .results-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #e5e7eb;
+    }
+    
+    .results-count {
+      background: #10b981;
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+    
+    .scholarship-card {
+      background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+      border-radius: 0.75rem;
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+      border: 2px solid #e5e7eb;
+      transition: all 0.3s;
+    }
+    
+    .scholarship-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+      border-color: #93c5fd;
+    }
+    
+    .scholarship-card.highlighted {
+      border-color: #facc15;
+      background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+    }
+    
+    .scholarship-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+    
+    .scholarship-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #1e3a8a;
+      margin-bottom: 0.25rem;
+    }
+    
+    .scholarship-amount {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #10b981;
+      white-space: nowrap;
+      margin-left: 1rem;
+    }
+    
+    .scholarship-details {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      font-size: 0.875rem;
+      color: #4b5563;
+    }
+    
+    .detail-item {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+    
+    .scholarship-match {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-top: 0.5rem;
+      display: inline-block;
+    }
+    
+    .scholarship-requirements {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid #e5e7eb;
+    }
+    
+    .requirements-title {
+      font-weight: 600;
+      color: #1e3a8a;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+    
+    .requirements-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+    
+    .requirement-tag {
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 0.25rem 0.5rem;
+      border-radius: 0.25rem;
+      font-size: 0.8rem;
+    }
+    
+    .scholarship-actions {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1rem;
+    }
+    
+    .action-btn-small {
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-weight: 600;
+      cursor: pointer;
+      font-size: 0.85rem;
+      border: none;
+      transition: all 0.2s;
+    }
+    
+    .btn-apply {
+      background: #1e3a8a;
+      color: white;
+    }
+    
+    .btn-apply:hover {
+      background: #1d4ed8;
+    }
+    
+    .btn-details {
+      background: #f8fafc;
+      color: #4b5563;
+      border: 2px solid #e5e7eb;
+    }
+    
+    .btn-details:hover {
+      background: #e5e7eb;
+    }
+    
+    .navigation-tabs {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    
+    .nav-tab {
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-family: 'Poppins', sans-serif;
+      min-width: 200px;
+      justify-content: center;
+      font-size: 1.1rem;
+    }
+    
+    .nav-tab.active {
+      background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(30, 58, 138, 0.3);
+    }
+    
+    .nav-tab:not(.active) {
+      background: white;
+      color: #1e3a8a;
+      border: 2px solid #e5e7eb;
+    }
+    
+    .nav-tab:not(.active):hover {
+      background: #f8fafc;
+      border-color: #93c5fd;
+      transform: translateY(-2px);
+    }
+    
+    @media (max-width: 768px) {
+      .selection-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .current-selection {
+        flex-direction: column;
+        gap: 1rem;
+        text-align: center;
+      }
+      
+      .action-buttons {
+        flex-direction: column;
+      }
+      
+      .action-btn {
+        width: 100%;
+      }
+      
+      .scholarship-header {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      
+      .scholarship-amount {
+        margin-left: 0;
+      }
+      
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+      
+      .navigation-tabs {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .nav-tab {
+        width: 100%;
+        max-width: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-container">
+      <div class="logo-container">
+        <img src="SKL logo.png" alt="SKL Logo" class="logo">
+        <h1>SKL Universiti</h1>
+      </div>
+
+      <nav class="nav-desktop">
+        <a href="main.html">Home</a>
+        <a href="#programs">Programs</a>
+        <a href="#admissions">Admissions</a>
+        <a href="campus_life.html">Campus Life</a>
+        <a href="tuition.html" class="active">Tuition & Scholarships</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <button id="menu-toggle" class="hamburger">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+
+    <nav id="mobile-menu" class="nav-mobile">
+      <a href="main.html">Home</a>
+      <a href="#programs">Programs</a>
+      <a href="#admissions">Admissions</a>
+      <a href="campus_life.html">Campus Life</a>
+      <a href="tuition.html" class="active">Tuition & Scholarships</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <section class="tuition-hero" id="tuition">
+    <div class="container">
+      <h2>Tuition & Scholarships</h2>
+      <p>Calculate your tuition fees and find matching scholarships</p>
+    </div>
+  </section>
+
+  <div class="navigation-tabs">
+    <button class="nav-tab active" id="facultyTab" onclick="switchToFaculty()">
+      <i class="fas fa-university"></i> Faculty & Tuition
+    </button>
+    <button class="nav-tab" id="scholarshipTab" onclick="switchToScholarship()">
+      <i class="fas fa-graduation-cap"></i> Find Scholarships
+    </button>
+  </div>
+
+  <div class="main-content">
+    
+    <div class="scholarship-matching-section" id="scholarshipMatching">
+      <div class="card-header">
+        <h3><i class="fas fa-graduation-cap"></i> Scholarship Matching Engine</h3>
+        <p>Enter your profile details to find matching scholarships</p>
+      </div>
+      
+      <div class="profile-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label><i class="fas fa-user"></i> Full Name</label>
+            <input type="text" id="studentFullName" placeholder="Enter your full name">
+          </div>
+          <div class="form-group gpa-input">
+            <label><i class="fas fa-star"></i> Current GPA</label>
+            <input type="number" id="studentGPA" min="0" max="4" step="0.01" placeholder="3.50" value="3.5">
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label><i class="fas fa-money-bill-wave"></i> Family Income (Monthly)</label>
+            <div style="display: flex; align-items: center;">
+              <span style="padding: 0.75rem; background: #e5e7eb; border-radius: 0.5rem 0 0 0.5rem; color: #4b5563; font-weight: 600;">RM</span>
+              <input type="number" id="familyIncome" value="5000" min="0" style="flex: 1; padding: 0.75rem; border: 2px solid #e5e7eb; border-left: none; border-radius: 0 0.5rem 0.5rem 0; font-family: 'Poppins', sans-serif;">
+            </div>
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-users"></i> Program Level</label>
+            <select id="programLevel">
+              <option value="undergraduate">Undergraduate</option>
+              <option value="postgraduate">Postgraduate</option>
+              <option value="diploma">Diploma</option>
+              <option value="foundation">Foundation</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label><i class="fas fa-calendar-alt"></i> Year of Study</label>
+            <select id="yearOfStudy">
+              <option value="1">Year 1</option>
+              <option value="2" selected>Year 2</option>
+              <option value="3">Year 3</option>
+              <option value="4">Year 4</option>
+              <option value="5">Year 5</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label><i class="fas fa-building"></i> Faculty (Optional)</label>
+            <select id="scholarshipFaculty">
+              <option value="">Any Faculty</option>
+              <option value="accountancy">Accountancy & Management</option>
+              <option value="arts">Arts & Social Science</option>
+              <option value="business">Business & Finance</option>
+              <option value="ict">Information & Communication Technology</option>
+              <option value="science">Science</option>
+              <option value="engineering">Engineering & Green Technology</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label><i class="fas fa-trophy"></i> Special Achievements (Select all that apply)</label>
+          <div class="achievement-tags" id="achievementTags">
+          </div>
+          <textarea id="otherAchievements" placeholder="Other achievements not listed above..." rows="2" style="margin-top: 1rem;"></textarea>
+        </div>
+        
+        <div class="action-buttons">
+          <button class="action-btn btn-primary" onclick="findScholarships()">
+            <i class="fas fa-search"></i> Find Matching Scholarships
+          </button>
+          <button class="action-btn btn-secondary" onclick="clearScholarshipForm()">
+            <i class="fas fa-redo"></i> Clear Form
+          </button>
+        </div>
+      </div>
+      
+      <div class="scholarship-results" id="scholarshipResults" style="display: none;">
+        <div class="results-header">
+          <div>
+            <h4 style="color: #1e3a8a; margin: 0;">Matching Scholarships</h4>
+            <p style="color: #6b7280; margin: 0.25rem 0 0 0; font-size: 0.875rem;">Ranked by eligibility and match score</p>
+          </div>
+          <div class="results-count" id="resultsCount">0 matches</div>
+        </div>
+        
+        <div id="scholarshipList">
+        </div>
+        
+        <div class="action-buttons" style="margin-top: 2rem;">
+          <button class="action-btn btn-secondary" onclick="resetScholarshipSearch()">
+            <i class="fas fa-redo"></i> New Search
+          </button>
+          <button class="action-btn btn-primary" onclick="exportScholarshipResults()">
+            <i class="fas fa-download"></i> Export Results
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Faculty Selection -->
+    <div class="selection-card active" id="facultyCard">
+      <div class="card-header">
+        <h3><i class="fas fa-university"></i> Select Your Faculty</h3>
+        <p>Double-click on a faculty to select it</p>
+      </div>
+      
+      <div class="double-click-hint">
+        <i class="fas fa-mouse-pointer"></i>
+        <span>Double-click any faculty card to select it</span>
+      </div>
+      
+      <div class="selection-grid" id="facultyGrid">
+        <div class="loading-state" id="facultyLoading">
+          <div class="spinner"></div>
+          <p>Loading faculties...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Program Selection -->
+    <div class="selection-card" id="programCard">
+      <div class="card-header">
+        <h3><i class="fas fa-graduation-cap"></i> Choose Your Program</h3>
+        <p>Double-click on a program to select it</p>
+      </div>
+      
+      <div class="current-selection" id="currentFaculty">
+        <div class="selection-info">
+          <h4>Selected Faculty</h4>
+          <p id="selectedFacultyName">No faculty selected</p>
+        </div>
+        <button class="change-btn" onclick="goBackToFaculty()">
+          <i class="fas fa-edit"></i> Change Faculty
+        </button>
+      </div>
+      
+      <div class="double-click-hint">
+        <i class="fas fa-mouse-pointer"></i>
+        <span>Double-click any program card to select it</span>
+      </div>
+      
+      <div class="selection-grid" id="programGrid">
+        <div class="loading-state show" id="programLoading">
+          <div class="spinner"></div>
+          <p>Select a faculty to see programs</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Subject Selection -->
+    <div class="selection-card" id="subjectCard">
+      <div class="card-header">
+        <h3><i class="fas fa-book-open"></i> Select Your Subjects</h3>
+        <p>Click on subjects to select them for your financial plan</p>
+      </div>
+      
+      <div class="current-selection">
+        <div class="selection-info">
+          <h4 id="selectedProgramTitle">No program selected</h4>
+          <p id="selectedProgramDesc"></p>
+        </div>
+        <button class="change-btn" onclick="goBackToProgram()">
+          <i class="fas fa-edit"></i> Change Program
+        </button>
+      </div>
+      
+      <div class="selection-grid" id="subjectGrid">
+        <div class="loading-state show" id="subjectLoading">
+          <div class="spinner"></div>
+          <p>Select a program to see subjects</p>
+        </div>
+      </div>
+      
+      <div class="summary-section">
+        <div class="summary-title">
+          <i class="fas fa-list-check"></i> Selected Subjects Summary
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Number of Subjects:</span>
+          <span class="summary-value" id="subjectCount">0</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Total Credits:</span>
+          <span class="summary-value" id="totalCredits">0</span>
+        </div>
+        <div class="summary-item">
+          <span class="summary-label">Total Tuition:</span>
+          <span class="summary-value summary-total" id="totalTuition">RM 0.00</span>
+        </div>
+      </div>
+      
+      <div class="action-buttons">
+        <button class="action-btn btn-secondary" onclick="goBackToProgram()">
+          <i class="fas fa-arrow-left"></i> Back to Program
+        </button>
+        <button class="action-btn btn-primary" id="viewFinancialPlan" onclick="showFinancialPlan()" disabled>
+          View Financial Plan <i class="fas fa-chart-line"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Financial Plan Section -->
+    <div class="financial-plan-section" id="financialPlan">
+      <div class="card-header">
+        <h3><i class="fas fa-file-invoice-dollar"></i> Your Financial Plan</h3>
+        <p>Complete your financial profile and generate your plan</p>
+      </div>
+      
+      <div class="current-selection">
+        <div class="selection-info">
+          <h4>Selected Program</h4>
+          <p id="planProgramTitle"></p>
+        </div>
+        <button class="change-btn" onclick="goBackToSubject()">
+          <i class="fas fa-edit"></i> Change Subjects
+        </button>
+      </div>
+      
+      <div class="plan-grid">
+        <div class="plan-card">
+          <h4><i class="fas fa-user-graduate"></i> Student Profile</h4>
+          <div style="margin-bottom: 1rem;">
+            <label style="display: block; margin-bottom: 0.5rem; color: #4b5563;">Student Name</label>
+            <input type="text" id="studentName" placeholder="Enter your name" style="width: 100%; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 0.5rem; font-family: 'Poppins', sans-serif;">
+          </div>
+          <div style="margin-bottom: 1rem;">
+            <label style="display: block; margin-bottom: 0.5rem; color: #4b5563;">Student ID (if any)</label>
+            <input type="text" id="studentID" placeholder="e.g., STU2025001" style="width: 100%; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 0.5rem; font-family: 'Poppins', sans-serif;">
+          </div>
+          <div style="margin-bottom: 1rem;">
+            <label style="display: block; margin-bottom: 0.5rem; color: #4b5563;">Email Address</label>
+            <input type="email" id="studentEmail" placeholder="your.email@example.com" style="width: 100%; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 0.5rem; font-family: 'Poppins', sans-serif;">
+          </div>
+        </div>
+        
+        <div class="plan-card">
+          <h4><i class="fas fa-money-bill-wave"></i> Additional Costs</h4>
+          <div style="margin-bottom: 1rem;">
+            <label style="display: block; margin-bottom: 0.5rem; color: #4b5563;">Accommodation (Monthly)</label>
+            <div style="display: flex; align-items: center;">
+              <span style="padding: 0.75rem; background: #e5e7eb; border-radius: 0.5rem 0 0 0.5rem; color: #4b5563; font-weight: 600;">RM</span>
+              <input type="number" id="accommodationCost" value="350" min="0" style="flex: 1; padding: 0.75rem; border: 2px solid #e5e7eb; border-left: none; border-radius: 0 0.5rem 0.5rem 0; font-family: 'Poppins', sans-serif;">
+            </div>
+          </div>
+          <div style="margin-bottom: 1rem;">
+            <label style="display: block; margin-bottom: 0.5rem; color: #4b5563;">Food & Living (Monthly)</label>
+            <div style="display: flex; align-items: center;">
+              <span style="padding: 0.75rem; background: #e5e7eb; border-radius: 0.5rem 0 0 0.5rem; color: #4b5563; font-weight: 600;">RM</span>
+              <input type="number" id="foodCost" value="500" min="0" style="flex: 1; padding: 0.75rem; border: 2px solid #e5e7eb; border-left: none; border-radius: 0 0.5rem 0.5rem 0; font-family: 'Poppins', sans-serif;">
+            </div>
+          </div>
+          <div style="margin-bottom: 1rem;">
+            <label style="display: block; margin-bottom: 0.5rem; color: #4b5563;">Other Expenses (Monthly)</label>
+            <div style="display: flex; align-items: center;">
+              <span style="padding: 0.75rem; background: #e5e7eb; border-radius: 0.5rem 0 0 0.5rem; color: #4b5563; font-weight: 600;">RM</span>
+              <input type="number" id="otherCost" value="200" min="0" style="flex: 1; padding: 0.75rem; border: 2px solid #e5e7eb; border-left: none; border-radius: 0 0.5rem 0.5rem 0; font-family: 'Poppins', sans-serif;">
+            </div>
+          </div>
+          <div>
+            <label style="display: block; margin-bottom: 0.5rem; color: #4b5563;">Semester Duration (Months)</label>
+            <select id="semesterDuration" style="width: 100%; padding: 0.75rem; border: 2px solid #e5e7eb; border-radius: 0.5rem; font-family: 'Poppins', sans-serif;">
+              <option value="4">4 months</option>
+              <option value="5" selected>5 months</option>
+              <option value="6">6 months</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      
+      <div class="plan-card">
+        <h4><i class="fas fa-calculator"></i> Cost Breakdown</h4>
+        <div class="cost-breakdown">
+          <div class="cost-item">
+            <span>Tuition Fees:</span>
+            <span id="costTuition">RM 0.00</span>
+          </div>
+          <div class="cost-item">
+            <span>Accommodation:</span>
+            <span id="costAccommodation">RM 0.00</span>
+          </div>
+          <div class="cost-item">
+            <span>Food & Living:</span>
+            <span id="costFood">RM 0.00</span>
+          </div>
+          <div class="cost-item">
+            <span>Other Expenses:</span>
+            <span id="costOther">RM 0.00</span>
+          </div>
+          <div class="cost-item">
+            <span>Subtotal:</span>
+            <span id="costSubtotal">RM 0.00</span>
+          </div>
+        </div>
+        
+        <div class="net-total">
+          <div>Total Estimated Cost</div>
+          <div id="netTotalAmount">RM 0.00</div>
+          <div style="font-size: 0.875rem; color: #6b7280;">Per Semester</div>
+        </div>
+        
+        <div class="action-buttons">
+          <button class="action-btn btn-secondary" onclick="goBackToSubject()">
+            <i class="fas fa-arrow-left"></i> Back to Subjects
+          </button>
+          <button class="action-btn btn-success" onclick="generatePDF()">
+            <i class="fas fa-file-pdf"></i> Download PDF Plan
+          </button>
+          <button class="action-btn btn-primary" onclick="switchToScholarship()">
+            <i class="fas fa-graduation-cap"></i> Find Scholarships
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <footer>
+    <p>&copy; 2025 SKL Universiti. All rights reserved.</p>
+    <p>Tuition & Scholarships Module | UCCA2513 Mini Project</p>
+  </footer>
+
+  <script>
+    // Application State
+    const state = {
+      selectedFaculty: null,
+      selectedProgram: null,
+      selectedSubjects: [],
+      planData: null,
+      isSelecting: true,
+      scholarships: []
+    };
+
+    // Scholarship database (simulated MySQL data)
+    const scholarshipDatabase = [
+      {
+        id: 1,
+        name: "SKL Excellence Scholarship",
+        amount: "Full Tuition + Allowance",
+        value: 50000,
+        deadline: "2025-03-15",
+        gpaMin: 3.8,
+        incomeMax: 10000,
+        programLevel: ["undergraduate", "postgraduate"],
+        yearMin: 1,
+        yearMax: 4,
+        faculty: [],
+        achievements: ["dean_list", "competition"],
+        link: "#",
+        description: "For outstanding academic achievers with holistic development",
+        matchScore: 0
+      },
+      {
+        id: 2,
+        name: "B40 Family Scholarship",
+        amount: "RM 10,000 per year",
+        value: 10000,
+        deadline: "2025-04-30",
+        gpaMin: 3.0,
+        incomeMax: 4000,
+        programLevel: ["undergraduate", "diploma", "foundation"],
+        yearMin: 1,
+        yearMax: 5,
+        faculty: [],
+        achievements: [],
+        link: "#",
+        description: "For students from low-income families (B40 category)",
+        matchScore: 0
+      },
+      {
+        id: 3,
+        name: "Sports Excellence Scholarship",
+        amount: "RM 7,500 per year",
+        value: 7500,
+        deadline: "2025-03-31",
+        gpaMin: 2.5,
+        incomeMax: 15000,
+        programLevel: ["undergraduate", "diploma"],
+        yearMin: 1,
+        yearMax: 4,
+        faculty: [],
+        achievements: ["sports_national", "sports_state"],
+        link: "#",
+        description: "For students with outstanding sports achievements",
+        matchScore: 0
+      },
+      {
+        id: 4,
+        name: "STEM Leadership Scholarship",
+        amount: "RM 12,000 per year",
+        value: 12000,
+        deadline: "2025-03-31",
+        gpaMin: 3.5,
+        incomeMax: 12000,
+        programLevel: ["undergraduate"],
+        yearMin: 2,
+        yearMax: 4,
+        faculty: ["ict", "science", "engineering"],
+        achievements: ["research", "leadership", "competition"],
+        link: "#",
+        description: "For STEM students with leadership potential",
+        matchScore: 0
+      },
+      {
+        id: 5,
+        name: "Business Innovation Grant",
+        amount: "RM 8,000 per year",
+        value: 8000,
+        deadline: "2025-05-15",
+        gpaMin: 3.2,
+        incomeMax: 8000,
+        programLevel: ["undergraduate", "postgraduate"],
+        yearMin: 1,
+        yearMax: 4,
+        faculty: ["accountancy", "business"],
+        achievements: ["entrepreneurship", "innovation"],
+        link: "#",
+        description: "For business students with innovative ideas",
+        matchScore: 0
+      },
+      {
+        id: 6,
+        name: "Arts & Culture Scholarship",
+        amount: "RM 6,000 per year",
+        value: 6000,
+        deadline: "2025-04-15",
+        gpaMin: 3.0,
+        incomeMax: 10000,
+        programLevel: ["undergraduate"],
+        yearMin: 1,
+        yearMax: 4,
+        faculty: ["arts"],
+        achievements: ["arts", "cultural"],
+        link: "#",
+        description: "For students excelling in arts and culture",
+        matchScore: 0
+      },
+      {
+        id: 7,
+        name: "First-Generation Graduate Award",
+        amount: "RM 5,000 one-time",
+        value: 5000,
+        deadline: "2025-06-30",
+        gpaMin: 3.0,
+        incomeMax: 6000,
+        programLevel: ["undergraduate", "diploma", "foundation"],
+        yearMin: 1,
+        yearMax: 4,
+        faculty: [],
+        achievements: ["first_generation"],
+        link: "#",
+        description: "For first-generation university students",
+        matchScore: 0
+      },
+      {
+        id: 8,
+        name: "Community Leader Scholarship",
+        amount: "RM 4,000 per year",
+        value: 4000,
+        deadline: "2025-05-31",
+        gpaMin: 2.8,
+        incomeMax: 15000,
+        programLevel: ["undergraduate", "diploma"],
+        yearMin: 1,
+        yearMax: 5,
+        faculty: [],
+        achievements: ["community_service", "volunteer", "leadership"],
+        link: "#",
+        description: "For students with significant community involvement",
+        matchScore: 0
+      }
+    ];
+
+    // Achievement categories
+    const achievementCategories = [
+      { id: "dean_list", name: "Dean's List", icon: "fas fa-award" },
+      { id: "competition", name: "Academic Competition", icon: "fas fa-trophy" },
+      { id: "research", name: "Research Publication", icon: "fas fa-microscope" },
+      { id: "sports_national", name: "National Sports", icon: "fas fa-running" },
+      { id: "sports_state", name: "State Sports", icon: "fas fa-medal" },
+      { id: "arts", name: "Arts & Culture", icon: "fas fa-paint-brush" },
+      { id: "leadership", name: "Leadership Role", icon: "fas fa-flag" },
+      { id: "community_service", name: "Community Service", icon: "fas fa-hands-helping" },
+      { id: "volunteer", name: "Volunteer Work", icon: "fas fa-heart" },
+      { id: "entrepreneurship", name: "Entrepreneurship", icon: "fas fa-lightbulb" },
+      { id: "innovation", name: "Innovation Award", icon: "fas fa-bolt" },
+      { id: "first_generation", name: "First Generation", icon: "fas fa-user-graduate" },
+      { id: "international", name: "International Experience", icon: "fas fa-globe" },
+      { id: "cultural", name: "Cultural Achievement", icon: "fas fa-music" }
+    ];
+
+    // Initialize when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+      loadFaculties();
+      setupDoubleClickEvents();
+      setupCostEventListeners();
+      initializeAchievementTags();
+    });
+
+    // Load Faculties
+    function loadFaculties() {
+      const facultyGrid = document.getElementById('facultyGrid');
+      
+      // Simulated data - replace with API call
+      const faculties = [
+        {
+          id: 1,
+          name: "Faculty of Accountancy and Management",
+          description: "Programs in accounting, finance, and business management.",
+          icon: "fas fa-calculator",
+          programs: 5,
+          location: "Sungai Long Campus"
+        },
+        {
+          id: 2,
+          name: "Faculty of Arts and Social Science",
+          description: "Programs in psychology, counselling, and media studies.",
+          icon: "fas fa-paint-brush",
+          programs: 5,
+          location: "Kampar Campus"
+        },
+        {
+          id: 3,
+          name: "Faculty of Business and Finance",
+          description: "Industry-focused business and finance programs.",
+          icon: "fas fa-chart-line",
+          programs: 5,
+          location: "Kampar Campus"
+        },
+        {
+          id: 4,
+          name: "Faculty of Information and Communication Technology",
+          description: "Computer science, software engineering, and data science.",
+          icon: "fas fa-laptop-code",
+          programs: 5,
+          location: "Kampar Campus"
+        },
+        {
+          id: 5,
+          name: "Faculty of Science",
+          description: "Programs in science, biotechnology, and mathematics.",
+          icon: "fas fa-flask",
+          programs: 5,
+          location: "Kampar Campus"
+        },
+        {
+          id: 6,
+          name: "Faculty of Engineering and Green Technology",
+          description: "Sustainable engineering and technology solutions.",
+          icon: "fas fa-cogs",
+          programs: 5,
+          location: "Kampar Campus"
+        }
+      ];
+      
+      
+      document.getElementById('facultyLoading').style.display = 'none';
+      
+   
+      facultyGrid.innerHTML = faculties.map(faculty => `
+        <div class="select-item" data-faculty-id="${faculty.id}">
+          <div class="item-icon">
+            <i class="${faculty.icon}"></i>
+          </div>
+          <div class="item-title">${faculty.name}</div>
+          <div class="item-desc">${faculty.description}</div>
+          <div class="item-meta">
+            <span><i class="fas fa-graduation-cap"></i> ${faculty.programs} Programs</span>
+            <span><i class="fas fa-map-marker-alt"></i> ${faculty.location}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+   
+    function setupDoubleClickEvents() {
+      document.addEventListener('dblclick', function(e) {
+        const facultyItem = e.target.closest('.select-item[data-faculty-id]');
+        if (facultyItem && state.isSelecting) {
+          const facultyId = facultyItem.dataset.facultyId;
+          const facultyName = facultyItem.querySelector('.item-title').textContent;
+          
+          state.selectedFaculty = { 
+            id: facultyId, 
+            name: facultyName 
+          };
+          
+          document.querySelectorAll('.select-item[data-faculty-id]').forEach(item => {
+            item.classList.remove('selected');
+          });
+          facultyItem.classList.add('selected');
+
+          document.getElementById('selectedFacultyName').textContent = facultyName;
+ 
+          loadPrograms(facultyId);
+
+          setTimeout(() => {
+            document.getElementById('facultyCard').classList.remove('active');
+            document.getElementById('programCard').classList.add('active');
+            state.isSelecting = true;
+          }, 300);
+          
+          return;
+        }
+    
+        const programItem = e.target.closest('.select-item[data-program-id]');
+        if (programItem && state.selectedFaculty && state.isSelecting) {
+          const programId = programItem.dataset.programId;
+          const programName = programItem.querySelector('.item-title').textContent;
+          const programDesc = programItem.querySelector('.item-desc').textContent;
+ 
+          state.selectedProgram = { 
+            id: programId, 
+            name: programName,
+            description: programDesc
+          };
+
+          document.querySelectorAll('.select-item[data-program-id]').forEach(item => {
+            item.classList.remove('selected');
+          });
+          programItem.classList.add('selected');
+  
+          document.getElementById('selectedProgramTitle').textContent = programName;
+          document.getElementById('selectedProgramDesc').textContent = programDesc;
+          document.getElementById('planProgramTitle').textContent = `${state.selectedFaculty.name} - ${programName}`;
+
+          loadSubjects(programId);
+
+          setTimeout(() => {
+            document.getElementById('programCard').classList.remove('active');
+            document.getElementById('subjectCard').classList.add('active');
+          }, 300);
+        }
+      });
+
+      document.addEventListener('mousedown', function(e) {
+        const facultyItem = e.target.closest('.select-item[data-faculty-id]');
+        const programItem = e.target.closest('.select-item[data-program-id]');
+  
+        if (facultyItem || programItem) {
+          const item = facultyItem || programItem;
+          item.style.transform = 'scale(0.98)';
+          
+          setTimeout(() => {
+            item.style.transform = '';
+          }, 200);
+        }
+      });
+    }
+
+
+    function loadPrograms(facultyId) {
+      const programGrid = document.getElementById('programGrid');
+      const programLoading = document.getElementById('programLoading');
+      
+   
+      programLoading.classList.add('show');
+      
+      
+      const programsByFaculty = {
+        1: [
+          { id: 1, name: "Bachelor of Accounting (Honours)", duration: "3 years", credits: 120, fee: "RM 64,800", description: "Accredited by ACCA, CIMA, CPA Australia, and MIA." },
+          { id: 2, name: "Bachelor of Business Administration (Honours) Finance", duration: "3 years", credits: 120, fee: "RM 60,300", description: "Specialized finance program." },
+          { id: 3, name: "Bachelor of Commerce (Honours) Accounting", duration: "3 years", credits: 120, fee: "RM 61,200", description: "Combines accounting principles with business management." }
+        ],
+        2: [
+          { id: 6, name: "Bachelor of Psychology (Honours)", duration: "3 years", credits: 120, fee: "RM 58,500", description: "Comprehensive psychology program." },
+          { id: 7, name: "Bachelor of Arts (Honours) Advertising", duration: "3 years", credits: 120, fee: "RM 58,500", description: "Creative advertising program." },
+          { id: 8, name: "Bachelor of Arts (Honours) Public Relations", duration: "3 years", credits: 120, fee: "RM 58,500", description: "Public relations and communications program." }
+        ],
+        3: [
+          { id: 11, name: "Bachelor of Business Administration (Honours)", duration: "3 years", credits: 120, fee: "RM 60,300", description: "Comprehensive business program." },
+          { id: 12, name: "Bachelor of Economics (Honours) Financial Economics", duration: "3 years", credits: 120, fee: "RM 62,100", description: "Combines economic theory with financial analysis." },
+          { id: 13, name: "Bachelor of Marketing (Honours)", duration: "3 years", credits: 120, fee: "RM 60,300", description: "Comprehensive marketing program." }
+        ],
+        4: [
+          { id: 16, name: "Bachelor of Computer Science (Honours)", duration: "3 years", credits: 120, fee: "RM 64,800", description: "Comprehensive computing program." },
+          { id: 17, name: "Bachelor of Information Systems (Honours)", duration: "3 years", credits: 120, fee: "RM 64,800", description: "Combines business knowledge with IT skills." },
+          { id: 18, name: "Bachelor of Software Engineering (Honours)", duration: "3 years", credits: 120, fee: "RM 64,800", description: "Software development and engineering program." }
+        ],
+        5: [
+          { id: 21, name: "Bachelor of Science (Honours) Actuarial Science", duration: "3 years", credits: 120, fee: "RM 67,500", description: "Actuarial science program." },
+          { id: 22, name: "Bachelor of Science (Honours) Food Science", duration: "3 years", credits: 120, fee: "RM 63,000", description: "Food science and technology program." },
+          { id: 23, name: "Bachelor of Science (Honours) Biotechnology", duration: "3 years", credits: 120, fee: "RM 63,000", description: "Biotechnology and life sciences program." }
+        ],
+        6: [
+          { id: 26, name: "Bachelor of Engineering (Honours) Civil Engineering", duration: "4 years", credits: 160, fee: "RM 98,400", description: "Accredited engineering program." },
+          { id: 27, name: "Bachelor of Engineering (Honours) Electrical Engineering", duration: "4 years", credits: 160, fee: "RM 98,400", description: "Electrical and electronics engineering program." },
+          { id: 28, name: "Bachelor of Engineering (Honours) Mechanical Engineering", duration: "4 years", credits: 160, fee: "RM 98,400", description: "Mechanical engineering program." }
+        ]
+      };
+      
+      const programs = programsByFaculty[facultyId] || [];
+    
+      setTimeout(() => {
+      
+        programGrid.innerHTML = '';
+        
+  
+        programs.forEach(program => {
+          const programElement = document.createElement('div');
+          programElement.className = 'select-item';
+          programElement.dataset.programId = program.id;
+          programElement.innerHTML = `
+            <div class="item-icon">
+              <i class="fas fa-graduation-cap"></i>
+            </div>
+            <div class="item-title">${program.name}</div>
+            <div class="item-desc">${program.description}</div>
+            <div class="item-meta">
+              <span><i class="fas fa-clock"></i> ${program.duration}</span>
+              <span><i class="fas fa-certificate"></i> ${program.credits} Credits</span>
+              <span><i class="fas fa-money-bill-wave"></i> ${program.fee}</span>
+            </div>
+          `;
+          programGrid.appendChild(programElement);
+        });
+ 
+        programLoading.classList.remove('show');
+        programLoading.style.display = 'none';
+        
+      }, 500);
+    }
+
+    function loadSubjects(programId) {
+      const subjectGrid = document.getElementById('subjectGrid');
+      const subjectLoading = document.getElementById('subjectLoading');
+      
+
+      subjectLoading.classList.add('show');
+ 
+      const subjects = [
+        { id: 1, code: "UFAM1001", name: "Principles of Accounting", credits: 3, fee: 2100, mandatory: true },
+        { id: 2, code: "UFAM1013", name: "Business Mathematics", credits: 3, fee: 2100, mandatory: true },
+        { id: 3, code: "UFAM2023", name: "Financial Accounting I", credits: 3, fee: 2100, mandatory: true },
+        { id: 4, code: "UFAM2033", name: "Management Accounting", credits: 3, fee: 2100, mandatory: true },
+        { id: 5, code: "UFAM2043", name: "Corporate Finance", credits: 3, fee: 2100, mandatory: false },
+        { id: 6, code: "UFAM2053", name: "Taxation", credits: 3, fee: 2100, mandatory: false },
+        { id: 7, code: "UFAM3063", name: "Auditing and Assurance", credits: 3, fee: 2100, mandatory: false },
+        { id: 8, code: "UFAM3073", name: "Financial Statement Analysis", credits: 3, fee: 2100, mandatory: false }
+      ];
+      
+      // Simulate loading delay
+      setTimeout(() => {
+        // Clear any existing content
+        subjectGrid.innerHTML = '';
+        
+        // Render subjects
+        subjects.forEach(subject => {
+          const subjectElement = document.createElement('div');
+          subjectElement.className = 'subject-item';
+          subjectElement.dataset.subjectId = subject.id;
+          subjectElement.dataset.credits = subject.credits;
+          subjectElement.dataset.fee = subject.fee;
+          subjectElement.innerHTML = `
+            <div class="subject-code">${subject.code}</div>
+            <div class="subject-name">${subject.name}</div>
+            ${subject.mandatory ? 
+              '<span class="mandatory-badge">Mandatory</span>' : 
+              '<span class="elective-badge">Elective</span>'
+            }
+            <div class="subject-details">
+              <span class="subject-credits">${subject.credits} Credits</span>
+              <span class="subject-fee">RM ${subject.fee.toLocaleString()}</span>
+            </div>
+          `;
+          
+  
+          subjectElement.addEventListener('click', function() {
+            this.classList.toggle('selected');
+            updateSubjectSelection(this);
+          });
+          
+          subjectGrid.appendChild(subjectElement);
+        });
+ 
+        subjectLoading.classList.remove('show');
+        subjectLoading.style.display = 'none';
+        
+      }, 500);
+    }
+
+    function updateSubjectSelection(subjectItem) {
+      const subjectId = subjectItem.dataset.subjectId;
+      const subjectCredits = parseInt(subjectItem.dataset.credits);
+      const subjectFee = parseInt(subjectItem.dataset.fee);
+      const subjectName = subjectItem.querySelector('.subject-name').textContent;
+      const subjectCode = subjectItem.querySelector('.subject-code').textContent;
+      
+      const isSelected = subjectItem.classList.contains('selected');
+      
+      if (isSelected) {
+        state.selectedSubjects.push({
+          id: subjectId,
+          code: subjectCode,
+          name: subjectName,
+          credits: subjectCredits,
+          fee: subjectFee
+        });
+      } else {
+        const index = state.selectedSubjects.findIndex(s => s.id === subjectId);
+        if (index > -1) {
+          state.selectedSubjects.splice(index, 1);
+        }
+      }
+      
+      updateSubjectSummary();
+    }
+
+    function updateSubjectSummary() {
+      const subjectCount = state.selectedSubjects.length;
+      const totalCredits = state.selectedSubjects.reduce((sum, subject) => sum + subject.credits, 0);
+      const totalTuition = state.selectedSubjects.reduce((sum, subject) => sum + subject.fee, 0);
+      
+      document.getElementById('subjectCount').textContent = subjectCount;
+      document.getElementById('totalCredits').textContent = totalCredits;
+      document.getElementById('totalTuition').textContent = `RM ${totalTuition.toLocaleString()}`;
+     
+      document.getElementById('viewFinancialPlan').disabled = subjectCount === 0;
+    }
+
+    function showFinancialPlan() {
+      if (state.selectedSubjects.length === 0) return;
+      
+      // Calculate costs
+      const tuitionTotal = state.selectedSubjects.reduce((sum, subject) => sum + subject.fee, 0);
+      const accommodation = parseFloat(document.getElementById('accommodationCost').value) || 0;
+      const food = parseFloat(document.getElementById('foodCost').value) || 0;
+      const other = parseFloat(document.getElementById('otherCost').value) || 0;
+      const semesterMonths = parseInt(document.getElementById('semesterDuration').value) || 5;
+      
+      const accommodationTotal = accommodation * semesterMonths;
+      const foodTotal = food * semesterMonths;
+      const otherTotal = other * semesterMonths;
+      const subtotal = tuitionTotal + accommodationTotal + foodTotal + otherTotal;
+   
+      document.getElementById('costTuition').textContent = `RM ${tuitionTotal.toLocaleString()}`;
+      document.getElementById('costAccommodation').textContent = `RM ${accommodationTotal.toLocaleString()}`;
+      document.getElementById('costFood').textContent = `RM ${foodTotal.toLocaleString()}`;
+      document.getElementById('costOther').textContent = `RM ${otherTotal.toLocaleString()}`;
+      document.getElementById('costSubtotal').textContent = `RM ${subtotal.toLocaleString()}`;
+      document.getElementById('netTotalAmount').textContent = `RM ${subtotal.toLocaleString()}`;
+      
+      state.planData = {
+        faculty: state.selectedFaculty,
+        program: state.selectedProgram,
+        subjects: state.selectedSubjects,
+        costs: {
+          tuition: tuitionTotal,
+          accommodation: accommodationTotal,
+          food: foodTotal,
+          other: otherTotal,
+          total: subtotal
+        },
+        semesterMonths: semesterMonths,
+        date: new Date().toLocaleDateString()
+      };
+     
+      document.getElementById('subjectCard').classList.remove('active');
+      document.getElementById('financialPlan').classList.add('active');
+    }
+
+    // Generate PDF
+    function generatePDF() {
+      if (!state.planData) {
+        alert('Please complete your financial plan first.');
+        return;
+      }
+      
+      const studentName = document.getElementById('studentName').value || 'Student';
+      const studentID = document.getElementById('studentID').value || 'N/A';
+      const studentEmail = document.getElementById('studentEmail').value || 'N/A';
+      
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+  
+      doc.setFontSize(20);
+      doc.setTextColor(30, 58, 138);
+      doc.text('SKL Universiti - Financial Plan', 105, 20, { align: 'center' });
+      
+      doc.setFontSize(12);
+      doc.setTextColor(100, 116, 139);
+      doc.text('Personalized Tuition and Financial Plan', 105, 28, { align: 'center' });
+      
+   
+      doc.setDrawColor(30, 58, 138);
+      doc.setLineWidth(0.5);
+      doc.line(20, 32, 190, 32);
+      
+      doc.setFontSize(14);
+      doc.setTextColor(30, 58, 138);
+      doc.text('Student Information', 20, 42);
+      
+      doc.setFontSize(10);
+      doc.setTextColor(0, 0, 0);
+      doc.text(`Name: ${studentName}`, 20, 50);
+      doc.text(`Student ID: ${studentID}`, 20, 56);
+      doc.text(`Email: ${studentEmail}`, 20, 62);
+      doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, 68);
+      
+      doc.setFontSize(14);
+      doc.setTextColor(30, 58, 138);
+      doc.text('Program Details', 20, 80);
+      
+      doc.setFontSize(10);
+      doc.setTextColor(0, 0, 0);
+      doc.text(`Faculty: ${state.planData.faculty.name}`, 20, 88);
+      doc.text(`Program: ${state.planData.program.name}`, 20, 94);
+      doc.text(`Semester Duration: ${state.planData.semesterMonths} months`, 20, 100);
+    
+      doc.setFontSize(14);
+      doc.setTextColor(30, 58, 138);
+      doc.text('Selected Subjects', 20, 112);
+      
+      const subjectsData = state.planData.subjects.map(subject => [
+        subject.code,
+        subject.name,
+        subject.credits.toString(),
+        `RM ${subject.fee.toLocaleString()}`
+      ]);
+      
+      doc.autoTable({
+        startY: 118,
+        head: [['Code', 'Subject Name', 'Credits', 'Fee']],
+        body: subjectsData,
+        theme: 'striped',
+        headStyles: { fillColor: [30, 58, 138] },
+        margin: { left: 20, right: 20 }
+      });
+
+      const finalY = doc.lastAutoTable.finalY + 15;
+      doc.setFontSize(14);
+      doc.setTextColor(30, 58, 138);
+      doc.text('Cost Breakdown', 20, finalY);
+      
+      const costData = [
+        ['Tuition Fees', `RM ${state.planData.costs.tuition.toLocaleString()}`],
+        ['Accommodation', `RM ${state.planData.costs.accommodation.toLocaleString()}`],
+        ['Food & Living', `RM ${state.planData.costs.food.toLocaleString()}`],
+        ['Other Expenses', `RM ${state.planData.costs.other.toLocaleString()}`],
+        ['Total Cost', `RM ${state.planData.costs.total.toLocaleString()}`]
+      ];
+      
+      doc.autoTable({
+        startY: finalY + 6,
+        body: costData,
+        theme: 'plain',
+        bodyStyles: { lineColor: [200, 200, 200] },
+        columnStyles: {
+          0: { fontStyle: 'bold' },
+          1: { halign: 'right', fontStyle: 'bold' }
+        },
+        margin: { left: 20, right: 20 }
+      });
+
+      const finalY2 = doc.lastAutoTable.finalY + 10;
+      doc.setFillColor(239, 246, 255);
+      doc.roundedRect(20, finalY2, 170, 20, 3, 3, 'F');
+      
+      doc.setFontSize(16);
+      doc.setTextColor(30, 58, 138);
+      doc.text('Total Estimated Cost Per Semester', 105, finalY2 + 8, { align: 'center' });
+      
+      doc.setFontSize(20);
+      doc.setTextColor(16, 185, 129);
+      doc.text(`RM ${state.planData.costs.total.toLocaleString()}`, 105, finalY2 + 18, { align: 'center' });
+      
+      doc.setFontSize(8);
+      doc.setTextColor(100, 116, 139);
+      doc.text('Generated by SKL Universiti Financial Planning System', 105, 280, { align: 'center' });
+      doc.text('This is an estimate. Actual costs may vary.', 105, 284, { align: 'center' });
+      
+      const fileName = `SKL_Financial_Plan_${studentName.replace(/\s+/g, '_')}_${Date.now()}.pdf`;
+      doc.save(fileName);
+      
+   
+      alert(`PDF downloaded successfully: ${fileName}`);
+    }
+
+   
+    function setupCostEventListeners() {
+
+      ['accommodationCost', 'foodCost', 'otherCost', 'semesterDuration'].forEach(id => {
+        document.getElementById(id).addEventListener('change', function() {
+          if (state.selectedSubjects.length > 0 && document.getElementById('financialPlan').classList.contains('active')) {
+            showFinancialPlan(); // Recalculate and update display
+          }
+        });
+      });
+    }
+
+    function goBackToFaculty() {
+      state.selectedFaculty = null;
+      state.selectedProgram = null;
+      state.selectedSubjects = [];
+      state.planData = null;
+      state.isSelecting = true;
+      
+      document.getElementById('programCard').classList.remove('active');
+      document.getElementById('subjectCard').classList.remove('active');
+      document.getElementById('financialPlan').classList.remove('active');
+      document.getElementById('facultyCard').classList.add('active');
+   
+      document.querySelectorAll('.select-item.selected, .subject-item.selected').forEach(item => {
+        item.classList.remove('selected');
+      });
+    
+      document.getElementById('programGrid').innerHTML = `
+        <div class="loading-state show" id="programLoading">
+          <div class="spinner"></div>
+          <p>Select a faculty to see programs</p>
+        </div>
+      `;
+  
+      document.getElementById('subjectGrid').innerHTML = `
+        <div class="loading-state show" id="subjectLoading">
+          <div class="spinner"></div>
+          <p>Select a program to see subjects</p>
+        </div>
+      `;
+    
+      document.getElementById('selectedFacultyName').textContent = 'No faculty selected';
+      document.getElementById('selectedProgramTitle').textContent = 'No program selected';
+      document.getElementById('selectedProgramDesc').textContent = '';
+      document.getElementById('planProgramTitle').textContent = '';
+      
+      updateSubjectSummary();
+    }
+
+    function goBackToProgram() {
+      state.selectedProgram = null;
+      state.selectedSubjects = [];
+      state.planData = null;
+      state.isSelecting = true;
+   
+      document.getElementById('subjectCard').classList.remove('active');
+      document.getElementById('financialPlan').classList.remove('active');
+      document.getElementById('programCard').classList.add('active');
+      
+      document.querySelectorAll('.subject-item.selected').forEach(item => {
+        item.classList.remove('selected');
+      });
+      
+      document.getElementById('subjectGrid').innerHTML = `
+        <div class="loading-state show" id="subjectLoading">
+          <div class="spinner"></div>
+          <p>Select a program to see subjects</p>
+        </div>
+      `;
+
+      document.getElementById('selectedProgramTitle').textContent = 'No program selected';
+      document.getElementById('selectedProgramDesc').textContent = '';
+      document.getElementById('planProgramTitle').textContent = '';
+      
+      updateSubjectSummary();
+    }
+
+    function goBackToSubject() {
+      state.isSelecting = true;
+      document.getElementById('financialPlan').classList.remove('active');
+      document.getElementById('subjectCard').classList.add('active');
+    }
+
+    /* ================= TAB SWITCHING FUNCTIONS ================= */
+    
+
+    function switchToFaculty() {
+      document.getElementById('facultyTab').classList.add('active');
+      document.getElementById('scholarshipTab').classList.remove('active');
+
+      document.getElementById('scholarshipMatching').classList.remove('active');
+      document.getElementById('scholarshipResults').style.display = 'none';
+  
+      goBackToFaculty();
+    }
+
+    function switchToScholarship() {
+      document.getElementById('scholarshipTab').classList.add('active');
+      document.getElementById('facultyTab').classList.remove('active');
+  
+      document.getElementById('facultyCard').classList.remove('active');
+      document.getElementById('programCard').classList.remove('active');
+      document.getElementById('subjectCard').classList.remove('active');
+      document.getElementById('financialPlan').classList.remove('active');
+
+      document.getElementById('scholarshipMatching').classList.add('active');
+    }
+
+    /* ================= SCHOLARSHIP MATCHING FUNCTIONS ================= */
+    
+ 
+    function initializeAchievementTags() {
+      const tagsContainer = document.getElementById('achievementTags');
+      tagsContainer.innerHTML = achievementCategories.map(achievement => `
+        <div class="achievement-tag" data-id="${achievement.id}">
+          <i class="${achievement.icon}"></i> ${achievement.name}
+        </div>
+      `).join('');
+  
+      document.querySelectorAll('.achievement-tag').forEach(tag => {
+        tag.addEventListener('click', function() {
+          this.classList.toggle('selected');
+        });
+      });
+    }
+   
+    function clearScholarshipForm() {
+      document.getElementById('studentFullName').value = '';
+      document.getElementById('studentGPA').value = 3.5;
+      document.getElementById('familyIncome').value = 5000;
+      document.getElementById('programLevel').value = 'undergraduate';
+      document.getElementById('yearOfStudy').value = 2;
+      document.getElementById('scholarshipFaculty').value = '';
+      document.getElementById('otherAchievements').value = '';
+  
+      document.querySelectorAll('.achievement-tag.selected').forEach(tag => {
+        tag.classList.remove('selected');
+      });
+      
+
+      document.getElementById('scholarshipResults').style.display = 'none';
+    }
+  
+    function findScholarships() {
+
+      const gpa = parseFloat(document.getElementById('studentGPA').value) || 0;
+      const familyIncome = parseFloat(document.getElementById('familyIncome').value) || 0;
+      const programLevel = document.getElementById('programLevel').value;
+      const yearOfStudy = parseInt(document.getElementById('yearOfStudy').value) || 1;
+      const selectedFaculty = document.getElementById('scholarshipFaculty').value;
+      const selectedAchievements = Array.from(document.querySelectorAll('.achievement-tag.selected'))
+        .map(tag => tag.dataset.id);
+   
+      if (gpa < 0 || gpa > 4) {
+        alert('Please enter a valid GPA between 0.0 and 4.0');
+        return;
+      }
+      
+      if (familyIncome < 0) {
+        alert('Please enter a valid family income');
+        return;
+      }
+    
+      const matchedScholarships = scholarshipDatabase.map(scholarship => {
+        let matchScore = 0;
+        let requirements = [];
+        
+        // GPA requirement check
+        if (gpa >= scholarship.gpaMin) {
+          matchScore += 30;
+          requirements.push(`GPA ≥ ${scholarship.gpaMin}`);
+        } else {
+          return null; 
+        }
+
+        if (familyIncome <= scholarship.incomeMax) {
+          matchScore += 25;
+          requirements.push(`Income ≤ RM ${scholarship.incomeMax.toLocaleString()}`);
+        } else {
+          return null; 
+        }
+      
+        if (scholarship.programLevel.includes(programLevel)) {
+          matchScore += 15;
+          requirements.push(`${programLevel} program`);
+        } else {
+          return null; 
+        }
+        
+        // Year of study check
+        if (yearOfStudy >= scholarship.yearMin && yearOfStudy <= scholarship.yearMax) {
+          matchScore += 10;
+          requirements.push(`Year ${scholarship.yearMin}-${scholarship.yearMax}`);
+        } else {
+          return null; 
+        }
+      
+        if (selectedFaculty && scholarship.faculty.length > 0) {
+          if (scholarship.faculty.includes(selectedFaculty)) {
+            matchScore += 10;
+            const facultyNames = {
+              'accountancy': 'Accountancy',
+              'arts': 'Arts & Social Science',
+              'business': 'Business',
+              'ict': 'ICT',
+              'science': 'Science',
+              'engineering': 'Engineering'
+            };
+            requirements.push(facultyNames[selectedFaculty] || selectedFaculty);
+          } else {
+            return null; 
+          }
+        }
+
+        let achievementMatches = 0;
+        scholarship.achievements.forEach(achievement => {
+          if (selectedAchievements.includes(achievement)) {
+            achievementMatches++;
+            requirements.push(achievementCategories.find(a => a.id === achievement)?.name || achievement);
+          }
+        });
+        
+        if (scholarship.achievements.length > 0) {
+          if (achievementMatches > 0) {
+            matchScore += (achievementMatches / scholarship.achievements.length) * 20;
+          }
+        }
+ 
+        const deadline = new Date(scholarship.deadline);
+        const today = new Date();
+        const daysUntilDeadline = Math.ceil((deadline - today) / (1000 * 60 * 60 * 24));
+        
+   
+        if (daysUntilDeadline > 0 && daysUntilDeadline <= 30) {
+          matchScore += 5;
+        }
+        
+        return {
+          ...scholarship,
+          matchScore: Math.min(100, Math.round(matchScore)),
+          requirements: requirements,
+          daysUntilDeadline: daysUntilDeadline,
+          isUrgent: daysUntilDeadline <= 30,
+          isEligible: matchScore >= 70
+        };
+      }).filter(scholarship => scholarship !== null);
+
+      matchedScholarships.sort((a, b) => b.matchScore - a.matchScore);
+
+      state.scholarships = matchedScholarships;
+
+      displayScholarshipResults(matchedScholarships);
+    }
+    
+    // Display scholarship results
+    function displayScholarshipResults(scholarships) {
+      const resultsContainer = document.getElementById('scholarshipList');
+      const resultsCount = document.getElementById('resultsCount');
+      
+      if (scholarships.length === 0) {
+        resultsContainer.innerHTML = `
+          <div style="text-align: center; padding: 3rem; color: #6b7280;">
+            <i class="fas fa-search" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+            <h3>No Matching Scholarships Found</h3>
+            <p>Try adjusting your profile criteria or check back later for new opportunities.</p>
+          </div>
+        `;
+        resultsCount.textContent = '0 matches';
+      } else {
+        resultsContainer.innerHTML = scholarships.map((scholarship, index) => `
+          <div class="scholarship-card ${scholarship.matchScore >= 90 ? 'highlighted' : ''}">
+            <div class="scholarship-header">
+              <div>
+                <div class="scholarship-title">${scholarship.name}</div>
+                <div style="font-size: 0.9rem; color: #6b7280;">${scholarship.description}</div>
+              </div>
+              <div class="scholarship-amount">${scholarship.amount}</div>
+            </div>
+            
+            <div class="scholarship-details">
+              <div class="detail-item">
+                <i class="fas fa-calendar ${scholarship.isUrgent ? 'fa-beat' : ''}" style="color: ${scholarship.isUrgent ? '#dc2626' : '#6b7280'};"></i>
+                <span>${scholarship.daysUntilDeadline > 0 ? `Due in ${scholarship.daysUntilDeadline} days` : 'Deadline passed'}</span>
+              </div>
+              <div class="detail-item">
+                <i class="fas fa-star" style="color: #facc15;"></i>
+                <span>GPA ≥ ${scholarship.gpaMin}</span>
+              </div>
+              <div class="detail-item">
+                <i class="fas fa-money-bill-wave" style="color: #10b981;"></i>
+                <span>Income ≤ RM ${scholarship.incomeMax.toLocaleString()}</span>
+              </div>
+            </div>
+            
+            <div class="scholarship-match" style="background: linear-gradient(135deg, ${getMatchColor(scholarship.matchScore)});">
+              <i class="fas fa-chart-line"></i> ${scholarship.matchScore}% Match
+            </div>
+            
+            <div class="scholarship-requirements">
+              <div class="requirements-title">Requirements Met:</div>
+              <div class="requirements-list">
+                ${scholarship.requirements.slice(0, 5).map(req => `
+                  <span class="requirement-tag">${req}</span>
+                `).join('')}
+                ${scholarship.requirements.length > 5 ? 
+                  `<span class="requirement-tag">+${scholarship.requirements.length - 5} more</span>` : 
+                  ''}
+              </div>
+            </div>
+            
+            <div class="scholarship-actions">
+              <button class="action-btn-small btn-apply" onclick="applyForScholarship(${scholarship.id})">
+                <i class="fas fa-paper-plane"></i> Apply Now
+              </button>
+              <button class="action-btn-small btn-details" onclick="showScholarshipDetails(${scholarship.id})">
+                <i class="fas fa-info-circle"></i> Details
+              </button>
+              ${scholarship.matchScore >= 90 ? 
+                `<span style="margin-left: auto; color: #d97706; font-size: 0.85rem;">
+                  <i class="fas fa-crown"></i> Top Match
+                </span>` : 
+                ''}
+            </div>
+          </div>
+        `).join('');
+        
+        resultsCount.textContent = `${scholarships.length} ${scholarships.length === 1 ? 'match' : 'matches'}`;
+      }
+
+      document.getElementById('scholarshipResults').style.display = 'block';
+    }
+
+    function getMatchColor(score) {
+      if (score >= 90) return '#f59e0b, #d97706';
+      if (score >= 80) return '#10b981, #059669';
+      if (score >= 70) return '#3b82f6, #1d4ed8';
+      return '#6b7280, #4b5563';
+    }
+ 
+    function applyForScholarship(scholarshipId) {
+      const scholarship = state.scholarships.find(s => s.id === scholarshipId);
+      if (!scholarship) return;
+      
+
+      if (confirm(`Apply for "${scholarship.name}"?\n\nYou will be redirected to the scholarship application portal.`)) {
+        // Simulate application process
+        alert(`Application process started for:\n\n${scholarship.name}\n\nApplication link: ${scholarship.link || '#'}\n\nPlease complete the application on the external portal.`);
+      }
+    }
+    
+    // Show scholarship details
+    function showScholarshipDetails(scholarshipId) {
+      const scholarship = state.scholarships.find(s => s.id === scholarshipId);
+      if (!scholarship) return;
+      
+      const details = `
+        Scholarship: ${scholarship.name}
+        Amount: ${scholarship.amount} (Value: RM ${scholarship.value.toLocaleString()})
+        Deadline: ${scholarship.deadline} (${scholarship.daysUntilDeadline} days remaining)
+        
+        Requirements:
+        - Minimum GPA: ${scholarship.gpaMin}
+        - Maximum Family Income: RM ${scholarship.incomeMax.toLocaleString()}
+        - Program Level: ${scholarship.programLevel.join(', ')}
+        - Year of Study: ${scholarship.yearMin} to ${scholarship.yearMax}
+        ${scholarship.faculty.length > 0 ? 
+          `- Faculty: ${scholarship.faculty.map(f => {
+            const facultyNames = {
+              'accountancy': 'Accountancy & Management',
+              'arts': 'Arts & Social Science',
+              'business': 'Business & Finance',
+              'ict': 'Information & Communication Technology',
+              'science': 'Science',
+              'engineering': 'Engineering & Green Technology'
+            };
+            return facultyNames[f] || f;
+          }).join(', ')}` : 
+          '- Any Faculty'
+        }
+        ${scholarship.achievements.length > 0 ? 
+          `- Achievements Required: ${scholarship.achievements.map(a => 
+            achievementCategories.find(ac => ac.id === a)?.name || a
+          ).join(', ')}` : 
+          '- No specific achievements required'
+        }
+        
+        Description: ${scholarship.description}
+        
+        Your Match Score: ${scholarship.matchScore}%
+        ${scholarship.isEligible ? '✅ You are eligible for this scholarship!' : '⚠️ You may not meet all requirements'}
+      `;
+      
+      alert(details);
+    }
+    
+    // Reset scholarship search
+    function resetScholarshipSearch() {
+      document.getElementById('scholarshipResults').style.display = 'none';
+      clearScholarshipForm();
+    }
+    
+    // Export scholarship results
+    function exportScholarshipResults() {
+      if (state.scholarships.length === 0) {
+        alert('No scholarship results to export.');
+        return;
+      }
+      
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+      
+      doc.setFontSize(20);
+      doc.setTextColor(30, 58, 138);
+      doc.text('SKL Universiti - Scholarship Matches', 105, 20, { align: 'center' });
+      
+      doc.setFontSize(12);
+      doc.setTextColor(100, 116, 139);
+      doc.text('Personalized Scholarship Matching Report', 105, 28, { align: 'center' });
+ 
+      doc.setFontSize(11);
+      doc.setTextColor(0, 0, 0);
+      doc.text(`Student: ${document.getElementById('studentFullName').value || 'N/A'}`, 20, 40);
+      doc.text(`GPA: ${document.getElementById('studentGPA').value || 'N/A'}`, 20, 46);
+      doc.text(`Family Income: RM ${(document.getElementById('familyIncome').value || 0).toLocaleString()}`, 20, 52);
+      doc.text(`Program: ${document.getElementById('programLevel').value}`, 20, 58);
+      doc.text(`Year: ${document.getElementById('yearOfStudy').value}`, 20, 64);
+      doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, 70);
+    
+      doc.setFontSize(14);
+      doc.setTextColor(30, 58, 138);
+      doc.text(`Found ${state.scholarships.length} Matching Scholarships`, 20, 82);
+
+      const tableData = state.scholarships.map((scholarship, index) => [
+        (index + 1).toString(),
+        scholarship.name,
+        scholarship.amount,
+        `${scholarship.matchScore}%`,
+        scholarship.deadline,
+        scholarship.isEligible ? 'Yes' : 'No'
+      ]);
+      
+      doc.autoTable({
+        startY: 90,
+        head: [['#', 'Scholarship', 'Amount', 'Match %', 'Deadline', 'Eligible']],
+        body: tableData,
+        theme: 'striped',
+        headStyles: { fillColor: [30, 58, 138] },
+        columnStyles: {
+          0: { cellWidth: 10 },
+          3: { cellWidth: 20 },
+          5: { cellWidth: 20 }
+        },
+        margin: { left: 20, right: 20 }
+      });
+   
+      const finalY = doc.lastAutoTable.finalY + 15;
+      doc.setFontSize(14);
+      doc.setTextColor(30, 58, 138);
+      doc.text('Top Recommendations', 20, finalY);
+      
+      // Add top 3 scholarships with details
+      const topScholarships = state.scholarships.slice(0, 3);
+      let currentY = finalY + 10;
+      
+      topScholarships.forEach((scholarship, index) => {
+        doc.setFontSize(11);
+        doc.setTextColor(30, 58, 138);
+        doc.setFont(undefined, 'bold');
+        doc.text(`${index + 1}. ${scholarship.name}`, 20, currentY);
+        
+        doc.setFontSize(10);
+        doc.setTextColor(0, 0, 0);
+        doc.setFont(undefined, 'normal');
+        doc.text(`Amount: ${scholarship.amount} | Match: ${scholarship.matchScore}%`, 20, currentY + 6);
+        doc.text(`Deadline: ${scholarship.deadline}`, 20, currentY + 12);
+        doc.text(`Requirements: ${scholarship.requirements.slice(0, 3).join(', ')}...`, 20, currentY + 18);
+        
+        currentY += 30;
+      });
+    
+      doc.setFontSize(8);
+      doc.setTextColor(100, 116, 139);
+      doc.text('Generated by SKL Universiti Scholarship Matching Engine', 105, 280, { align: 'center' });
+      doc.text('Apply early as scholarships are competitive', 105, 284, { align: 'center' });
+      
+      // Save PDF
+      const fileName = `SKL_Scholarship_Matches_${Date.now()}.pdf`;
+      doc.save(fileName);
+      
+      alert(`Scholarship matches exported to PDF: ${fileName}`);
+    }
+  </script>
+</body>
+</html>
