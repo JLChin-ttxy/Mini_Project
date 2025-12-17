@@ -10,6 +10,14 @@ from flask import send_file
 from datetime import datetime
 import io
 
+# Try to import email sender
+try:
+    from utils.email_sender import send_deadline_reminder, check_and_send_reminders, send_email
+    HAS_EMAIL_SENDER = True
+except ImportError:
+    HAS_EMAIL_SENDER = False
+    print("Warning: Email sender not available. Email notifications will be disabled.")
+
 # Try to import ApplicationFormGenerator, but don't fail if reportlab isn't installed
 try:
     from utils.application_form_generator import ApplicationFormGenerator
@@ -426,7 +434,7 @@ def subscribe_email():
         if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$', email):
             return jsonify({'success': False, 'message': 'Invalid email format'}), 400
         
-        cursor = conn.cursor()
+        cursor = conn.cursor(dictionary=True)
         
         # Insert or update subscriptions
         subscribed_programs = []
@@ -435,25 +443,72 @@ def subscribe_email():
                 cursor.execute("""
                     INSERT INTO EMAIL_NOTIFICATION 
                     (email, program_id, notification_type, days_before, is_active)
-                    VALUES (%s, %s, 'Deadline Reminder', 7, TRUE)
+                    VALUES (%s, %s, 'Deadline Reminder', 14, TRUE)
                     ON DUPLICATE KEY UPDATE is_active = TRUE, subscribed_at = CURRENT_TIMESTAMP
                 """, (email, program_id))
                 subscribed_programs.append(program_id)
             except Exception as e:
                 # If table doesn't exist yet, return helpful message
-                if "doesn't exist" in str(e):
+                if "doesn't exist" in str(e) or "Table" in str(e) and "doesn't exist" in str(e):
+                    cursor.close()
                     conn.close()
                     return jsonify({
                         'success': False, 
                         'message': 'Email notification system not set up. Please run Database/email_notifications_migration.sql first.'
                     }), 500
+                print(f"Warning: Error subscribing to program {program_id}: {e}")
                 continue
         
+        if subscribed_programs:
+            # Get program names for confirmation email BEFORE closing connection
+            program_names = []
+            try:
+                cursor.execute("""
+                    SELECT program_name FROM PROGRAM 
+                    WHERE program_id IN (%s)
+                """ % ','.join(['%s'] * len(subscribed_programs)), subscribed_programs)
+                program_names = [row['program_name'] for row in cursor.fetchall()]
+            except Exception as e:
+                print(f"Warning: Could not fetch program names: {e}")
+            
         conn.commit()
         cursor.close()
         conn.close()
         
         if subscribed_programs:
+            # Send confirmation email if email sender is available
+            if HAS_EMAIL_SENDER:
+                try:
+                    # Send confirmation email
+                    subject = "Email Subscription Confirmation - SKL University"
+                    body_html = f"""
+                    <html>
+                      <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+                        <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+                          <h2 style="color: #1e3a8a;">Thank You for Subscribing!</h2>
+                          <p>Dear Applicant,</p>
+                          <p>You have successfully subscribed to email reminders for the following program(s):</p>
+                          <ul>
+                            {'<li>'.join([''] + program_names) if program_names else '<li>No programs selected</li>'}
+                          </ul>
+                          <p>You will receive email reminders <strong>14 days before</strong> application deadlines.</p>
+                          <p>If you did not subscribe to this service, please ignore this email.</p>
+                          <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;">
+                          <p style="font-size: 0.9em; color: #666;">
+                            Best regards,<br>
+                            <strong>SKL University Admission Office</strong><br>
+                            123, Jalan Bandar Timah, 31900 Kampar Perak.<br>
+                            Phone: +60-3-1234-5678<br>
+                            Email: SKL123@edu.my
+                          </p>
+                        </div>
+                      </body>
+                    </html>
+                    """
+                    send_email(email, subject, body_html)
+                except Exception as e:
+                    print(f"Warning: Could not send confirmation email: {e}")
+            
             return jsonify({
                 'success': True, 
                 'message': f'Successfully subscribed to email reminders for {len(subscribed_programs)} program(s)!'
@@ -529,5 +584,26 @@ def document_checklist():
         if conn:
             conn.close()
         return render_template('error.html', message=str(e)), 500
+
+@bp.route('/send-email-reminders', methods=['POST'])
+def send_email_reminders():
+    """Manually trigger email reminder sending (for testing or scheduled tasks)"""
+    if not HAS_EMAIL_SENDER:
+        return jsonify({
+            'success': False, 
+            'message': 'Email sending is not configured. Please set up SMTP settings.'
+        }), 503
+    
+    try:
+        sent_count = check_and_send_reminders()
+        return jsonify({
+            'success': True,
+            'message': f'Email reminder check completed. Sent {sent_count} reminder(s).'
+        }), 200
+    except Exception as e:
+        return jsonify({
+            'success': False,
+            'message': f'Error sending reminders: {str(e)}'
+        }), 500
 
 

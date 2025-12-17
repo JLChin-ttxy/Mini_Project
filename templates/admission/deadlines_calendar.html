@@ -165,20 +165,43 @@
     align-items: center;
     justify-content: center;
     position: relative;
+    background: #ffffff;
   }
 
-  .calendar-day-cell.study-week {
-    background: #dcfce7;
-    border-color: #16a34a;
-    font-weight: 600;
-    color: #166534;
+  .calendar-day-cell::after {
+    content: '';
+    position: absolute;
+    bottom: 2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    display: none;
   }
 
-  .calendar-day-cell.application-period {
-    background: #fee2e2;
-    border-color: #ef4444;
-    font-weight: 600;
-    color: #991b1b;
+  .calendar-day-cell.study-week::after {
+    display: block;
+    background: #16a34a;
+    border: 1px solid #15803d;
+  }
+
+  .calendar-day-cell.application-deadline::after {
+    display: block;
+    background: #ef4444;
+    border: 1px solid #dc2626;
+  }
+
+  .calendar-day-cell.application-opens::after {
+    display: block;
+    background: #f59e0b;
+    border: 1px solid #d97706;
+  }
+
+  .calendar-day-cell.intake-date::after {
+    display: block;
+    background: #3b82f6;
+    border: 1px solid #2563eb;
   }
 
   .calendar-day-cell.other-month {
@@ -210,8 +233,10 @@
     border: 1px solid;
   }
 
-  .legend-color.study { background: #dcfce7; border-color: #16a34a; }
-  .legend-color.application { background: #fee2e2; border-color: #ef4444; }
+  .legend-color.study { background: #16a34a; border-color: #15803d; }
+  .legend-color.application-deadline { background: #ef4444; border-color: #dc2626; }
+  .legend-color.application-opens { background: #f59e0b; border-color: #d97706; }
+  .legend-color.intake-date { background: #3b82f6; border-color: #2563eb; }
 </style>
 {% endblock %}
 
@@ -223,37 +248,16 @@
         <h1 class="mb-3" style="font-size: 2.5rem;">Important Dates & Deadlines</h1>
         <p class="lead mb-4" style="font-size: 1.2rem;">Review fixed intake months and application deadlines for each level of study. These dates repeat every year so you can plan ahead.</p>
 
+        <!-- Email Subscription Button -->
+        <div class="mb-4 text-center">
+          <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#emailModal">
+            <i class="bi bi-bell"></i> Subscribe to Email Reminders
+          </button>
+        </div>
+        
         <!-- Intake cards similar to UTAR style -->
         <div class="intake-grid mb-4">
-          <!-- Undergraduate -->
-          <div class="intake-card">
-            <div class="intake-card-header undergrad">
-              Undergraduate
-            </div>
-            <div class="intake-card-body">
-              <div class="intake-row">
-                <span class="intake-label">October / November Intake</span>
-                <span class="intake-date">3 November (every year)</span>
-                <span class="intake-details">Application opens: 3 August | Deadline: 27 October (every year)</span>
-              </div>
-              <div class="intake-row">
-                <span class="intake-label">February Intake</span>
-                <span class="intake-date">3 February (every year)</span>
-                <span class="intake-details">Application opens: 3 November (previous year) | Deadline: 27 January (every year)</span>
-              </div>
-              <div class="intake-row">
-                <span class="intake-label">June Intake</span>
-                <span class="intake-date">15 June (every year) </span>
-                <span class="intake-details">Application opens: 15 March </span>
-                <span class="intake-details">Deadline: 8 June (every year) </span>
-              </div>
-              <div class="intake-note">
-                ⚠️ Reminder: These dates repeat each year. Apply early if you need scholarship or loan processing.
-              </div>
-            </div>
-          </div>
-
-          <!-- Foundation -->
+          <!-- Foundation (Left) -->
           <div class="intake-card">
             <div class="intake-card-header foundation">
               Foundation
@@ -261,21 +265,21 @@
             <div class="intake-card-body">
               <div class="intake-row">
                 <span class="intake-label">October Intake</span>
-                <span class="intake-date">21 October (every year)</span>
-                <span class="intake-details">Application opens: 21 July </span>
-                <span class="intake-details">Deadline: 14 October (every year) </span>
+                <span class="intake-date">27 October</span>
+                <span class="intake-details">Application opens: 27 July </span>
+                <span class="intake-details">Deadline: 20 October  </span>
               </div>
               <div class="intake-row">
                 <span class="intake-label">February Intake</span>
-                <span class="intake-date">3 February (every year)</span>
-                <span class="intake-details">Application opens: 3 November (previous year) </span>
-                <span class="intake-details">Deadline: 27 January (every year)</span>
+                <span class="intake-date">27 January </span>
+                <span class="intake-details">Application opens: 27 October </span>
+                <span class="intake-details">Deadline: 20 January </span>
               </div>
               <div class="intake-row">
                 <span class="intake-label">June Intake</span>
-                <span class="intake-date">15 June (every year)</span>
-                <span class="intake-details">Application opens: 15 March </span>
-                <span class="intake-details">Deadline: 8 June (every year) </span>
+                <span class="intake-date">8 June </span>
+                <span class="intake-details">Application opens: 8 March </span>
+                <span class="intake-details">Deadline: 1 June  </span>
               </div>
               <div class="intake-note">
                 ⚠️ Reminder: Foundation applicants are encouraged to apply early to secure hostel and scholarship consideration.
@@ -283,7 +287,37 @@
             </div>
           </div>
 
-          <!-- Postgraduate -->
+          <!-- Undergraduate (Middle) -->
+          <div class="intake-card">
+            <div class="intake-card-header undergrad">
+              Undergraduate
+            </div>
+            <div class="intake-card-body">
+              <div class="intake-row">
+                <span class="intake-label">October / November Intake</span>
+                <span class="intake-date">3 November </span>
+                <span class="intake-details">Application opens: 3 August </span>
+                <span class="intake-details">Deadline: 27 October </span>
+              </div>
+              <div class="intake-row">
+                <span class="intake-label">February Intake</span>
+                <span class="intake-date">3 February </span>
+                <span class="intake-details">Application opens: 3 November </span>
+                <span class="intake-details">Deadline: 27 January </span>
+              </div>
+              <div class="intake-row">
+                <span class="intake-label">June Intake</span>
+                <span class="intake-date">15 June</span>
+                <span class="intake-details">Application opens: 15 March </span>
+                <span class="intake-details">Deadline: 8 June </span>
+              </div>
+              <div class="intake-note">
+                ⚠️ Reminder: These dates repeat each year. Apply early if you need scholarship or loan processing.
+              </div>
+            </div>
+          </div>
+
+          <!-- Postgraduate (Right) -->
           <div class="intake-card">
             <div class="intake-card-header postgrad">
               Postgraduate<br><small>(Master & PhD)</small>
@@ -291,21 +325,21 @@
             <div class="intake-card-body">
               <div class="intake-row">
                 <span class="intake-label">September Intake</span>
-                <span class="intake-date">17 September (every year)</span>
+                <span class="intake-date">17 September </span>
                 <span class="intake-details">Application opens: 17 June </span>
-                <span class="intake-details">Deadline: 10 September (every year)</span>
+                <span class="intake-details">Deadline: 10 September </span>
               </div>
               <div class="intake-row">
                 <span class="intake-label">February Intake</span>
-                <span class="intake-date">3 February (every year)</span>
-                <span class="intake-details">Application opens: 3 November (previous year) </span>
-                <span class="intake-details">Deadline: 27 January (every year)</span>
+                <span class="intake-date">3 February </span>
+                <span class="intake-details">Application opens: 3 November  </span>
+                <span class="intake-details">Deadline: 27 January </span>
               </div>
               <div class="intake-row">
                 <span class="intake-label">June Intake</span>
-                <span class="intake-date">15 June (every year)</span>
+                <span class="intake-date">15 June </span>
                 <span class="intake-details">Application opens: 15 March </span>
-                <span class="intake-details">Deadline: 8 June (every year)</span>
+                <span class="intake-details">Deadline: 8 June </span>
               </div>
               <div class="intake-note">
                 ⚠️ Reminder: International postgraduate applicants should submit applications at least 2–3 months before the intake date for visa processing.
@@ -314,10 +348,17 @@
           </div>
         </div>
 
+        <!-- Email Subscription Button -->
+        <div class="mb-4 text-center">
+          <button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#emailModal">
+            <i class="bi bi-bell"></i> Subscribe to Email Reminders
+          </button>
+        </div>
+
         <!-- Academic Calendar Section -->
         <div class="academic-calendar-section">
           <h2><i class="bi bi-calendar3"></i> Academic Calendar</h2>
-          <p class="lead mb-4">View the academic calendar with highlighted study weeks for each semester. Dates repeat every year.</p>
+          <p class="lead mb-4">View the academic calendar with colored dots indicating important dates. Dates repeat every year.</p>
           
           <div class="calendar-year-container" id="academic-calendar-container">
             <!-- Calendar will be generated by JavaScript -->
@@ -329,8 +370,16 @@
               <strong>Study / Teaching Weeks</strong>
             </div>
             <div class="legend-item">
-              <span class="legend-color application"></span>
-              <strong>Application Period</strong>
+              <span class="legend-color intake-date"></span>
+              <strong>Intake Start Date</strong>
+            </div>
+            <div class="legend-item">
+              <span class="legend-color application-opens"></span>
+              <strong>Application Opens</strong>
+            </div>
+            <div class="legend-item">
+              <span class="legend-color application-deadline"></span>
+              <strong>Application Deadline</strong>
             </div>
           </div>
         </div>
@@ -353,7 +402,7 @@
           <div class="mb-3">
             <label for="emailInput" class="form-label">Email Address</label>
             <input type="email" class="form-control" id="emailInput" required placeholder="your.email@example.com">
-            <small class="form-text text-muted">We'll send you reminders 7 days before deadlines.</small>
+            <small class="form-text text-muted">We'll send you reminders 14 days before deadlines.</small>
           </div>
           <div class="mb-3">
             <label class="form-label">Select Programs to Monitor</label>
@@ -384,34 +433,65 @@
 {% block extra_js %}
 <script>
 // Academic Calendar Data - Fixed dates that repeat every year
+// Using specific dates with dots instead of ranges
 const academicCalendar = {
-  // Semester 1: January - April (14 weeks) - Starts mid-January
-  semester1: {
-    studyWeeks: [
-      { start: { month: 1, day: 13 }, end: { month: 4, day: 25 } } // Jan 13 - Apr 25 (14 weeks)
-    ],
-    applicationPeriods: [
-      { start: { month: 8, day: 3 }, end: { month: 10, day: 27 }, yearOffset: 0 } // Aug 3 - Oct 27 (for Nov intake)
-    ]
-  },
-  // Semester 2: May - August (14 weeks) - Starts mid-May
-  semester2: {
-    studyWeeks: [
-      { start: { month: 5, day: 19 }, end: { month: 8, day: 29 } } // May 19 - Aug 29 (14 weeks)
-    ],
-    applicationPeriods: [
-      { start: { month: 11, day: 3 }, end: { month: 1, day: 27 }, yearOffset: -1 } // Nov 3 (prev year) - Jan 27 (for Feb intake)
-    ]
-  },
-  // Semester 3: September - December (7 weeks) - Starts early September
-  semester3: {
-    studyWeeks: [
-      { start: { month: 9, day: 8 }, end: { month: 12, day: 19 } } // Sep 8 - Dec 19 (7 weeks)
-    ],
-    applicationPeriods: [
-      { start: { month: 3, day: 15 }, end: { month: 6, day: 8 }, yearOffset: 0 } // Mar 15 - Jun 8 (for Jun intake)
-    ]
-  }
+  // Study weeks - specific dates to show dots
+  studyWeeks: [
+    // Semester 1: Jan 13 - Apr 25 (show dots on key dates)
+    { month: 1, day: 13 }, // Semester 1 start
+    { month: 4, day: 25 }, // Semester 1 end
+    // Semester 2: May 19 - Aug 29
+    { month: 5, day: 19 }, // Semester 2 start
+    { month: 8, day: 29 }, // Semester 2 end
+    // Semester 3: Sep 8 - Dec 19
+    { month: 9, day: 8 },  // Semester 3 start
+    { month: 12, day: 19 }, // Semester 3 end
+  ],
+  // Intake start dates
+  intakeDates: [
+    // Foundation (1 week earlier)
+    { month: 10, day: 27, type: 'foundation' }, // Foundation October intake
+    { month: 1, day: 27, type: 'foundation' },  // Foundation February intake
+    { month: 6, day: 8, type: 'foundation' },  // Foundation June intake
+    // Undergraduate
+    { month: 11, day: 3, type: 'undergrad' },    // Undergraduate October/November intake
+    { month: 2, day: 3, type: 'undergrad' },    // Undergraduate February intake
+    { month: 6, day: 15, type: 'undergrad' },   // Undergraduate June intake
+    // Postgraduate
+    { month: 9, day: 17, type: 'postgrad' },    // Postgraduate September intake
+    { month: 2, day: 3, type: 'postgrad' },     // Postgraduate February intake
+    { month: 6, day: 15, type: 'postgrad' },    // Postgraduate June intake
+  ],
+  // Application opening dates
+  applicationOpens: [
+    // Foundation
+    { month: 7, day: 27, type: 'foundation' },  // Foundation October intake opens
+    { month: 10, day: 27, type: 'foundation', yearOffset: -1 }, // Foundation February intake opens (previous year)
+    { month: 3, day: 8, type: 'foundation' },    // Foundation June intake opens
+    // Undergraduate
+    { month: 8, day: 3, type: 'undergrad' },    // Undergraduate Oct/Nov intake opens
+    { month: 11, day: 3, type: 'undergrad', yearOffset: -1 }, // Undergraduate February intake opens (previous year)
+    { month: 3, day: 15, type: 'undergrad' },   // Undergraduate June intake opens
+    // Postgraduate
+    { month: 6, day: 17, type: 'postgrad' },     // Postgraduate September intake opens
+    { month: 11, day: 3, type: 'postgrad', yearOffset: -1 }, // Postgraduate February intake opens (previous year)
+    { month: 3, day: 15, type: 'postgrad' },    // Postgraduate June intake opens
+  ],
+  // Application deadline dates
+  applicationDeadlines: [
+    // Foundation
+    { month: 10, day: 20, type: 'foundation' }, // Foundation October intake deadline
+    { month: 1, day: 20, type: 'foundation' },  // Foundation February intake deadline
+    { month: 6, day: 1, type: 'foundation' },    // Foundation June intake deadline
+    // Undergraduate
+    { month: 10, day: 27, type: 'undergrad' },  // Undergraduate Oct/Nov intake deadline
+    { month: 1, day: 27, type: 'undergrad' },   // Undergraduate February intake deadline
+    { month: 6, day: 8, type: 'undergrad' },    // Undergraduate June intake deadline
+    // Postgraduate
+    { month: 9, day: 10, type: 'postgrad' },     // Postgraduate September intake deadline
+    { month: 1, day: 27, type: 'postgrad' },    // Postgraduate February intake deadline
+    { month: 6, day: 8, type: 'postgrad' },    // Postgraduate June intake deadline
+  ]
 };
 
 function isDateInRange(date, startMonth, startDay, endMonth, endDay, year) {
@@ -450,42 +530,53 @@ function generateMonthCalendar(year, month) {
     const dateStr = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     
     let classes = 'calendar-day-cell';
-    let isStudyWeek = false;
-    let isApplicationPeriod = false;
+    let dotType = null;
+    let tooltip = '';
     
-    // Check if date falls within study weeks (current year)
-    Object.values(academicCalendar).forEach(semester => {
-      semester.studyWeeks.forEach(period => {
-        if (isDateInRange(date, period.start.month, period.start.day, period.end.month, period.end.day, year)) {
-          isStudyWeek = true;
-        }
-      });
-      
-      semester.applicationPeriods.forEach(period => {
-        if (period.start.month > period.end.month) {
-          // Crosses year boundary (e.g., Nov to Jan for Feb intake)
-          // Check if date is in Nov-Dec of previous year OR Jan of current year
-          const prevYearStart = new Date(year - 1, period.start.month - 1, period.start.day);
-          const currentYearEnd = new Date(year, period.end.month - 1, period.end.day);
-          if (date >= prevYearStart && date <= currentYearEnd) {
-            isApplicationPeriod = true;
-          }
-        } else {
-          // Same year period (e.g., Aug to Oct for Nov intake, Mar to Jun for Jun intake)
-          if (isDateInRange(date, period.start.month, period.start.day, period.end.month, period.end.day, year)) {
-            isApplicationPeriod = true;
-          }
-        }
-      });
+    // Check for study week dates (show green dot)
+    academicCalendar.studyWeeks.forEach(studyDate => {
+      if (date.getMonth() === studyDate.month - 1 && date.getDate() === studyDate.day) {
+        classes += ' study-week';
+        dotType = 'study';
+        tooltip = 'Study/Teaching Week';
+      }
     });
     
-    if (isStudyWeek) {
-      classes += ' study-week';
-    } else if (isApplicationPeriod) {
-      classes += ' application-period';
-    }
+    // Check for intake dates (show blue dot) - priority over study weeks
+    academicCalendar.intakeDates.forEach(intakeDate => {
+      const checkYear = year + (intakeDate.yearOffset || 0);
+      const intakeDateObj = new Date(checkYear, intakeDate.month - 1, intakeDate.day);
+      if (date.getTime() === intakeDateObj.getTime()) {
+        classes += ' intake-date';
+        dotType = 'intake';
+        tooltip = `${intakeDate.type.charAt(0).toUpperCase() + intakeDate.type.slice(1)} Intake Start`;
+      }
+    });
     
-    html += `<div class="${classes}" title="${dateStr}">${day}</div>`;
+    // Check for application opening dates (show orange dot)
+    academicCalendar.applicationOpens.forEach(openDate => {
+      const checkYear = year + (openDate.yearOffset || 0);
+      const openDateObj = new Date(checkYear, openDate.month - 1, openDate.day);
+      if (date.getTime() === openDateObj.getTime() && !dotType) {
+        classes += ' application-opens';
+        dotType = 'opens';
+        tooltip = `Application Opens - ${openDate.type.charAt(0).toUpperCase() + openDate.type.slice(1)}`;
+      }
+    });
+    
+    // Check for application deadline dates (show red dot) - highest priority
+    academicCalendar.applicationDeadlines.forEach(deadlineDate => {
+      const checkYear = year + (deadlineDate.yearOffset || 0);
+      const deadlineDateObj = new Date(checkYear, deadlineDate.month - 1, deadlineDate.day);
+      if (date.getTime() === deadlineDateObj.getTime()) {
+        classes = classes.replace(' application-opens', '').replace(' intake-date', '').replace(' study-week', '');
+        classes += ' application-deadline';
+        dotType = 'deadline';
+        tooltip = `Application Deadline - ${deadlineDate.type.charAt(0).toUpperCase() + deadlineDate.type.slice(1)}`;
+      }
+    });
+    
+    html += `<div class="${classes}" title="${tooltip || dateStr}">${day}</div>`;
   }
   
   // Empty cells for days after month ends
@@ -534,19 +625,26 @@ function subscribeToEmail() {
       program_ids: programIds
     })
   })
-  .then(response => response.json())
+  .then(response => {
+    if (!response.ok) {
+      return response.json().then(err => {
+        throw new Error(err.message || 'Server error');
+      });
+    }
+    return response.json();
+  })
   .then(data => {
     if (data.success) {
       alert(data.message);
       bootstrap.Modal.getInstance(document.getElementById('emailModal')).hide();
       document.getElementById('emailSubscriptionForm').reset();
     } else {
-      alert('Error: ' + data.message);
+      alert('Error: ' + (data.message || 'Unknown error occurred'));
     }
   })
   .catch(error => {
     console.error('Error:', error);
-    alert('An error occurred. Please try again.');
+    alert('Error: ' + (error.message || 'An error occurred. Please try again.'));
   });
 }
 
