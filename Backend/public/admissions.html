@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admissions - SKL University</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-container">
+      <div class="logo-container">
+        <img src="SKL logo.png" alt="SKL Logo" class="logo">
+        <h1>SKL University</h1>
+      </div>
+      <nav class="nav-desktop">
+        <a href="main.html">Home</a>
+        <a href="programs.html">Programs</a>
+        <a href="admissions.html" class="active">Admissions</a>
+        <a href="campus_life.html">Campus Life</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <button id="menu-toggle" class="hamburger">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <nav id="mobile-menu" class="nav-mobile">
+      <a href="main.html">Home</a>
+      <a href="programs.html">Programs</a>
+      <a href="admissions.html">Admissions</a>
+      <a href="campus_life.html">Campus Life</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <section class="page-header">
+    <h2>Join SKL Universiti</h2>
+    <p>Your journey to excellence starts here. Apply for the 2025 intake today.</p>
+  </section>
+
+  <section class="admissions-section">
+    <div class="container">
+      <h3>Application Process</h3>
+      <div class="admissions-grid">
+        <div class="admission-step">
+          <div class="step-number">1</div>
+          <h4>Choose Program</h4>
+          <p>Browse our programs and verify entry requirements.</p>
+        </div>
+        <div class="admission-step">
+          <div class="step-number">2</div>
+          <h4>Prepare Docs</h4>
+          <p>Gather transcripts, ID photos, and certificates.</p>
+        </div>
+        <div class="admission-step">
+          <div class="step-number">3</div>
+          <h4>Apply Online</h4>
+          <p>Fill out the form below or submit via the portal.</p>
+        </div>
+        <div class="admission-step">
+          <div class="step-number">4</div>
+          <h4>Offer Letter</h4>
+          <p>Receive your offer and pay the registration fee.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact-section" style="background: #f9fafb;">
+    <div class="container" style="max-width: 600px;">
+      <h3>Register Your Interest</h3>
+      <div class="card" style="text-align: left;">
+        <form>
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input type="text" class="form-input" placeholder="Enter your name">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <input type="email" class="form-input" placeholder="Enter your email">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Interested Program</label>
+            <select class="form-select">
+              <option>Computer Science</option>
+              <option>Business Administration</option>
+              <option>Engineering</option>
+              <option>Arts & Design</option>
+            </select>
+          </div>
+          <button type="submit" class="btn-cta" style="width:100%; border:none; cursor:pointer;">Submit Interest</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 SKL University. All rights reserved.</p>
+    <p>AI Chatbot powered by Dialogflow | UCCA2513 Mini Project</p>
+  </footer>
+
+  <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+    <df-messenger
+      project-id="university-chatbot-umlc"
+      agent-id="08845718-766f-4313-a8a0-4c3c2446b3d7"
+      language-code="en">
+      <df-messenger-chat-bubble
+        chat-title="SKL Admission Assistant">
+      </df-messenger-chat-bubble>
+    </df-messenger>
+
+    <!-- Custom Scripts -->
+    <script src="script.js"></script>
+    
+    <script>
+      // Function to programmatically send messages to chatbot
+      function askChatbot(message) {
+        const dfMessenger = document.querySelector('df-messenger');
+        if (dfMessenger) {
+          dfMessenger.renderCustomText(message);
+          // Open the chat if it's closed
+          const chatBubble = dfMessenger.shadowRoot.querySelector('df-messenger-chat-bubble');
+          if (chatBubble) {
+            chatBubble.openChat();
+          }
+        }
+      }
+
+      // Customize Dialogflow Messenger appearance
+      window.addEventListener('df-messenger-loaded', function() {
+        const dfMessenger = document.querySelector('df-messenger');
+        if (dfMessenger) {
+          console.log('✅ Dialogflow Messenger loaded successfully');
+        }
+      });
+  </script>
+</body>
+</html>

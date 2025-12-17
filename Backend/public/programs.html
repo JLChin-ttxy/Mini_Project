@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Academic Programs - SKL University</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-container">
+      <div class="logo-container">
+        <img src="SKL logo.png" alt="SKL Logo" class="logo">
+        <h1>SKL University</h1>
+      </div>
+      <nav class="nav-desktop">
+        <a href="main.html">Home</a>
+        <a href="programs.html" class="active">Programs</a>
+        <a href="admissions.html">Admissions</a>
+        <a href="campus_life.html">Campus Life</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+      <button id="menu-toggle" class="hamburger">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <nav id="mobile-menu" class="nav-mobile">
+      <a href="main.html">Home</a>
+      <a href="programs.html">Programs</a>
+      <a href="admissions.html">Admissions</a>
+      <a href="campus_life.html">Campus Life</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <section class="page-header">
+    <h2>Our Academic Programs</h2>
+    <p>Explore our wide range of accredited undergraduate and postgraduate degrees.</p>
+  </section>
+
+  <section class="facilities">
+    <div class="container">
+      
+      <div class="filters">
+        <button class="filter-btn active" onclick="filterPrograms('all')">All</button>
+        <button class="filter-btn" onclick="filterPrograms('tech')">Technology</button>
+        <button class="filter-btn" onclick="filterPrograms('business')">Business</button>
+        <button class="filter-btn" onclick="filterPrograms('arts')">Arts & Design</button>
+      </div>
+
+      <div class="grid" id="program-grid">
+        <div class="card" data-category="tech">
+          <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=600&q=60" alt="Computer Science">
+          <h3>BSc Computer Science</h3>
+          <p>Specialize in AI, Data Science, or Cybersecurity. 3 Years | Full-time.</p>
+          <a href="#" onclick="askChatbot('Tell me about Computer Science'); return false;">View Details →</a>
+        </div>
+
+        <div class="card" data-category="tech">
+          <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?auto=format&fit=crop&w=600&q=60" alt="Software Engineering">
+          <h3>BEng Software Engineering</h3>
+          <p>Learn full-stack development and software architecture. 4 Years | Full-time.</p>
+          <a href="#" onclick="askChatbot('Tell me about Software Engineering'); return false;">View Details →</a>
+        </div>
+
+        <div class="card" data-category="business">
+          <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=600&q=60" alt="Business Admin">
+          <h3>Bachelor of Business Admin</h3>
+          <p>Covers management, marketing, and entrepreneurship. 3 Years | Full-time.</p>
+          <a href="#" onclick="askChatbot('Tell me about Business Admin'); return false;">View Details →</a>
+        </div>
+
+        <div class="card" data-category="business">
+          <img src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=600&q=60" alt="Accounting">
+          <h3>BSc Accounting & Finance</h3>
+          <p>ACCA accredited program for future financial leaders. 4 Years | Full-time.</p>
+          <a href="#" onclick="askChatbot('Tell me about Accounting'); return false;">View Details →</a>
+        </div>
+
+        <div class="card" data-category="arts">
+          <img src="https://images.unsplash.com/photo-1558655146-d09347e92766?auto=format&fit=crop&w=600&q=60" alt="Digital Media">
+          <h3>BA Digital Media Design</h3>
+          <p>Graphic design, animation, and multimedia production. 3 Years | Full-time.</p>
+          <a href="#" onclick="askChatbot('Tell me about Digital Media'); return false;">View Details →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 SKL University. All rights reserved.</p>
+    <p>AI Chatbot powered by Dialogflow | UCCA2513 Mini Project</p>
+  </footer>
+
+  <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+    <df-messenger
+      project-id="university-chatbot-umlc"
+      agent-id="08845718-766f-4313-a8a0-4c3c2446b3d7"
+      language-code="en">
+      <df-messenger-chat-bubble
+        chat-title="SKL Admission Assistant">
+      </df-messenger-chat-bubble>
+    </df-messenger>
+
+    <!-- Custom Scripts -->
+    <script src="script.js"></script>
+    
+    <script>
+      // Function to programmatically send messages to chatbot
+      function askChatbot(message) {
+        const dfMessenger = document.querySelector('df-messenger');
+        if (dfMessenger) {
+          dfMessenger.renderCustomText(message);
+          // Open the chat if it's closed
+          const chatBubble = dfMessenger.shadowRoot.querySelector('df-messenger-chat-bubble');
+          if (chatBubble) {
+            chatBubble.openChat();
+          }
+        }
+      }
+
+      // Customize Dialogflow Messenger appearance
+      window.addEventListener('df-messenger-loaded', function() {
+        const dfMessenger = document.querySelector('df-messenger');
+        if (dfMessenger) {
+          console.log('✅ Dialogflow Messenger loaded successfully');
+        }
+      });
+  </script>
+</body>
+</html>

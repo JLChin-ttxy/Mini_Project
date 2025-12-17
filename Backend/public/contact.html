@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Us - SKL University</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header class="header">
+    <div class="header-container">
+      <div class="logo-container">
+        <img src="SKL logo.png" alt="SKL Logo" class="logo">
+        <h1>SKL University</h1>
+      </div>
+      <nav class="nav-desktop">
+        <a href="main.html">Home</a>
+        <a href="programs.html">Programs</a>
+        <a href="admissions.html">Admissions</a>
+        <a href="campus_life.html">Campus Life</a>
+        <a href="contact.html" class="active">Contact</a>
+      </nav>
+      <button id="menu-toggle" class="hamburger">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <nav id="mobile-menu" class="nav-mobile">
+      <a href="main.html">Home</a>
+      <a href="programs.html">Programs</a>
+      <a href="admissions.html">Admissions</a>
+      <a href="campus_life.html">Campus Life</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <section class="page-header">
+    <h2>Get In Touch</h2>
+    <p>We are here to help. Reach out to us for any inquiries.</p>
+  </section>
+
+  <section class="contact-section">
+    <div class="container">
+      <div class="contact-grid">
+        <div class="contact-card">
+          <h4>📞 Phone</h4>
+          <p>+603-9086 0288</p>
+          <p style="font-size: 0.9rem; color:#666;">Mon-Fri, 9am-5pm</p>
+        </div>
+        <div class="contact-card">
+          <h4>📧 Email</h4>
+          <p>admission@skl.edu.my</p>
+          <p style="font-size: 0.9rem; color:#666;">General Inquiries</p>
+        </div>
+        <div class="contact-card">
+          <h4>📍 Location</h4>
+          <p>SKL Universiti Campus</p>
+          <p style="font-size: 0.9rem; color:#666;">Kuala Lumpur, Malaysia</p>
+        </div>
+      </div>
+
+      <div class="hero-grid" style="margin-top: 3rem; align-items: start;">
+        
+        <div style="width: 100%; height: 400px; background: #e2e8f0; border-radius: 1rem; display: flex; align-items: center; justify-content: center;">
+           <iframe 
+             src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3983.824795454522!2d101.686855!3d3.139003!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zM8KwMDgnMjAuNCJOIDEwMcKwNDEnMTIuNyJF!5e0!3m2!1sen!2smy!4v1600000000000" 
+             width="100%" height="100%" style="border:0; border-radius:1rem;" allowfullscreen="" loading="lazy">
+           </iframe>
+        </div>
+
+        <div class="card" style="text-align: left;">
+          <h3 style="margin-bottom: 1.5rem; color: #1e3a8a;">Send us a message</h3>
+          <form>
+            <div class="form-group">
+              <label class="form-label">Your Name</label>
+              <input type="text" class="form-input" placeholder="Name">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-input" placeholder="Email">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Message</label>
+              <textarea class="form-textarea" placeholder="How can we help you?"></textarea>
+            </div>
+            <button type="submit" class="btn-cta" style="width:100%; border:none; cursor:pointer;">Send Message</button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 SKL University. All rights reserved.</p>
+    <p>AI Chatbot powered by Dialogflow | UCCA2513 Mini Project</p>
+  </footer>
+
+  <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+    <df-messenger
+      project-id="university-chatbot-umlc"
+      agent-id="08845718-766f-4313-a8a0-4c3c2446b3d7"
+      language-code="en">
+      <df-messenger-chat-bubble
+        chat-title="SKL Admission Assistant">
+      </df-messenger-chat-bubble>
+    </df-messenger>
+
+    <!-- Custom Scripts -->
+    <script src="script.js"></script>
+    
+    <script>
+      // Function to programmatically send messages to chatbot
+      function askChatbot(message) {
+        const dfMessenger = document.querySelector('df-messenger');
+        if (dfMessenger) {
+          dfMessenger.renderCustomText(message);
+          // Open the chat if it's closed
+          const chatBubble = dfMessenger.shadowRoot.querySelector('df-messenger-chat-bubble');
+          if (chatBubble) {
+            chatBubble.openChat();
+          }
+        }
+      }
+
+      // Customize Dialogflow Messenger appearance
+      window.addEventListener('df-messenger-loaded', function() {
+        const dfMessenger = document.querySelector('df-messenger');
+        if (dfMessenger) {
+          console.log('✅ Dialogflow Messenger loaded successfully');
+        }
+      });
+  </script>
+</body>
+</html>
