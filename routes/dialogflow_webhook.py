@@ -197,10 +197,36 @@ def dialogflow_webhook():
             else:
                 logger.warning(f"❌ Could not extract program name from query text: '{query_text}'")
         
+        # Handle queries without program name - provide general information
         if not program_name:
-            return jsonify({
-                "fulfillmentText": "I'd be happy to help! Could you please tell me which program you're interested in? For example, 'Foundation in Science' or 'Bachelor of Computer Science'."
-            })
+            query_lower = query_text.lower() if query_text else ""
+            
+            # Check what type of information they're asking for
+            if any(word in query_lower for word in ['requirement', 'eligibility', 'qualification', 'need to apply', 'admission criteria']):
+                base_url = request.url_root.rstrip("/")
+                return jsonify({
+                    "fulfillmentText": f"I can help you with admission requirements! Please visit our Admission Requirements page to see requirements for all programs: {base_url}/admission/requirements\n\nOr tell me which specific program you're interested in (e.g., 'Foundation in Science' or 'Bachelor of Computer Science') and I'll show you the exact requirements."
+                })
+            elif any(word in query_lower for word in ['document', 'checklist', 'need to submit', 'required document', 'paperwork']):
+                base_url = request.url_root.rstrip("/")
+                return jsonify({
+                    "fulfillmentText": f"I can help you with document requirements! Please visit our Document Checklist page: {base_url}/admission/document-checklist\n\nOr tell me which specific program you're applying for (e.g., 'Foundation in Science') and I'll generate a personalized checklist for you."
+                })
+            elif any(word in query_lower for word in ['deadline', 'when is', 'closing date', 'application period', 'intake']):
+                base_url = request.url_root.rstrip("/")
+                return jsonify({
+                    "fulfillmentText": f"I can help you with important dates and deadlines! Please visit our Important Dates page: {base_url}/admission/deadlines\n\nOr tell me which specific program you're interested in and I'll show you the exact deadlines."
+                })
+            elif any(word in query_lower for word in ['apply', 'application', 'how to apply', 'application process']):
+                base_url = request.url_root.rstrip("/")
+                return jsonify({
+                    "fulfillmentText": f"I can help you with the application process! Please visit our Application Procedure page: {base_url}/admission/application-procedure\n\nOr tell me which specific program you want to apply for and I'll guide you through the steps."
+                })
+            else:
+                # General response
+                return jsonify({
+                    "fulfillmentText": "I'd be happy to help! I can assist you with:\n• Admission requirements\n• Document checklists\n• Important dates and deadlines\n• Application procedures\n\nPlease tell me which program you're interested in (e.g., 'Foundation in Science' or 'Bachelor of Computer Science'), or ask me a specific question like 'What are the requirements?' or 'What documents do I need?'"
+                })
         
         # Find matching program
         matched_key, program_data = _find_program_match(program_name, links_map)
@@ -212,6 +238,18 @@ def dialogflow_webhook():
             return jsonify({
                 "fulfillmentText": f"I couldn't find '{program_name}' in our system. Here are some available programs: {suggestions}. Please try asking about one of these programs."
             })
+        
+        # Determine info_type from query if not provided
+        if not info_type or info_type == "requirements":
+            query_lower = query_text.lower() if query_text else ""
+            if any(word in query_lower for word in ['document', 'checklist', 'paperwork', 'certificate']):
+                info_type = "documents"
+            elif any(word in query_lower for word in ['deadline', 'date', 'when', 'intake', 'closing']):
+                info_type = "deadlines"
+            elif any(word in query_lower for word in ['apply', 'application form', 'submit application']):
+                info_type = "apply"
+            elif any(word in query_lower for word in ['requirement', 'eligibility', 'qualification', 'need to apply']):
+                info_type = "requirements"
         
         # Get the appropriate URL
         url = program_data.get(info_type) or program_data.get("requirements")
